@@ -1,0 +1,713 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS,OC," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="iOS 开发中经常用到或者看到 [self class] 和 [super class] ，很多人都会用但是没有研究过这两者究竟有什么区别，今天就本文就讲解一下 self 和 super 两者的区别 self 和 super 的区别self 是一个隐藏参数变量，指向当前调用方法的对象，还有一个隐藏参数是 _cmd,代表当前方法 selector，在 runtime 时会调用 objc_msgSen">
+<meta name="keywords" content="iOS,OC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="self 和 super的区别">
+<meta property="og:url" content="http://yoursite.com/2017/04/24/self和super的区别/index.html">
+<meta property="og:site_name" content="笑忘书店">
+<meta property="og:description" content="iOS 开发中经常用到或者看到 [self class] 和 [super class] ，很多人都会用但是没有研究过这两者究竟有什么区别，今天就本文就讲解一下 self 和 super 两者的区别 self 和 super 的区别self 是一个隐藏参数变量，指向当前调用方法的对象，还有一个隐藏参数是 _cmd,代表当前方法 selector，在 runtime 时会调用 objc_msgSen">
+<meta property="og:updated_time" content="2017-04-24T10:46:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="self 和 super的区别">
+<meta name="twitter:description" content="iOS 开发中经常用到或者看到 [self class] 和 [super class] ，很多人都会用但是没有研究过这两者究竟有什么区别，今天就本文就讲解一下 self 和 super 两者的区别 self 和 super 的区别self 是一个隐藏参数变量，指向当前调用方法的对象，还有一个隐藏参数是 _cmd,代表当前方法 selector，在 runtime 时会调用 objc_msgSen">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/04/24/self和super的区别/"/>
+
+
+
+
+
+  <title> self 和 super的区别 | 笑忘书店 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笑忘书店</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/24/self和super的区别/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaovv">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笑忘书店">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                self 和 super的区别
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-24T11:45:14+08:00">
+                2017-04-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>iOS 开发中经常用到或者看到 <code>[self class]</code> 和 <code>[super class]</code> ，很多人都会用但是没有研究过这两者究竟有什么区别，今天就本文就讲解一下 <code>self</code> 和 <code>super</code> 两者的区别</p>
+<h3 id="self-和-super-的区别"><a href="#self-和-super-的区别" class="headerlink" title="self 和 super 的区别"></a>self 和 super 的区别</h3><p><code>self</code> 是一个隐藏参数变量，指向当前调用方法的对象，还有一个隐藏参数是 _cmd,代表当前方法 <code>selector</code>，在 runtime 时会调用 <code>objc_msgSend()</code> 方法</p>
+<p><code>super</code> 并不是隐藏参数，它只是编译器的指令符号，它和 <code>self</code> 指向的是相同的消息接收者，在 runtime 时调用 <code>objc_msgSendSuper()</code> 方法</p>
+<blockquote>
+<p>官方文档里面 self 和 super 的解释：</p>
+<p>Whenever you’re writing a method implementation, you have access to an important hidden value, self. Conceptually, self is a way to refer to “the object that’s received this message.” It’s a pointer, just like the greeting value above, and can be used to call a method on the current receiving object.</p>
+<p>There’s anotherimportant keyword available to you in Objective-C, called super. Sending a message to super is a way to call through to a method implementation defined by a superclass further up the inheritance chain. The most common use of super is when overriding a method.</p>
+</blockquote>
+<p>接下来我们先看看下面的代码，代码里定义了一个 Parents 的父类，定义了一个 继承自 Parents 的子类 Children，在 Parents 的 .h 文件里定一个了一个 <code>eat</code> 方法，在 Children 的 .m 文件里重写了父类的<code>eat</code> 方法</p>
+<p>Parents 类的实现：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// .h</span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Parents</span> : <span class="title">NSObject</span></span></div><div class="line">- (<span class="keyword">void</span>)eat;</div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="comment">// .m</span></div><div class="line"><span class="meta">#import <span class="meta-string">"Parents.h"</span></span></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">Parents</span></span></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>Children 类的实现：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// .h</span></div><div class="line"><span class="meta">#import <span class="meta-string">"Parents.h"</span></span></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Children</span> : <span class="title">Parents</span></span></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="comment">// .m</span></div><div class="line"><span class="meta">#import <span class="meta-string">"Children.h"</span></span></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">Children</span></span></div><div class="line">- (<span class="keyword">void</span>)eat&#123;</div><div class="line">     <span class="comment">// class:获取当前调用者的类</span></div><div class="line">     <span class="comment">// superclass:获取当前调用者的父类</span></div><div class="line">     <span class="comment">// super: 是一个编译指示器，编译器看到这个标志，就会让当前对象去调用父类的方法，本质还是当前对象在调用方法</span></div><div class="line">     <span class="built_in">NSLog</span>(<span class="string">@"%@ %@ %@ %@"</span>,[<span class="keyword">self</span> <span class="keyword">class</span>], [<span class="keyword">self</span> superclass], [<span class="keyword">super</span> <span class="keyword">class</span>], [<span class="keyword">super</span> superclass]);</div><div class="line">&#125;</div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>然后在控制器里实例化一个 Children 对象并调用 <code>eat</code> 方法</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</div><div class="line">    [<span class="keyword">super</span> viewDidLoad];</div><div class="line">    Children *child = [[Children alloc] init];</div><div class="line">    [child eat];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>得到下面的打印结果：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">2017-04-24 15:38:38.789 selfandsuper[2228:134855] Children Parents Children Parents</div></pre></td></tr></table></figure>
+<p>解释一下打印结果：</p>
+<p><code>[self class]</code>： 的调用者是 <code>Children</code><br><code>[self superclass]</code>： <code>self</code> 的父类是 <code>Parents</code><br><code>[super class]</code>： 当前调用者还是 <code>self</code> 也就是 <code>Children</code>，只不过有 <code>super</code> 之后编译器会去调用父类的 <code>class</code> 方法，而不是本类里的<br><code>[super superclass]</code>：当前调用者是 <code>self</code> 也就是 <code>Children</code>，它的 <code>superclass</code> 是 <code>Parents</code>，只不过有 <code>super</code> 之后编译器会去调用父类的 <code>superclass</code> 方法，而不是本类里的</p>
+<h3 id="self-和-super-底层的实现原理"><a href="#self-和-super-底层的实现原理" class="headerlink" title="self 和 super 底层的实现原理"></a>self 和 super 底层的实现原理</h3><p>OC 的内部实现是运行时（Runtime）机制，方法的调用实际上消息发送机制（msgSend），先看一下 <code>objc_msgSend()</code> 的函数定义：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">id</span> objc_msgSend(<span class="keyword">id</span> <span class="keyword">self</span>, SEL op, ...)</div></pre></td></tr></table></figure>
+<p>这个方法的第一个参数是消息接收者，第二个参数是调用的具体类方法的 selector，后面是 selector 方法的可变参数，先不管这个可变参数</p>
+<p>以上面 <code>[self methonName]</code> 为例，编译器会替换成下面的代码：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">objc_msgSend(child, sel_registerName(<span class="string">"methonName"</span>));</div></pre></td></tr></table></figure>
+<p>这个 selector 是从当前 self 的方法列表开始找，当找到后把对应的  selector 传递过去</p>
+<p>而当使用 <code>[super methonName]</code> 调用时，会使用<code>objc_msgSendSuper()</code> 函数，编译器会替换成下面的代码:</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">objc_msgSendSuper(&#123;<span class="keyword">self</span>, class_getSuperclass(objc_getClass(<span class="string">"Parents"</span>))&#125;, sel_registerName(<span class="string">"methonName"</span>));</div></pre></td></tr></table></figure>
+<p>看一下 <code>objc_msgSendSuper()</code>的函数定义：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">id</span> objc_msgSendSuper(<span class="keyword">struct</span> objc_super *<span class="keyword">super</span>, SEL op, ...)</div></pre></td></tr></table></figure>
+<p>第一个参数是个 <code>objc_super</code> 的结构体，第二个参数还是类似上面的类方法的 <code>selector</code>，先看下 <code>objc_super</code> 这个结构体的组成：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> objc_super &#123;</div><div class="line">    __<span class="keyword">unsafe_unretained</span> <span class="keyword">id</span> receiver;</div><div class="line">    __<span class="keyword">unsafe_unretained</span> Class super_class;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>这个结构体包含了两个成员，一个是 <code>receiver</code>，这个类似上面 <code>objc_msgSend</code> 的第一个参数，第二个成员是记录这个类的父类是什么</p>
+<p>以上面的 <code>[super methonName]</code> 为例，当编译器遇到 Children 里的方法里的 <code>[super methonName]</code>时，开始做这几个事：</p>
+<ol>
+<li>构建 <code>objc_super</code> 的结构体，此时这个结构体的第一个成员变量receiver 就是 <code>Children</code>，和 <code>self</code> 相同，而第二个成员变量<code>super_Class</code> 就是指类 <code>Parents</code>，因为 <code>Children</code> 的父类就是 <code>Parents</code></li>
+<li>调用 <code>objc_msgSendSuper()</code> 的方法，将第一步构建的这个结构体和 methonName 的 selector 传递过去，函数里面在做的事情类似这样：从 <code>objc_super</code> 结构体指向的 <code>super_Class</code> 的方法列表开始找 methonName 的 selector，找到后再以 <code>objc_super-&gt;receiver</code> 去调用这个 selector，可能也会使用 <code>objc_msgSend()</code> 这个函数，不过此时的第一个参数就是<code>objc_super-&gt;receiver</code>，第二个参数是从 <code>objc_super-&gt;super_Class</code>中找到的 selector</li>
+</ol>
+<p>里面的调用机制大体就是这样了，通过以上面的分析，回过头来看开始的代码，当输出 <code>[self class]</code> 和 <code>[super class]</code>时，是个怎样的过程:</p>
+<p>当调用 <code>[self class]</code> 时，这时的 <code>self</code> 是 <code>Children</code>，在使用<code>objc_msgSend()</code> 时，第一个参数是 <code>self</code>，也是 <code>Children *child</code> 这个实例，第二个参数，要先找到 <code>class</code> 这个方法的selector，先从 <code>Children</code> 这个类开始找，没有找到，然后到<code>Children</code> 的父类 <code>Parents</code> 中去找，也没有，再去 <code>Parents</code> 的父类 <code>NSObject</code> 去找，一层一层向上找之后，在 <code>NSObject</code> 的类中发现这个 <code>class</code>方法，而 <code>NSObject</code> 的这个 <code>class</code> 方法的返回值就是 <code>self</code> 的类别，所以这里打印 <code>Children</code></p>
+<p>当使用 <code>[super class]</code>时，这时要转换成<code>objc_msgSendSuper()</code>的方法，先构造 <code>objc_super</code>的结构体，第一个成员变量就是 <code>self</code>, 第二个成员变量是 <code>Parents</code>，然后要找 <code>class</code> 这个 selector，先去 <code>super_Class</code> 也就是 <code>Parents</code> 中去找，没有，然后去 <code>Parents</code> 的父类中去找，结果还是在 <code>NSObject</code> 中找到了,然后内部使用函数 <code>objc_msgSend(objc_super-&gt;receiver, @selector(class))</code> 去调用，此时已经和我们用 <code>[self class]</code> 调用时相同了，此时的 <code>receiver</code> 就是 <code>Children *child</code> 这个实例，所以这里返回的也是 <code>Children</code></p>
+<p>以上就是在 OC 中的类实现中经常看到这两个关键字 <code>self</code> 和 <code>super</code> 的区别</p>
+<p>参考文章：<br><a href="http://blog.csdn.net/loving_ios/article/details/49884599" target="_blank" rel="external">iOS经典讲解之[self class]和[super class]的区别</a></p>
+<p><strong>本人刚开始写博客，技术一般，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能帮到别人也是荣幸之至！如有错误，欢迎各位指正！</strong></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+            <a href="/tags/OC/" rel="tag"># OC</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/21/iOS-Touch-ID（指纹识别）基本开发实践/" rel="next" title="iOS Touch ID（指纹识别）基本开发实践">
+                <i class="fa fa-chevron-left"></i> iOS Touch ID（指纹识别）基本开发实践
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/26/Objective-C-Runtime-运行时之一：类与对象/" rel="prev" title="Objective-C Runtime 运行时之一：类与对象">
+                Objective-C Runtime 运行时之一：类与对象 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Xiaovv" />
+          <p class="site-author-name" itemprop="name">Xiaovv</p>
+           
+              <p class="site-description motion-element" itemprop="description">以绝大多数人的努力程度之低，根本轮不到去拼天赋</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#self-和-super-的区别"><span class="nav-number">1.</span> <span class="nav-text">self 和 super 的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#self-和-super-底层的实现原理"><span class="nav-number">2.</span> <span class="nav-text">self 和 super 底层的实现原理</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaovv</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

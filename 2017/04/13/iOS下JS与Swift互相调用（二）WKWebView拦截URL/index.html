@@ -1,0 +1,708 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS,Swift,JavaScript," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="在上篇文章中介绍了UIWebView拦截URL的方式来处理JS与Swift交互: iOS下JS与Swift互相调用（一）UIWebView拦截URL 由于UIWebView比较耗内存，性能上不太好，而苹果在iOS 8中推出了WKWebView，用WKWebView也可以拦截URL，做 JS 与 Swift 交互。关于WKWebView与UIWebView的性能对比，大家可以自行百度或者 Googl">
+<meta name="keywords" content="iOS,Swift,JavaScript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS下JS与Swift互相调用（二）WKWebView拦截URL">
+<meta property="og:url" content="http://yoursite.com/2017/04/13/iOS下JS与Swift互相调用（二）WKWebView拦截URL/index.html">
+<meta property="og:site_name" content="笑忘书店">
+<meta property="og:description" content="在上篇文章中介绍了UIWebView拦截URL的方式来处理JS与Swift交互: iOS下JS与Swift互相调用（一）UIWebView拦截URL 由于UIWebView比较耗内存，性能上不太好，而苹果在iOS 8中推出了WKWebView，用WKWebView也可以拦截URL，做 JS 与 Swift 交互。关于WKWebView与UIWebView的性能对比，大家可以自行百度或者 Googl">
+<meta property="og:updated_time" content="2017-04-24T10:46:20.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS下JS与Swift互相调用（二）WKWebView拦截URL">
+<meta name="twitter:description" content="在上篇文章中介绍了UIWebView拦截URL的方式来处理JS与Swift交互: iOS下JS与Swift互相调用（一）UIWebView拦截URL 由于UIWebView比较耗内存，性能上不太好，而苹果在iOS 8中推出了WKWebView，用WKWebView也可以拦截URL，做 JS 与 Swift 交互。关于WKWebView与UIWebView的性能对比，大家可以自行百度或者 Googl">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/04/13/iOS下JS与Swift互相调用（二）WKWebView拦截URL/"/>
+
+
+
+
+
+  <title> iOS下JS与Swift互相调用（二）WKWebView拦截URL | 笑忘书店 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笑忘书店</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/13/iOS下JS与Swift互相调用（二）WKWebView拦截URL/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaovv">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笑忘书店">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS下JS与Swift互相调用（二）WKWebView拦截URL
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-13T10:18:51+08:00">
+                2017-04-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在上篇文章中介绍了UIWebView拦截URL的方式来处理JS与Swift交互:</p>
+<p><a href="https://shuishangshu.github.io/2017/04/12/iOS%E4%B8%8BJS%E4%B8%8ESwift%E4%BA%92%E7%9B%B8%E8%B0%83%E7%94%A8%EF%BC%88%E4%B8%80%EF%BC%89UIWebView%E6%8B%A6%E6%88%AAURL/" target="_blank" rel="external">iOS下JS与Swift互相调用（一）UIWebView拦截URL</a></p>
+<p>由于UIWebView比较耗内存，性能上不太好，而苹果在iOS 8中推出了WKWebView，用WKWebView也可以拦截URL，做 JS 与 Swift 交互。关于WKWebView与UIWebView的性能对比，大家可以自行百度或者 Google</p>
+<p>WKWebView 与 UIWebView 拦截URL 的处理方式基本一样， 除了代理方法和WKWebView的使用不太一样，关于 WKWebView 更详尽的讲解和用法，还是自行搜索学习，本文重点还是讲解如何实现 Swift 与 JS 互相调用</p>
+<blockquote>
+<p>注意：WKWebView 是iOS 8 推出的 WebKit.framework 中的控件，只有 App 不需要兼容 iOS 7及以下的时候才可以使用。</p>
+</blockquote>
+<h3 id="1-创建-WKWebView，加载本地-HTML"><a href="#1-创建-WKWebView，加载本地-HTML" class="headerlink" title="1.创建 WKWebView，加载本地 HTML"></a>1.创建 WKWebView，加载本地 HTML</h3><p>WKWebView的创建有几点不同：</p>
+<ul>
+<li><p>初始化多了个configuration参数，当然这个参数我们也可以不传，直接使用默认的设置就好</p>
+</li>
+<li><p>WKWebView 有两个代理 navigationDelegate和UIDelegate，我们要拦截URL，是通过navigationDelegate的一个代理方法来实现，如果在HTML中要使用alert等弹窗，还必须得实现UIDelegate的相应代理方法</p>
+</li>
+<li><p>在iOS 9之前，WKWebView加载本地HTML会有一些问题（不能加载本地HTML，或者部分CSS/本地图片加载不了等）</p>
+</li>
+</ul>
+<p>创建WKWebView的代码：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">setupWKWebView</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">let</span> configuration = <span class="type">WKWebViewConfiguration</span>()</div><div class="line">    configuration.userContentController = <span class="type">WKUserContentController</span>()</div><div class="line">    <span class="keyword">let</span> preferences = <span class="type">WKPreferences</span>()</div><div class="line">    preferences.javaScriptCanOpenWindowsAutomatically = <span class="literal">true</span></div><div class="line">    preferences.minimumFontSize = <span class="number">30.0</span></div><div class="line">    configuration.preferences = preferences</div><div class="line">    <span class="keyword">self</span>.wkWebView = <span class="type">WKWebView</span>(frame: <span class="keyword">self</span>.view.frame, configuration: configuration)</div><div class="line">    <span class="keyword">let</span> urlStr = <span class="type">Bundle</span>.main.path(forResource: <span class="string">"index.html"</span>, ofType: <span class="literal">nil</span>)</div><div class="line">    <span class="keyword">let</span> url = <span class="type">URL</span>(fileURLWithPath: urlStr!)</div><div class="line">    <span class="keyword">self</span>.wkWebView?.loadFileURL(url, allowingReadAccessTo: url)</div><div class="line">    <span class="keyword">self</span>.wkWebView?.navigationDelegate = <span class="keyword">self</span></div><div class="line">    <span class="keyword">self</span>.wkWebView?.uiDelegate = <span class="keyword">self</span></div><div class="line">    <span class="keyword">self</span>.view.addSubview(<span class="keyword">self</span>.wkWebView!)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>因为加载的本地HTML内容，跟上一篇<a href="https://shuishangshu.github.io/2017/04/12/iOS%E4%B8%8BJS%E4%B8%8ESwift%E4%BA%92%E7%9B%B8%E8%B0%83%E7%94%A8%EF%BC%88%E4%B8%80%EF%BC%89UIWebView%E6%8B%A6%E6%88%AAURL/" target="_blank" rel="external">iOS下JS与Swift互相调用（一）UIWebView拦截URL</a>中介绍的HTML内容一样，所以关于HTML中的内容就不再讲解了</p>
+<h3 id="2-拦截URL"><a href="#2-拦截URL" class="headerlink" title="2. 拦截URL"></a>2. 拦截URL</h3><p>使用WKNavigationDelegate中的代理方法，拦截自定义的URL来实现 JS 调用 Swift 方法, 这里和UIWebView拦截 URL 一样</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">webView</span><span class="params">(<span class="number">_</span> webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping <span class="params">(WKNavigationActionPolicy)</span></span></span> -&gt; <span class="type">Void</span>) &#123;</div><div class="line">    <span class="keyword">if</span> navigationAction.request.url?.scheme == <span class="string">"haleyaction"</span> &#123;</div><div class="line">        <span class="keyword">let</span> url = navigationAction.request.url</div><div class="line">        handleCustomAction(url: url!)</div><div class="line">        decisionHandler(<span class="type">WKNavigationActionPolicy</span>.cancel)</div><div class="line">        <span class="keyword">return</span></div><div class="line">    &#125;</div><div class="line">    decisionHandler(<span class="type">WKNavigationActionPolicy</span>.allow)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：如果实现了这个代理方法，就必须得调用 decisionHandler 这个block，否则会导致 App 崩溃, block参数是个枚举类型，<code>WKNavigationActionPolicy.cancel</code>代表取消加载，相当于UIWebView 的代理方法return false 的情况；<br> <code>WKNavigationActionPolicy.allow</code> 代表允许加载，相当于UIWebView的代理方法中 return true 的情况</p>
+</blockquote>
+<p>然后根据不同 host 执行不同的 Native 代码，这和 UIWebView 一样</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">handleCustomAction</span><span class="params">(url:URL)</span></span> &#123;</div><div class="line">        <span class="keyword">let</span> host = url.host!</div><div class="line">        <span class="keyword">switch</span> host &#123;</div><div class="line">        <span class="keyword">case</span> <span class="string">"scanClick"</span>:</div><div class="line">            <span class="built_in">print</span>(<span class="string">"saoyisao"</span>)</div><div class="line">        <span class="keyword">case</span> <span class="string">"shareClick"</span>:</div><div class="line">            share(url: url)</div><div class="line">        <span class="keyword">case</span> <span class="string">"getLocation"</span>:</div><div class="line">            getLocation()</div><div class="line">        <span class="keyword">case</span> <span class="string">"setColor"</span>:</div><div class="line">            changeBackGroundColor(url: url)</div><div class="line">        <span class="keyword">case</span> <span class="string">"payAction"</span>:</div><div class="line">            payAction(url: url)</div><div class="line">        <span class="keyword">case</span> <span class="string">"shake"</span>:</div><div class="line">            sharkeAction()</div><div class="line">        <span class="keyword">case</span> <span class="string">"back"</span>:</div><div class="line">            goBack()</div><div class="line">        <span class="keyword">default</span>:</div><div class="line">            <span class="keyword">break</span></div><div class="line">        &#125; </div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<h3 id="3-JS和Swift的相互调用"><a href="#3-JS和Swift的相互调用" class="headerlink" title="3. JS和Swift的相互调用"></a>3. JS和Swift的相互调用</h3><p>JS调用Swift的原生方法，并且将结果返回给JS，这里的实现和 UIWebView 一样，WKWebView 提供了一个新的方法<code>evaluateJavaScript:completionHandler:</code> 实现Swift 调用 JS 的场景</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">getLocation</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="comment">//获取位置信息</span></div><div class="line">    <span class="comment">//将获取的位置信息回调到js</span></div><div class="line">    <span class="keyword">let</span> jsStr = <span class="string">"setLocation('广东省深圳市南山区')"</span></div><div class="line">    <span class="comment">//WKWebView 提供了一个新的方法evaluateJavaScript:completionHandler:，实现原生 调用JS 等场景。</span></div><div class="line">    <span class="keyword">self</span>.wkWebView?.evaluateJavaScript(jsStr, completionHandler: &#123; (result, error) <span class="keyword">in</span></div><div class="line">	    <span class="built_in">print</span>(<span class="string">"result:\(String(describing: result)) error:\(String(describing: error))"</span>)</div><div class="line">    &#125;) </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>evaluateJavaScript:completionHandler:</code> 没有返回值，JS 执行成功还是失败会在completionHandler 中返回，所以使用这个API 就可以避免执行耗时的JS，或者 alert 导致界面卡住的问题</p>
+<p>其他JS和Swift的相互调用和UIWebView一样</p>
+<h3 id="4-WKWebView中使用弹窗注意"><a href="#4-WKWebView中使用弹窗注意" class="headerlink" title="4.WKWebView中使用弹窗注意"></a>4.WKWebView中使用弹窗注意</h3><p>在上面提到，如果在 WKWebView 中使用alert、confirm 等弹窗，就得实现WKWebView的WKUIDelegate中相应的代理方法，如果我们在JS中要显示 alert 弹窗，就必须实现如下代理方法，否则 alert 并不会弹出</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//MARK: -  WKUIDelegate</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">webView</span><span class="params">(<span class="number">_</span> webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping <span class="params">()</span></span></span> -&gt; <span class="type">Void</span>) &#123;</div><div class="line">                </div><div class="line">    <span class="keyword">let</span> alert = <span class="type">UIAlertController</span>(title: <span class="string">"提醒"</span>, message: message, preferredStyle: .alert)</div><div class="line">    <span class="keyword">let</span> action = <span class="type">UIAlertAction</span>(title: <span class="string">"知道了"</span>, style:</div><div class="line">        .cancel) &#123; (action) <span class="keyword">in</span></div><div class="line">            completionHandler()</div><div class="line">    &#125;</div><div class="line">    alert.addAction(action)</div><div class="line">    present(alert, animated: <span class="literal">true</span>, completion: <span class="literal">nil</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>其中<code>completionHandler</code>这个block 一定得调用，至于在哪里调用，倒是无所谓，我们也可以写在方法实现的第一行，或者最后一行.</p>
+<p>原文地址： <a href="http://www.jianshu.com/p/99c3af6894f4" target="_blank" rel="external">iOS下 JS 与 OC 互相调用（二）–WKWebView 拦截URL</a> </p>
+<p>原文是讨论 OC 与 JS 的交互，我按照作者的思路，用 Swift 实现 Native 与 JS 的交互，这是 <a href="https://github.com/shuishangshu/JavaScript_Swift" target="_blank" rel="external">代码地址</a></p>
+<p><strong>本人刚开始写博客，技术一般，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能帮到别人也是荣幸之至！如有错误，欢迎各位指正！</strong></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+            <a href="/tags/Swift/" rel="tag"># Swift</a>
+          
+            <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/12/iOS下JS与Swift互相调用（一）UIWebView拦截URL/" rel="next" title="iOS下JS与Swift互相调用（一）UIWebView拦截URL">
+                <i class="fa fa-chevron-left"></i> iOS下JS与Swift互相调用（一）UIWebView拦截URL
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/14/利用Github分支备份Hexo源码和配置/" rel="prev" title="利用Github分支备份Hexo博客源文件">
+                利用Github分支备份Hexo博客源文件 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Xiaovv" />
+          <p class="site-author-name" itemprop="name">Xiaovv</p>
+           
+              <p class="site-description motion-element" itemprop="description">以绝大多数人的努力程度之低，根本轮不到去拼天赋</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-创建-WKWebView，加载本地-HTML"><span class="nav-number">1.</span> <span class="nav-text">1.创建 WKWebView，加载本地 HTML</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-拦截URL"><span class="nav-number">2.</span> <span class="nav-text">2. 拦截URL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-JS和Swift的相互调用"><span class="nav-number">3.</span> <span class="nav-text">3. JS和Swift的相互调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-WKWebView中使用弹窗注意"><span class="nav-number">4.</span> <span class="nav-text">4.WKWebView中使用弹窗注意</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaovv</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

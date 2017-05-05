@@ -1,0 +1,726 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS,Swift,JavaScript," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="iOS 原生与 JavaScript 的交互方式很多，目前我知道的大概有以下几种：  在JS 中做一次URL跳转，然后再拦截跳转（这里分为UIWebView 和 WKWebView两种）  利用WKWebView 的MessageHandler  利用系统库JavaScriptCore（iOS7 推出的）  利用第三方库WebViewJavascriptBridge  利用第三方cordova库，">
+<meta name="keywords" content="iOS,Swift,JavaScript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS下JS与Swift互相调用（一）UIWebView拦截URL">
+<meta property="og:url" content="http://yoursite.com/2017/04/12/iOS下JS与Swift互相调用（一）UIWebView拦截URL/index.html">
+<meta property="og:site_name" content="笑忘书店">
+<meta property="og:description" content="iOS 原生与 JavaScript 的交互方式很多，目前我知道的大概有以下几种：  在JS 中做一次URL跳转，然后再拦截跳转（这里分为UIWebView 和 WKWebView两种）  利用WKWebView 的MessageHandler  利用系统库JavaScriptCore（iOS7 推出的）  利用第三方库WebViewJavascriptBridge  利用第三方cordova库，">
+<meta property="og:updated_time" content="2017-04-24T10:46:52.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS下JS与Swift互相调用（一）UIWebView拦截URL">
+<meta name="twitter:description" content="iOS 原生与 JavaScript 的交互方式很多，目前我知道的大概有以下几种：  在JS 中做一次URL跳转，然后再拦截跳转（这里分为UIWebView 和 WKWebView两种）  利用WKWebView 的MessageHandler  利用系统库JavaScriptCore（iOS7 推出的）  利用第三方库WebViewJavascriptBridge  利用第三方cordova库，">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/04/12/iOS下JS与Swift互相调用（一）UIWebView拦截URL/"/>
+
+
+
+
+
+  <title> iOS下JS与Swift互相调用（一）UIWebView拦截URL | 笑忘书店 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笑忘书店</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/12/iOS下JS与Swift互相调用（一）UIWebView拦截URL/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaovv">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笑忘书店">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS下JS与Swift互相调用（一）UIWebView拦截URL
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-12T18:04:15+08:00">
+                2017-04-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>iOS 原生与 JavaScript 的交互方式很多，目前我知道的大概有以下几种：</p>
+<ul>
+<li><p>在JS 中做一次URL跳转，然后再拦截跳转（这里分为UIWebView 和 WKWebView两种）</p>
+</li>
+<li><p>利用WKWebView 的MessageHandler</p>
+</li>
+<li><p>利用系统库JavaScriptCore（iOS7 推出的）</p>
+</li>
+<li><p>利用第三方库WebViewJavascriptBridge</p>
+</li>
+<li><p>利用第三方cordova库，以前叫PhoneGap</p>
+</li>
+<li><p>现在最热门的React Native</p>
+</li>
+</ul>
+<p>这篇文章主要是介绍 UIWebView 拦截 URL 的方式与 JS 交互，如果 iOS 与原生的交互比较少或者简单，完全可以使用这种方式</p>
+<h3 id="1-创建UIWebView，并加载本地HTML"><a href="#1-创建UIWebView，并加载本地HTML" class="headerlink" title="1. 创建UIWebView，并加载本地HTML"></a>1. 创建UIWebView，并加载本地HTML</h3><p>为了测试方便，这里是从本地加载HTML文件，真实情况肯定是从网络加载HTML网页 </p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">setupWebView</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">self</span>.webView = <span class="type">UIWebView</span>(frame: <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: <span class="type">UIScreen</span>.main.bounds.size.width, height: <span class="type">UIScreen</span>.main.bounds.size.height))</div><div class="line">    <span class="keyword">self</span>.webView?.delegate = <span class="keyword">self</span></div><div class="line">    </div><div class="line">    <span class="comment">// 取消不想要webView 的回弹效果</span></div><div class="line">    <span class="keyword">self</span>.webView?.scrollView.bounces = <span class="literal">false</span></div><div class="line">    </div><div class="line">    <span class="comment">// UIWebView 滚动的比较慢，这里设置为正常速度</span></div><div class="line">    <span class="keyword">self</span>.webView?.scrollView.decelerationRate = <span class="type">UIScrollViewDecelerationRateNormal</span></div><div class="line">    <span class="keyword">let</span> url = <span class="type">Bundle</span>.main.url(forResource: <span class="string">"index.html"</span>, withExtension: <span class="literal">nil</span>)</div><div class="line">    <span class="keyword">let</span> request = <span class="type">NSURLRequest</span>(url: url!)</div><div class="line">    <span class="keyword">self</span>.webView?.loadRequest(request <span class="keyword">as</span> <span class="type">URLRequest</span>)</div><div class="line">    <span class="keyword">self</span>.view.addSubview(<span class="keyword">self</span>.webView!)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>本地的HTML文件里面定义了一些按钮，来触发调用原生的方法，然后再将执行结果回调到JS里</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"扫一扫"</span> <span class="attr">onclick</span>=<span class="string">"scanClick()"</span> /&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"获取定位"</span> <span class="attr">onclick</span>=<span class="string">"locationClick()"</span> /&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"修改背景色"</span> <span class="attr">onclick</span>=<span class="string">"colorClick()"</span> /&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"分享"</span> <span class="attr">onclick</span>=<span class="string">"shareClick()"</span> /&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"支付"</span> <span class="attr">onclick</span>=<span class="string">"payClick()"</span> /&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"摇一摇"</span> <span class="attr">onclick</span>=<span class="string">"shake()"</span> /&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"返回"</span> <span class="attr">onclick</span>=<span class="string">"goBack()"</span> /&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"百度"</span> <span class="attr">src</span> = <span class="string">"https://www.badu.com"</span> /&gt;</span></div></pre></td></tr></table></figure>
+<p>下面是部分JS代码</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">loadURL</span>(<span class="params">url</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> iFrame;</div><div class="line">    iFrame = <span class="built_in">document</span>.createElement(<span class="string">"iframe"</span>);</div><div class="line">    iFrame.setAttribute(<span class="string">"src"</span>, url);</div><div class="line">    iFrame.setAttribute(<span class="string">"style"</span>, <span class="string">"display:none;"</span>);</div><div class="line">    iFrame.setAttribute(<span class="string">"height"</span>, <span class="string">"0px"</span>);</div><div class="line">    iFrame.setAttribute(<span class="string">"width"</span>, <span class="string">"0px"</span>);</div><div class="line">    iFrame.setAttribute(<span class="string">"frameborder"</span>, <span class="string">"0"</span>);</div><div class="line">    <span class="built_in">document</span>.body.appendChild(iFrame);</div><div class="line">    <span class="comment">// 发起请求后这个iFrame就没用了，所以把它从dom上移除掉</span></div><div class="line">    iFrame.parentNode.removeChild(iFrame);</div><div class="line">    iFrame = <span class="literal">null</span>;</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">scanClick</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    alert(arr);</div><div class="line">    loadURL(<span class="string">"haleyAction://scanClick"</span>);</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">shareClick</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    loadURL(<span class="string">"haleyAction://shareClick?title=测试分享的标题&amp;content=测试分享的内容&amp;url=http://www.baidu.com"</span>);</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">locationClick</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    loadURL(<span class="string">"haleyAction://getLocation"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>JS代码解释：</p>
+<blockquote>
+<ol>
+<li><p>为什么自定义一个loadURL 方法，不直接使用window.location.href?</p>
+<p>答：因为如果当前网页正使用window.location.href加载网页的同时，调用window.location.href去调用OC原生方法，会导致加载网页的操作被取消掉<br> 同样的，如果连续使用window.location.href执行两次OC原生调用，也有可能导致第一次的操作被取消掉。所以我们使用自定义的loadURL，来避免这个问题<br> loadURL的实现来自关于UIWebView和PhoneGap的总结一文</p>
+</li>
+<li><p>为什么loadURL 中的链接，使用统一的scheme?</p>
+<p>答:便于在OC 中做拦截处理，减少在JS中调用一些OC 没有实现的方法时，webView 做跳转。因为我在OC 中拦截URL 时，根据scheme (即haleyAction)来区分是调用原生的方法还是正常的网页跳转。然后根据host（即//后的部分getLocation）来区分执行什么操作。</p>
+</li>
+<li><p>为什么自定义一个asyncAlert方法？</p>
+<p>答：因为有的JS调用是需要OC 返回结果到JS的。stringByEvaluatingJavaScriptFromString是一个同步方法，会等待js 方法执行完成，而弹出的alert 也会阻塞界面等待用户响应，所以他们可能会造成死锁。导致alert 卡死界面。如果回调的JS 是一个耗时的操作，那么建议将耗时的操作也放入setTimeout的function 中</p>
+</li>
+</ol>
+</blockquote>
+<h3 id="2-拦截URL"><a href="#2-拦截URL" class="headerlink" title="2. 拦截URL"></a>2. 拦截URL</h3><p>在UIWebView的代理方法，可以拦截到每一个链接的Request，返回 true，webView 就会加载这个链接；返回 false，webView 就不会加载这个链接，我们就在这个拦截URL的代理方法中通过 scheme 处理自己定义的URL</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//MARK: - UIWebViewDelegate</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">webView</span><span class="params">(<span class="number">_</span> webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType)</span></span> -&gt; <span class="type">Bool</span> &#123;</div><div class="line">        <span class="keyword">let</span> url = request.url</div><div class="line">        <span class="keyword">if</span> url?.scheme == <span class="string">"haleyaction"</span> &#123;</div><div class="line">            handleCustomAction(url: url!)</div><div class="line">            <span class="keyword">return</span> <span class="literal">false</span></div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="literal">true</span></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>然后根据不同 host 执行不同的 Native 代码</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">handleCustomAction</span><span class="params">(url:URL)</span></span> &#123;</div><div class="line">        <span class="keyword">let</span> host = url.host!</div><div class="line">        <span class="keyword">switch</span> host &#123;</div><div class="line">        <span class="keyword">case</span> <span class="string">"scanClick"</span>:</div><div class="line">            <span class="built_in">print</span>(<span class="string">"saoyisao"</span>)</div><div class="line">        <span class="keyword">case</span> <span class="string">"shareClick"</span>:</div><div class="line">            share(url: url)</div><div class="line">        <span class="keyword">case</span> <span class="string">"getLocation"</span>:</div><div class="line">            getLocation()</div><div class="line">        <span class="keyword">case</span> <span class="string">"setColor"</span>:</div><div class="line">            changeBackGroundColor(url: url)</div><div class="line">        <span class="keyword">case</span> <span class="string">"payAction"</span>:</div><div class="line">            payAction(url: url)</div><div class="line">        <span class="keyword">case</span> <span class="string">"shake"</span>:</div><div class="line">            sharkeAction()</div><div class="line">        <span class="keyword">case</span> <span class="string">"back"</span>:</div><div class="line">            goBack()</div><div class="line">        <span class="keyword">default</span>:</div><div class="line">            <span class="keyword">break</span></div><div class="line">        &#125; </div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<h3 id="3-JS和Swift的相互调用"><a href="#3-JS和Swift的相互调用" class="headerlink" title="3. JS和Swift的相互调用"></a>3. JS和Swift的相互调用</h3><p>JS调用Swift的原生方法，并且将结果返回给JS:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//将swift的内容回调到JS中</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">getLocation</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="comment">//获取位置信息</span></div><div class="line">    <span class="comment">//将获取的位置信息回调到js</span></div><div class="line">    <span class="keyword">let</span> jsStr = <span class="string">"setLocation('广东省深圳市南山区')"</span></div><div class="line">    <span class="keyword">self</span>.webView?.stringByEvaluatingJavaScript(from: jsStr)  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>有时候我们在JS中调用Swift方法的时候，也需要传参数到Swift中，怎么传呢？JS自定义的URL就像一个 get 请求一样，把参数放在后面：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">shareClick</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    loadURL(<span class="string">"haleyAction://shareClick?title=测试分享的标题&amp;content=测试分享的内容&amp;url=http://www.baidu.com"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>所有的参数都在URL的query中，获取这些参数需要先通过&amp;将字符串拆分，在通过=把参数拆分成key 和实际的值：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//用js把参数传给swift</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">share</span><span class="params">(url: URL)</span></span> &#123;</div><div class="line">    <span class="keyword">let</span> params = url.query?.removingPercentEncoding?.components(separatedBy: <span class="string">"&amp;"</span>)</div><div class="line">    <span class="keyword">var</span> paramDic = [<span class="type">String</span>: <span class="type">String</span>]()</div><div class="line">    <span class="keyword">for</span> paramStr <span class="keyword">in</span> params! &#123;</div><div class="line">        <span class="keyword">let</span> arr = paramStr.components(separatedBy: <span class="string">"="</span>)</div><div class="line">        <span class="keyword">if</span> arr.<span class="built_in">count</span> &gt; <span class="number">1</span> &#123;</div><div class="line">            paramDic[arr[<span class="number">0</span>]] = <span class="type">String</span>.<span class="keyword">init</span>(arr[<span class="number">1</span>].utf8)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">let</span> title = paramDic[<span class="string">"title"</span>] ?? <span class="string">""</span></div><div class="line">    <span class="keyword">let</span> content = paramDic[<span class="string">"content"</span>] ?? <span class="string">""</span></div><div class="line">    <span class="keyword">let</span> shareUrl = paramDic[<span class="string">"url"</span>] ?? <span class="string">""</span></div><div class="line">    </div><div class="line">    <span class="comment">// 在这里执行分享的操作</span></div><div class="line">    </div><div class="line">    <span class="comment">// 将分享结果返回给js</span></div><div class="line">    <span class="keyword">let</span> jsStr = <span class="string">"shareResult('\(title)','\(content)','\(shareUrl)')"</span></div><div class="line">    <span class="keyword">self</span>.webView?.stringByEvaluatingJavaScript(from: jsStr) </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="3-Swift调用JS注意"><a href="#3-Swift调用JS注意" class="headerlink" title="3. Swift调用JS注意"></a>3. Swift调用JS注意</h3><p>将Swift执行结果返回给JS 需要注意:</p>
+<blockquote>
+<p>如果回调执行的JS 方法带参数，而参数不是字符串时，不要加单引号,否则可能导致调用JS 方法失败。比如我这样的：</p>
+</blockquote>
+<p>另外，利用<code>webView.stringByEvaluatingJavaScript(from: &quot;var arr = [3, 4, &#39;abc&#39;]&quot;)</code>,可以往HMTL的JS环境中插入全局变量、JS方法等</p>
+<p>原文地址： <a href="http://www.jianshu.com/p/7151987f012d" target="_blank" rel="external">iOS下 JS 与 OC 互相调用（一）–UIWebView 拦截URL</a> </p>
+<p>原文是讨论 OC 与 JS 的交互，我按照作者的思路，用 Swift 实现 Native 与 JS 的交互，这是 <a href="https://github.com/shuishangshu/JavaScript_Swift" target="_blank" rel="external">代码地址</a></p>
+<p><strong>本人刚开始写博客，技术一般，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能帮到别人也是荣幸之至！如有错误，欢迎各位指正！</strong></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+            <a href="/tags/Swift/" rel="tag"># Swift</a>
+          
+            <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/06/GitHub配置SSH-key/" rel="next" title="GitHub配置SSH key">
+                <i class="fa fa-chevron-left"></i> GitHub配置SSH key
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/13/iOS下JS与Swift互相调用（二）WKWebView拦截URL/" rel="prev" title="iOS下JS与Swift互相调用（二）WKWebView拦截URL">
+                iOS下JS与Swift互相调用（二）WKWebView拦截URL <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Xiaovv" />
+          <p class="site-author-name" itemprop="name">Xiaovv</p>
+           
+              <p class="site-description motion-element" itemprop="description">以绝大多数人的努力程度之低，根本轮不到去拼天赋</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-创建UIWebView，并加载本地HTML"><span class="nav-number">1.</span> <span class="nav-text">1. 创建UIWebView，并加载本地HTML</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-拦截URL"><span class="nav-number">2.</span> <span class="nav-text">2. 拦截URL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-JS和Swift的相互调用"><span class="nav-number">3.</span> <span class="nav-text">3. JS和Swift的相互调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Swift调用JS注意"><span class="nav-number">4.</span> <span class="nav-text">3. Swift调用JS注意</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaovv</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

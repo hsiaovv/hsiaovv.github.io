@@ -1,0 +1,795 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS,Swift,JavaScript," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="这篇文章讲一下 JavaScriptCore，它是从 iOS7 开始加入的，这个框架其实只是基于 webkit 中以 C/C++ 实现的JavaScriptCore的一个包装，该框架让Objective-C、Swift 和 JavaScript 代码直接的交互变得更加的简单方便 关于 JavaScriptCore 的使用可以先看这两篇文章： NSHipster 中文版的 Java​Script​C">
+<meta name="keywords" content="iOS,Swift,JavaScript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS下JS与Swift互相调用（四）JavaScriptCore">
+<meta property="og:url" content="http://yoursite.com/2017/04/15/iOS下JS与Swift互相调用（四）JavaScriptCore/index.html">
+<meta property="og:site_name" content="笑忘书店">
+<meta property="og:description" content="这篇文章讲一下 JavaScriptCore，它是从 iOS7 开始加入的，这个框架其实只是基于 webkit 中以 C/C++ 实现的JavaScriptCore的一个包装，该框架让Objective-C、Swift 和 JavaScript 代码直接的交互变得更加的简单方便 关于 JavaScriptCore 的使用可以先看这两篇文章： NSHipster 中文版的 Java​Script​C">
+<meta property="og:updated_time" content="2017-04-24T10:46:37.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS下JS与Swift互相调用（四）JavaScriptCore">
+<meta name="twitter:description" content="这篇文章讲一下 JavaScriptCore，它是从 iOS7 开始加入的，这个框架其实只是基于 webkit 中以 C/C++ 实现的JavaScriptCore的一个包装，该框架让Objective-C、Swift 和 JavaScript 代码直接的交互变得更加的简单方便 关于 JavaScriptCore 的使用可以先看这两篇文章： NSHipster 中文版的 Java​Script​C">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/04/15/iOS下JS与Swift互相调用（四）JavaScriptCore/"/>
+
+
+
+
+
+  <title> iOS下JS与Swift互相调用（四）JavaScriptCore | 笑忘书店 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笑忘书店</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/15/iOS下JS与Swift互相调用（四）JavaScriptCore/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaovv">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笑忘书店">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS下JS与Swift互相调用（四）JavaScriptCore
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-15T10:52:25+08:00">
+                2017-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这篇文章讲一下 JavaScriptCore，它是从 iOS7 开始加入的，这个框架其实只是基于 webkit 中以 C/C++ 实现的JavaScriptCore的一个包装，该框架让Objective-C、Swift 和 JavaScript 代码直接的交互变得更加的简单方便</p>
+<p>关于 JavaScriptCore 的使用可以先看这两篇文章：</p>
+<p><a href="http://nshipster.cn/javascriptcore/" target="_blank" rel="external">NSHipster 中文版的 Java​Script​Core </a> </p>
+<p><a href="http://blog.iderzheng.com/introduction-to-ios7-javascriptcore-framework/" target="_blank" rel="external"> iOS7 新 JavaScriptCore 框架入门介绍</a> </p>
+<p>看了上面两篇文章应该对 JavaScriptCore 有了基本的了解 </p>
+<h3 id="1、简要介绍JavaScriptCore"><a href="#1、简要介绍JavaScriptCore" class="headerlink" title="1、简要介绍JavaScriptCore"></a>1、简要介绍JavaScriptCore</h3><p>使用 JavaScriptCore 需要先导入框架 <code>import JavaScriptCore</code> ，<code>JavaScriptCore</code> 主要有五个类：</p>
+<ul>
+<li>JSContext</li>
+<li>JSValue</li>
+<li>JSManagedValue</li>
+<li>JSVirtualMachine</li>
+<li>JSExport</li>
+</ul>
+<h4 id="1-1-JSVirtualMachine"><a href="#1-1-JSVirtualMachine" class="headerlink" title="1.1 JSVirtualMachine"></a>1.1 JSVirtualMachine</h4><p><code>JSVirtualMachine</code> 看名字直译是 JS 虚拟机，也就是说JavaScript是在一个虚拟的环境中执行，而 <code>JSVirtualMachine</code> 为其执行提供底层资源:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*@interface</span></div><div class="line">@discussion An instance of JSVirtualMachine represents a single JavaScript "object space" or set of execution resources. Thread safety is supported by locking the virtual machine, with concurrent JavaScript execution supported by allocating separate instances of JSVirtualMachine. */</div><div class="line"><span class="type">NS_CLASS_AVAILABLE</span>(<span class="number">10_9</span>, <span class="number">7_0</span>)</div><div class="line">@interface <span class="type">JSVirtualMachine</span> : <span class="type">NSObject</span></div></pre></td></tr></table></figure>
+<p>一个 <code>JSVirtualMachine</code> 实例，代表一个独立的 <code>JavaScript</code> 对象空间，并为其执行提供资源，它通过加锁虚拟机，保证 <code>JSVirtualMachine</code>是线程安全的，如果要并发执行 <code>JavaScript</code>，那我们必须创建多个独立的 <code>JSVirtualMachine</code> 实例，在不同的实例中执行 <code>JavaScript</code></p>
+<p>通过 <code>alloc/init</code> 就可以创建一个新的 <code>JSVirtualMachine</code> 对象，但是我们一般不用新建 <code>JSVirtualMachine</code> 对象，因为创建 <code>JSContext</code> 时，如果我们不提供一个特性的 <code>JSVirtualMachine</code>，内部会自动创建一个 <code>JSVirtualMachine</code> 对象</p>
+<h4 id="1-2-JSContext和JSValue"><a href="#1-2-JSContext和JSValue" class="headerlink" title="1.2 JSContext和JSValue"></a>1.2 JSContext和JSValue</h4><p><code>JSVirtualMachine</code> 为 <code>JavaScript</code> 的运行提供了底层资源，<code>JSContext</code> 就为其提供着运行环境，<code>JSContext</code> 也管理 <code>JSVirtualMachine</code> 中对象的生命周期。每一个 <code>JSValue</code> 对象都要强引用关联一个 <code>JSContext</code>，当与某 <code>JSContext</code> 对象关联的所有 <code>JSValue</code> 释放后，<code>JSContext</code>也会被释放</p>
+<p>创建一个JSContext对象的方式下面三种：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 1.这种方式需要传入一个JSVirtualMachine对象，如果传nil，会导致应用崩溃的</span></div><div class="line"><span class="keyword">let</span> <span class="type">JSVM</span> = <span class="type">JSVirtualMachine</span>()</div><div class="line"><span class="keyword">let</span> <span class="type">JSCtx1</span> = <span class="type">JSContext</span>(virtualMachine: <span class="type">JSVM</span>)</div><div class="line"></div><div class="line"><span class="comment">// 2.这种方式，内部会自动创建一个JSVirtualMachine对象，可以通过JSCtx.virtualMachine</span></div><div class="line"><span class="comment">// 看其是否创建了一个JSVirtualMachine对象。</span></div><div class="line"><span class="keyword">let</span> <span class="type">JSCtx2</span> = <span class="type">JSContext</span>()</div><div class="line"></div><div class="line"><span class="comment">// 3. 通过webView的获取JSContext。</span></div><div class="line"><span class="keyword">let</span> context = <span class="keyword">self</span>.webView?.value(forKeyPath: <span class="string">"documentView.webView.mainFrame.javaScriptContext"</span>)</div></pre></td></tr></table></figure>
+<p>本文使用方式3来创建JSContext</p>
+<p>JSValue 包括一系列方法用于访问其可能的值以保证有正确的 Foundation 类型，包括：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">JavaScript Type</th>
+<th style="text-align:center">JSValue method</th>
+<th style="text-align:center">Objective-C Type</th>
+<th style="text-align:center">Swift Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">boolean</td>
+<td style="text-align:center">toBool</td>
+<td style="text-align:center">BOOL</td>
+<td style="text-align:center">Bool</td>
+</tr>
+<tr>
+<td style="text-align:center">number</td>
+<td style="text-align:center">toNumber</td>
+<td style="text-align:center">NSNumber</td>
+<td style="text-align:center">NSNumber!</td>
+</tr>
+<tr>
+<td style="text-align:center">Date</td>
+<td style="text-align:center">toDate</td>
+<td style="text-align:center">NSDate</td>
+<td style="text-align:center">NSDate!</td>
+</tr>
+<tr>
+<td style="text-align:center">Array</td>
+<td style="text-align:center">toArray</td>
+<td style="text-align:center">NSArray</td>
+<td style="text-align:center">[AnyObject]!</td>
+</tr>
+<tr>
+<td style="text-align:center">Object</td>
+<td style="text-align:center">toDictionary</td>
+<td style="text-align:center">NSDictionary</td>
+<td style="text-align:center">[NSObject : AnyObject]!</td>
+</tr>
+<tr>
+<td style="text-align:center">Object</td>
+<td style="text-align:center">toObject</td>
+<td style="text-align:center">custom type</td>
+<td style="text-align:center">custom type</td>
+</tr>
+</tbody>
+</table>
+<h4 id="1-3-JSManagedValue"><a href="#1-3-JSManagedValue" class="headerlink" title="1.3 JSManagedValue"></a>1.3 JSManagedValue</h4><p><code>JSManagedValue</code> 主要用途是解决 <code>JSValue</code> 对象在堆上的安全引用问题，把<code>JSValue</code> 保存进堆对象中是不正确的，这很容易引发循环引用，而导致JSContext不能释放，这个类主要是将JSValue对象转换为JSManagedValue的API，而且也不常用，就不做具体介绍了</p>
+<h4 id="1-4-JSExport"><a href="#1-4-JSExport" class="headerlink" title="1.4 JSExport"></a>1.4 JSExport</h4><p><code>JSExport</code> 是一个协议类，但是该协议并没有任何属性和方法，我们可以自定义一个协议类，继承自<code>JSExport</code> 无论我们在JSExport里声明的属性，实例方法还是类方法，继承的协议都会自动的提供给任何 <code>JavaScript</code> 代码，我们只需要在自定义的协议类中，添加上属性和方法就可以了</p>
+<h3 id="2-使用-JavaScriptCore-实现-JS-与-Swift-互调"><a href="#2-使用-JavaScriptCore-实现-JS-与-Swift-互调" class="headerlink" title="2 使用 JavaScriptCore 实现 JS 与 Swift 互调"></a>2 使用 JavaScriptCore 实现 JS 与 Swift 互调</h3><h4 id="2-1-创建-UIWebView，并加载本地HTML"><a href="#2-1-创建-UIWebView，并加载本地HTML" class="headerlink" title="2.1 创建 UIWebView，并加载本地HTML"></a>2.1 创建 UIWebView，并加载本地HTML</h4><p>这部分和之前的 <a href="https://shuishangshu.github.io/2017/04/12/iOS%E4%B8%8BJS%E4%B8%8ESwift%E4%BA%92%E7%9B%B8%E8%B0%83%E7%94%A8%EF%BC%88%E4%B8%80%EF%BC%89UIWebView%E6%8B%A6%E6%88%AAURL/" target="_blank" rel="external">iOS下JS与Swift互相调用（一）UIWebView拦截URL</a> 一样:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">setupWebView</span><span class="params">()</span></span> &#123;   </div><div class="line">    <span class="keyword">self</span>.webView = <span class="type">UIWebView</span>(frame: <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: <span class="type">UIScreen</span>.main.bounds.size.width, height: <span class="type">UIScreen</span>.main.bounds.size.height))</div><div class="line">    <span class="keyword">self</span>.webView?.delegate = <span class="keyword">self</span></div><div class="line">    <span class="comment">// 取消不想要webView 的回弹效果</span></div><div class="line">    <span class="keyword">self</span>.webView?.scrollView.bounces = <span class="literal">false</span></div><div class="line">    <span class="comment">// UIWebView 滚动的比较慢，这里设置为正常速度</span></div><div class="line">    <span class="keyword">self</span>.webView?.scrollView.decelerationRate = <span class="type">UIScrollViewDecelerationRateNormal</span></div><div class="line">    <span class="keyword">let</span> url = <span class="type">Bundle</span>.main.url(forResource: <span class="string">"index.html"</span>, withExtension: <span class="literal">nil</span>)</div><div class="line">    <span class="keyword">let</span> request = <span class="type">NSURLRequest</span>(url: url!)</div><div class="line">    <span class="keyword">self</span>.webView?.loadRequest(request <span class="keyword">as</span> <span class="type">URLRequest</span>)</div><div class="line">    <span class="keyword">self</span>.view.addSubview(<span class="keyword">self</span>.webView!)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>HTML 的内容也大致一样，不过 JS 的调用有些区别:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>这是按钮调用<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></div><div class="line">   <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"扫一扫"</span> <span class="attr">onclick</span>=<span class="string">"JavaScriptCoreBridge.scanClick()"</span> /&gt;</span></div><div class="line">   <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"获取定位"</span> <span class="attr">onclick</span>=<span class="string">"JavaScriptCoreBridge.locationClick()"</span> /&gt;</span></div><div class="line">   <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"修改背景色"</span> <span class="attr">onclick</span>=<span class="string">"colorClick()"</span> /&gt;</span></div><div class="line">   <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"分享"</span> <span class="attr">onclick</span>=<span class="string">"shareClick()"</span> /&gt;</span></div><div class="line">   <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"支付"</span> <span class="attr">onclick</span>=<span class="string">"payClick()"</span> /&gt;</span></div><div class="line">   <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"摇一摇"</span> <span class="attr">onclick</span>=<span class="string">"JavaScriptCoreBridge.shake()"</span> /&gt;</span></div><div class="line">   <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"返回"</span> <span class="attr">onclick</span>=<span class="string">"JavaScriptCoreBridge.goBack()"</span> /&gt;</span></div><div class="line">   <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"输出arr"</span> <span class="attr">onclick</span>=<span class="string">"showArr()"</span> /&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>这是文件上传<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> shareClick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    JavaScriptCoreBridge.shareContentUrl(<span class="string">'测试分享的标题'</span>,<span class="string">'测试分享的内容'</span>,<span class="string">'http://www.baidu.com'</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">setLocation</span>(<span class="params">location</span>) </span>&#123;</div><div class="line">    asyncAlert(location);</div><div class="line">    <span class="built_in">document</span>.getElementById(<span class="string">"returnValue"</span>).value = location;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">getQRCode</span>(<span class="params">result</span>) </span>&#123;</div><div class="line">    asyncAlert(result);</div><div class="line">    <span class="built_in">document</span>.getElementById(<span class="string">"returnValue"</span>).value = result;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">colorClick</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> colorInfo = <span class="built_in">JSON</span>.stringify(&#123;<span class="string">"red"</span>: <span class="string">"67"</span>, <span class="string">"green"</span>: <span class="string">"205"</span>, <span class="string">"blue"</span>: <span class="string">"12"</span>, <span class="string">"alpha"</span>:<span class="string">"0.5"</span>&#125;);</div><div class="line">    JavaScriptCoreBridge.changeColor(colorInfo);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">payClick</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> payInfo = <span class="built_in">JSON</span>.stringify(&#123;<span class="string">"orderNo"</span>: <span class="string">"201511120981234"</span>, <span class="string">"channel"</span>: <span class="string">"wx"</span>, <span class="string">"amount"</span>: <span class="string">"12"</span>, <span class="string">"subject"</span>:<span class="string">"黑色毛衣"</span>&#125;);</div><div class="line">    JavaScriptCoreBridge.pay(payInfo);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>详细请看文章末尾的源码</p>
+<h4 id="2-2-添加-JS-要调用的原生-Swift-方法"><a href="#2-2-添加-JS-要调用的原生-Swift-方法" class="headerlink" title="2.2 添加 JS 要调用的原生 Swift 方法"></a>2.2 添加 JS 要调用的原生 Swift 方法</h4><p>让 <code>JSContext</code> 访问我们的 Swift 代码的方式主要有两种：block 和 JSExport 协议，这里有一个小问题，需要注意：block 方法仅仅适用于 OC 的block，并不适用于 Swift 中的闭包，为了公开闭包，我们将进行如下两步操作:</p>
+<ul>
+<li>使用@convention(block) 属性标记闭包，来建立桥梁成为 OC 中的block</li>
+<li>在映射block到JavaScript方法调用之前，我们需要unsafeBitCast函数将block转成为AnyObject</li>
+</ul>
+<p>本文只讨论 JSExport 协议的方式使用 JavaScriptCore，在 <code>webViewDidFinishLoad</code> 代理方法里面注入一个叫 <code>JavaScriptCoreBridge</code> 的对象，这个对象用来充当原生应用和 Web 页面之间的一个桥梁</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//MARK: - UIWebViewDelegate</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">webViewDidFinishLoad</span><span class="params">(<span class="number">_</span> webView: UIWebView)</span></span> &#123;</div><div class="line">    <span class="keyword">let</span> context = <span class="keyword">self</span>.webView?.value(forKeyPath: <span class="string">"documentView.webView.mainFrame.javaScriptContext"</span>) <span class="keyword">as</span>! <span class="type">JSContext</span></div><div class="line">    context.setObject(<span class="keyword">self</span>, forKeyedSubscript: <span class="string">"JavaScriptCoreBridge"</span> <span class="keyword">as</span> <span class="type">NSCopying</span> &amp; <span class="type">NSObjectProtocol</span>)</div><div class="line">    context.exceptionHandler = &#123;context, exceptionValue <span class="keyword">in</span></div><div class="line">        <span class="built_in">print</span>(exceptionValue ?? <span class="string">""</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>自定义 <code>SwiftJavaScriptDelegate</code> 协议，而且此协议必须遵守 <code>JSExport</code>协议，自定义协议中的方法就是暴露给 Web 页面的方法，在 webView 加载完毕的时候获取 JS 运行的上下文环境，然后再注入桥梁对象名为<code>JavaScriptCoreBridge</code>，承载的对象为 self 即为此控制器，控制器遵守此自定义协议实现协议中对应的方法， 在 JS 调用完本地应用的方法做完相对应的事情之后，又回调了 JS 中对应的方法，从而实现了 Web 页面和本地应用之间的通讯:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@objc</span> <span class="class"><span class="keyword">protocol</span> <span class="title">SwiftJavaScriptDelegate</span>: <span class="title">JSExport</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">scanClick</span><span class="params">()</span></span></div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">locationClick</span><span class="params">()</span></span></div><div class="line">    <span class="comment">//多参数注意 js里面的方法的写法，需要在方法名里带参数名</span></div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">share</span><span class="params">(<span class="number">_</span> title: String, content: String, url:String)</span></span></div><div class="line">    <span class="comment">//以下两个方法直接从js传json字符串，避免上面的问题</span></div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">changeColor</span><span class="params">(<span class="number">_</span> colorInfo: String)</span></span></div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">pay</span><span class="params">(<span class="number">_</span> payInfo: String)</span></span></div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">shake</span><span class="params">()</span></span></div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">goBack</span><span class="params">()</span></span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>这里有两点需要注意：</p>
+<ul>
+<li><p>自定义协议必须使用 <code>@objc</code>，因为 <code>JavaScriptCore</code> 库是 Objective C版本的，如果不加 <code>@objc</code>，在 Swift 则调用无效果</p>
+</li>
+<li><p>自定义协议里面的方法，如果是需要传多个参数（大于一个），JS 调用时就要对应的跟上参数的名字,第一个参数名可以省略，什么意思呢？看下面的代码：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 这是协议里面的方法的写法</span></div><div class="line"><span class="comment">//多参数注意 js里面的方法的写法，需要在方法名里带参数名</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">share</span><span class="params">(<span class="number">_</span> title: String, content: String, url:String)</span></span></div><div class="line"> <span class="comment">//这是 JS 里对应方法的写法</span></div><div class="line"><span class="keyword">var</span> shareClick = function () &#123;</div><div class="line">        <span class="type">JavaScriptCoreBridge</span>.shareContentUrl('测试分享的标题','测试分享的内容','http:<span class="comment">//</span></div><div class="line"> www.baidu.com');</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</blockquote>
+<p>上面第二点注意的原因我目前也不清楚，只能这样写才 JS 能顺利的调用 Swift 的方法，所以为了避免这些麻烦，我建议不管多少个参数，都改成传一个 Json 字符串，这样就避免了 JS 里方法的写法问题，demo 里面支付信息有多个参数我就是把多个参数转成一个 Json 字符串传给 Swift :</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">payClick</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> payInfo = <span class="built_in">JSON</span>.stringify(&#123;<span class="string">"orderNo"</span>: <span class="string">"201511120981234"</span>, <span class="string">"channel"</span>: <span class="string">"wx"</span>, <span class="string">"amount"</span>: <span class="string">"12"</span>, <span class="string">"subject"</span>:<span class="string">"黑色毛衣"</span>&#125;);</div><div class="line">    JavaScriptCoreBridge.pay(payInfo);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="2-3-JS-和-Swift-的相互调用"><a href="#2-3-JS-和-Swift-的相互调用" class="headerlink" title="2.3 JS 和 Swift 的相互调用"></a>2.3 JS 和 Swift 的相互调用</h4><p>上面的准备工作完成之后，JS 和 Swift 的相互调用就很简单了，控制器遵守自定义的 <code>SwiftJavaScriptDelegate</code> 的协议，并实现协议里的方法：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">share</span><span class="params">(<span class="number">_</span> title: String, content: String, url: String)</span></span> &#123;</div><div class="line">	<span class="keyword">let</span> jsStr = <span class="string">"shareResult('\(title)', '\(content)', '\(url)')"</span>  </div><div class="line">	<span class="keyword">self</span>.webView?.stringByEvaluatingJavaScript(from: jsStr)</div><div class="line">&#125;  </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">pay</span><span class="params">(<span class="number">_</span> payInfo: String)</span></span> &#123;</div><div class="line">    <span class="keyword">if</span> !payInfo.isEmpty &#123;</div><div class="line">        <span class="keyword">let</span> payInfoData = payInfo.data(using: .utf8)</div><div class="line">        <span class="keyword">if</span> <span class="keyword">let</span> payInfoDic = <span class="keyword">try</span>? <span class="type">JSONSerialization</span>.jsonObject(with: payInfoData!, options: .mutableContainers) <span class="keyword">as</span>! [<span class="type">String</span>: <span class="type">String</span>] &#123;</div><div class="line">            <span class="built_in">print</span>(<span class="string">"支付信息：\(payInfoDic)"</span>)</div><div class="line">            <span class="comment">//self.webView?.stringByEvaluatingJavaScript(from: "payResult('支付成功')")</span></div><div class="line">            <span class="comment">//JSContext.current().evaluateScript("payResult('支付成功')")</span></div><div class="line">            <span class="type">JSContext</span>.current().objectForKeyedSubscript(<span class="string">"payResult"</span>).call(withArguments: [<span class="string">"支付成功"</span>])</div><div class="line">        &#125; </div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这样就完成了 JS 调用 Swift，Swift 调用 JS 的方式就有多种了：</p>
+<ul>
+<li><p>方式一：JSContext 的 <code>evaluateScript</code> 方法</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="type">JSContext</span>.current().evaluateScript(<span class="string">"payResult('支付成功')"</span>)</div></pre></td></tr></table></figure>
+</li>
+<li><p>方式二：使用 JSValue 的 <code>callWithArguments</code> 方法</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="type">JSContext</span>.current().objectForKeyedSubscript(<span class="string">"payResult"</span>).call(withArguments: [<span class="string">"支付成功"</span>])</div></pre></td></tr></table></figure>
+</li>
+<li><p>方式三：之前介绍的 UIWebView 的 <code>stringByEvaluatingJavaScript</code> 方法</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">self</span>.webView?.stringByEvaluatingJavaScript(from: <span class="string">"payResult('支付成功')"</span>)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="3-JavaScriptCore-的补充说明"><a href="#3-JavaScriptCore-的补充说明" class="headerlink" title="3 JavaScriptCore 的补充说明"></a>3 JavaScriptCore 的补充说明</h3><p>使用JavaScriptCore，JS调用Native方法时，参数的传递更方便，不用担心特殊符号的转换问题，由于WKWebView 不支持通过如下的 KVC 的方式创建 JSContext：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> context = <span class="keyword">self</span>.webView?.value(forKeyPath: <span class="string">"documentView.webView.mainFrame.javaScriptContext"</span>) <span class="keyword">as</span>! <span class="type">JSContext</span></div></pre></td></tr></table></figure>
+<p>所以就不能在 WKWebView 中使用 JavaScriptCore，但是 WKWebView 可以使用WKScriptMessageHandler 的方式和 JS 交互，这种方式更加简单方便</p>
+<p>原文地址： <a href="http://www.jianshu.com/p/4db513ed2c1a" target="_blank" rel="external">iOS 下 JS 与 OC 互相调用（四）– JavaScriptCore</a> </p>
+<p>原文是讨论 OC 与 JS 的交互，我按照作者的思路，用 Swift 实现 Native 与 JS 的交互，这是 <a href="https://github.com/shuishangshu/JavaScript_Swift" target="_blank" rel="external">代码地址</a></p>
+<p>更多参考文章：</p>
+<p><a href="http://blog.csdn.net/json_vip/article/details/51615029" target="_blank" rel="external">iOS 开发 - Swift 使用 JavaScriptCore 与 JS 交互</a></p>
+<p><a href="http://www.jianshu.com/p/f896d73c670a" target="_blank" rel="external">Objective-C 与 JavaScript 交互的那些事</a></p>
+<p><a href="http://blog.csdn.net/longshihua/article/details/51645575" target="_blank" rel="external">JavaScriptCore 基本概念和基本使用(Swift)</a></p>
+<p><strong>本人刚开始写博客，技术一般，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能帮到别人也是荣幸之至！如有错误，欢迎各位指正！</strong></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+            <a href="/tags/Swift/" rel="tag"># Swift</a>
+          
+            <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/14/iOS下JS与Swift互相调用（三）WKScriptMessageHandler/" rel="next" title="iOS下JS与Swift互相调用（三）WKScriptMessageHandler">
+                <i class="fa fa-chevron-left"></i> iOS下JS与Swift互相调用（三）WKScriptMessageHandler
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/17/iOS10-3-更换应用图标/" rel="prev" title="iOS10.3 更换应用图标">
+                iOS10.3 更换应用图标 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Xiaovv" />
+          <p class="site-author-name" itemprop="name">Xiaovv</p>
+           
+              <p class="site-description motion-element" itemprop="description">以绝大多数人的努力程度之低，根本轮不到去拼天赋</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、简要介绍JavaScriptCore"><span class="nav-number">1.</span> <span class="nav-text">1、简要介绍JavaScriptCore</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-JSVirtualMachine"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 JSVirtualMachine</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-JSContext和JSValue"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 JSContext和JSValue</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-JSManagedValue"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 JSManagedValue</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-JSExport"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 JSExport</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-使用-JavaScriptCore-实现-JS-与-Swift-互调"><span class="nav-number">2.</span> <span class="nav-text">2 使用 JavaScriptCore 实现 JS 与 Swift 互调</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-创建-UIWebView，并加载本地HTML"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 创建 UIWebView，并加载本地HTML</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-添加-JS-要调用的原生-Swift-方法"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 添加 JS 要调用的原生 Swift 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-JS-和-Swift-的相互调用"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 JS 和 Swift 的相互调用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-JavaScriptCore-的补充说明"><span class="nav-number">3.</span> <span class="nav-text">3 JavaScriptCore 的补充说明</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaovv</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

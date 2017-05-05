@@ -1,0 +1,740 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS,Swift,JavaScript," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="WebViewJavascriptBridge 是 iOS 平台很流行的OC 与 JS 交互的第三方框架，作者目前没有支持 Swift ，而本文用到的都是 Swift，所以采取 OC 和 Swift 混编的形式，我没有找到相关的文章介绍用 Swift 使用 WebViewJavascriptBridge，但是我在本文 Demo 使用中没有发现什么问题 最新的 WebViewJavascriptBr">
+<meta name="keywords" content="iOS,Swift,JavaScript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS下JS与Swift互相调用（五）WebViewJavascriptBridge">
+<meta property="og:url" content="http://yoursite.com/2017/04/18/iOS下JS与Swift互相调用（五）WebViewJavascriptBridge/index.html">
+<meta property="og:site_name" content="笑忘书店">
+<meta property="og:description" content="WebViewJavascriptBridge 是 iOS 平台很流行的OC 与 JS 交互的第三方框架，作者目前没有支持 Swift ，而本文用到的都是 Swift，所以采取 OC 和 Swift 混编的形式，我没有找到相关的文章介绍用 Swift 使用 WebViewJavascriptBridge，但是我在本文 Demo 使用中没有发现什么问题 最新的 WebViewJavascriptBr">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/creat%20bridging%20header.png">
+<meta property="og:updated_time" content="2017-04-24T10:46:45.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS下JS与Swift互相调用（五）WebViewJavascriptBridge">
+<meta name="twitter:description" content="WebViewJavascriptBridge 是 iOS 平台很流行的OC 与 JS 交互的第三方框架，作者目前没有支持 Swift ，而本文用到的都是 Swift，所以采取 OC 和 Swift 混编的形式，我没有找到相关的文章介绍用 Swift 使用 WebViewJavascriptBridge，但是我在本文 Demo 使用中没有发现什么问题 最新的 WebViewJavascriptBr">
+<meta name="twitter:image" content="http://onzskckoz.bkt.clouddn.com/creat%20bridging%20header.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/04/18/iOS下JS与Swift互相调用（五）WebViewJavascriptBridge/"/>
+
+
+
+
+
+  <title> iOS下JS与Swift互相调用（五）WebViewJavascriptBridge | 笑忘书店 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笑忘书店</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/18/iOS下JS与Swift互相调用（五）WebViewJavascriptBridge/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaovv">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笑忘书店">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS下JS与Swift互相调用（五）WebViewJavascriptBridge
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-18T18:23:40+08:00">
+                2017-04-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="https://github.com/marcuswestin/WebViewJavascriptBridge" target="_blank" rel="external">WebViewJavascriptBridge</a> 是 iOS 平台很流行的OC 与 JS 交互的第三方框架，作者目前没有支持 Swift ，而本文用到的都是 Swift，所以采取 OC 和 Swift 混编的形式，我没有找到相关的文章介绍用 Swift 使用 WebViewJavascriptBridge，但是我在本文 Demo 使用中没有发现什么问题</p>
+<p>最新的 WebViewJavascriptBridge 支持同时支持 UIWeView 和WKWebView ，但是两者使用有一些区别，所以分成两篇文章讲，本文主要是讲 WebViewJavascriptBridge 在 UIWeView 中的基本使用</p>
+<h3 id="1-引入-WebViewJavascriptBridge-框架"><a href="#1-引入-WebViewJavascriptBridge-框架" class="headerlink" title="1.引入 WebViewJavascriptBridge 框架"></a>1.引入 WebViewJavascriptBridge 框架</h3><ul>
+<li>新建一个 Swift 语言的新工程，在工程里新建一个 OC 文件，Xcode 会提示创建一个 <code>Objective-C bridging header</code> 文件，点击 <code>Creat Bridging Header</code>，然后 Xcode 就为工程创建了一个 <code>Bridging Header</code> 文件，然后把刚才新建的 OC 文件删掉</li>
+</ul>
+<p><img src="http://onzskckoz.bkt.clouddn.com/creat%20bridging%20header.png" alt=""></p>
+<ul>
+<li>从 Github 上下载 <code>WebViewJavascriptBridge</code>, 解压压缩包，把压缩包里面的 WebViewJavascriptBridge 文件夹拖进工程，因为 WebViewJavascriptBridge 是 OC 框架工程，Swift 要使用这个框架需要在 <code>Bridging Header</code> 文件里 <code>#import &quot;WebViewJavascriptBridge.h&quot;</code></li>
+<li>如果上面步骤之后提示错误找不到文件，可以去工程的 <code>Build Settings</code> 的 <code>User Header Search Paths</code> 下面设置为 <code>${SRCROOT}</code> 和 <code>recursive</code></li>
+</ul>
+<p>上面几步完成之后就可以在 Swift 工程里面使用 WebViewJavascriptBridge 了</p>
+<h3 id="2-WebViewJavascriptBridge的使用"><a href="#2-WebViewJavascriptBridge的使用" class="headerlink" title="2. WebViewJavascriptBridge的使用"></a>2. WebViewJavascriptBridge的使用</h3><h4 id="2-1-创建并初始化-UIWebView"><a href="#2-1-创建并初始化-UIWebView" class="headerlink" title="2.1 创建并初始化 UIWebView"></a>2.1 创建并初始化 UIWebView</h4><p>创建 UIWebView 的部分代码： </p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">self</span>.webView = <span class="type">UIWebView</span>(frame: <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: <span class="type">UIScreen</span>.main.bounds.size.width, height: <span class="type">UIScreen</span>.main.bounds.size.height))</div><div class="line"><span class="comment">// 取消不想要webView 的回弹效果</span></div><div class="line"><span class="keyword">self</span>.webView?.scrollView.bounces = <span class="literal">false</span></div><div class="line"><span class="comment">// UIWebView 滚动的比较慢，这里设置为正常速度</span></div><div class="line"><span class="keyword">self</span>.webView?.scrollView.decelerationRate = <span class="type">UIScrollViewDecelerationRateNormal</span></div><div class="line"><span class="keyword">let</span> url = <span class="type">Bundle</span>.main.url(forResource: <span class="string">"index.html"</span>, withExtension: <span class="literal">nil</span>)</div><div class="line"><span class="keyword">let</span> request = <span class="type">NSURLRequest</span>(url: url!)</div><div class="line"><span class="keyword">self</span>.webView?.loadRequest(request <span class="keyword">as</span> <span class="type">URLRequest</span>)</div><div class="line"><span class="keyword">self</span>.view.addSubview(<span class="keyword">self</span>.webView!)</div></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：这里不要为 UIWebView 设置代理，因为在下一步在创建WebViewJavascriptBridge 的时候，UIWebView 的代理需要赋值给 WebViewJavascriptBridge</p>
+</blockquote>
+<h4 id="2-2-创建并初始化-WebJavaScriptBridge"><a href="#2-2-创建并初始化-WebJavaScriptBridge" class="headerlink" title="2.2 创建并初始化 WebJavaScriptBridge"></a>2.2 创建并初始化 WebJavaScriptBridge</h4><p>因为 WebViewJavascriptBridge 实例，在控制器中多个地方用到，因此定义一个全局的变量保存这个实例</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="type">WebViewJavascriptBridge</span>.enableLogging()</div><div class="line"><span class="keyword">self</span>.webViewBridge = <span class="type">WebViewJavascriptBridge</span>.<span class="keyword">init</span>(forWebView: <span class="keyword">self</span>.webView)</div><div class="line"><span class="comment">// &#123;setWebViewDelegate&#125;这个方法，可以将UIWebView的代理，从_webViewBridge中再传递出来。</span></div><div class="line"><span class="comment">// 所以如果你要在控制器中实现UIWebView的代理方法时，添加下面这样代码，否则可以不写。</span></div><div class="line"><span class="keyword">self</span>.webViewBridge?.setWebViewDelegate(<span class="keyword">self</span>)</div></pre></td></tr></table></figure>
+<p>看一下 <code>bridgeForWebView:(id)webView</code> 的内部实现，它最终调用了下面的方法：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>) _platformSpecificSetup:(WVJB_WEBVIEW_TYPE*)webView &#123;</div><div class="line">    _webView = webView;</div><div class="line">    _webView.delegate = <span class="keyword">self</span>;</div><div class="line">    _base = [[WebViewJavascriptBridgeBase alloc] init];</div><div class="line">    _base.delegate = <span class="keyword">self</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>实际上就是内部初始化一个 WebViewJavascriptBridgeBase 对象赋值给 <code>_base</code>，把外部的 <code>webView</code> 赋值给 内部的 <code>_webView</code> ，并且把 <code>webView</code> 的代理设置为自己</p>
+<h3 id="3-JS-和-Swift-的相互调用"><a href="#3-JS-和-Swift-的相互调用" class="headerlink" title="3. JS 和 Swift 的相互调用"></a>3. JS 和 Swift 的相互调用</h3><h4 id="3-1-在控制器里注册-JS-要调用的-Native-的方法"><a href="#3-1-在控制器里注册-JS-要调用的-Native-的方法" class="headerlink" title="3.1 在控制器里注册 JS 要调用的 Native 的方法"></a>3.1 在控制器里注册 JS 要调用的 Native 的方法</h4><p>先看一下部分示例代码：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">registerNativeFunctions</span><span class="params">()</span></span> &#123;    </div><div class="line">    registerShareFunction()</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">registerShareFunction</span><span class="params">()</span></span>  </div><div class="line">    <span class="comment">// 所有js需要调用的原生功能都要先用registerHandler注册一下 </span></div><div class="line">	<span class="keyword">self</span>.webViewBridge?.registerHandler(<span class="string">"shareClick"</span>, handler: &#123; (data, responseCallback) <span class="keyword">in</span></div><div class="line">	    <span class="comment">//获取js传过来的数据</span></div><div class="line">	    <span class="keyword">let</span> dataDic = data <span class="keyword">as</span>! [<span class="type">String</span>: <span class="type">String</span>]</div><div class="line">	    <span class="comment">//执行分享操作</span></div><div class="line">	    <span class="keyword">let</span> title = dataDic[<span class="string">"title"</span>]!</div><div class="line">	    <span class="keyword">let</span> content = dataDic[<span class="string">"content"</span>]!</div><div class="line">	    <span class="keyword">let</span> url = dataDic[<span class="string">"url"</span>]!</div><div class="line">	    <span class="comment">//分享结果返回给js</span></div><div class="line">	    <span class="keyword">let</span> result = <span class="string">"分享成功：\(title)\(content)\(url)"</span></div><div class="line">	    responseCallback!(result) </div><div class="line">	&#125;)    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>- (void)registerHandler:(NSString *)handlerName handler:(WVJBHandler)handler</code>，这个方法是注册一个 Native 的方法给 JS 调用，该方法有两个参数：第一个参数 handlerName，是注册的方法别名；第二个参数 handler，是个 Block，也就是 Native 实现的功能，JS 要调用的 Native 的功能实现其实就是 Block 内的代码功能，并且这个 Block 有两个参数一个参数是 JS 返回给 Native 的参数，另一个参数是一个 Block，调用这个block 可以把 Native 的结果返回给 JS ，而在 JS 代码里面使用 <code>callHandler</code> 调用注册的这个方法，这就实现了 JS 调用 Native 了：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">shareClick</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> params = &#123;<span class="string">'title'</span>:<span class="string">'测试分享的标题'</span>,<span class="string">'content'</span>:<span class="string">'测试分享的内容'</span>,<span class="string">'url'</span>:<span class="string">'http://www.baidu.com'</span>&#125;;</div><div class="line">    WebViewJavascriptBridge.callHandler(<span class="string">'shareClick'</span>,params,<span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;</div><div class="line">         alert(response);</div><div class="line">        <span class="built_in">document</span>.getElementById(<span class="string">"returnValue"</span>).value = response;</div><div class="line">     &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="3-2-Native-调用-JS-的实现"><a href="#3-2-Native-调用-JS-的实现" class="headerlink" title="3.2 Native 调用 JS 的实现"></a>3.2 Native 调用 JS 的实现</h4><p>由于 WebViewJavascriptBridge 也是拦截URL来实现的调用原生功能，所以有一些代码跟之前 <a href="https://shuishangshu.github.io/2017/04/12/iOS%E4%B8%8BJS%E4%B8%8ESwift%E4%BA%92%E7%9B%B8%E8%B0%83%E7%94%A8%EF%BC%88%E4%B8%80%EF%BC%89UIWebView%E6%8B%A6%E6%88%AAURL/" target="_blank" rel="external">iOS下JS与Swift互相调用（一）UIWebView拦截URL</a> 中的 HTML 的 JS 代码很相似</p>
+<p>HTML 中有一个必须要添加的 JS 方法，然后需要自动调用一次该方法：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">setupWebViewJavascriptBridge</span>(<span class="params">callback</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="built_in">window</span>.WebViewJavascriptBridge) &#123; <span class="keyword">return</span> callback(WebViewJavascriptBridge); &#125;</div><div class="line">    <span class="keyword">if</span> (<span class="built_in">window</span>.WVJBCallbacks) &#123; <span class="keyword">return</span> <span class="built_in">window</span>.WVJBCallbacks.push(callback); &#125;</div><div class="line">    <span class="built_in">window</span>.WVJBCallbacks = [callback];</div><div class="line">    <span class="keyword">var</span> WVJBIframe = <span class="built_in">document</span>.createElement(<span class="string">'iframe'</span>);</div><div class="line">    WVJBIframe.style.display = <span class="string">'none'</span>;</div><div class="line">    WVJBIframe.src = <span class="string">'wvjbscheme://__BRIDGE_LOADED__'</span>;</div><div class="line">    <span class="built_in">document</span>.documentElement.appendChild(WVJBIframe);</div><div class="line">    setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; <span class="built_in">document</span>.documentElement.removeChild(WVJBIframe) &#125;, <span class="number">0</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>添加完 <code>setupWebViewJavascriptBridge</code> 方法，需要在 JS 中主动调用一次该方法：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">setupWebViewJavascriptBridge(<span class="function"><span class="keyword">function</span>(<span class="params">bridge</span>) </span>&#123;</div><div class="line">     <span class="comment">//这里注册了一个叫 “testJSFunction” 的方法</span></div><div class="line">     bridge.registerHandler(<span class="string">'testJSFunction'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">data, responseCallback</span>) </span>&#123;</div><div class="line">        alert(<span class="string">'JS方法被调用:'</span>+data);</div><div class="line">        responseCallback(<span class="string">'js执行过了'</span>);</div><div class="line">     &#125;)</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>这是 Native 调用 JS 的功能的代码：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 如果不需要参数，不需要回调，使用这个</span></div><div class="line"><span class="comment">// self.webViewBridge?.callHandler("testJSFunction")</span></div><div class="line">        </div><div class="line"><span class="comment">// 如果需要参数，不需要回调，使用这个</span></div><div class="line"><span class="comment">// self.webViewBridge?.callHandler("testJSFunction", data: "传一个字符串")</span></div><div class="line">    </div><div class="line"><span class="keyword">self</span>.webViewBridge?.callHandler(<span class="string">"testJSFunction"</span>, data: <span class="string">"传一个字符串"</span>, responseCallback: &#123; (resposeData) <span class="keyword">in</span></div><div class="line">    <span class="built_in">print</span>(<span class="string">"调用完JS后的回调：\(String(describing: resposeData))"</span>)</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>Native 需要调用的 JS 功能，也是需要先注册，然后再执行的,如果Native 需要调用的 JS 功能有多个，那么这些功能都要在上面这个方法了先注册，注册之后才能够被 Native 调用</p>
+<p>下面需要好好分析一下 JS 中  <code>setupWebViewJavascriptBridge</code> 这个方法的作用:</p>
+<ol>
+<li><p>首先调用 <code>setupWebViewJavascriptBridge</code>，第一次执行的时候，由于 <code>window.WebViewJavascriptBridge</code> 和<code>window.WVJBCallbacks</code> 都不存在，所以会继续往下执行，将参数callback（它是一个function）装进数组赋值给<code>window.WVJBCallbacks</code><br>JS 支持动态添加属性并赋值，这里 <code>window.WVJBCallbacks = [callback]</code> 就是动态添加属性并赋值,另外 JS 中的全局变量都可以使用 <code>window.xxxx</code> 来调用,动态添加的属性也可以不加 <code>window.</code>，直接使用</p>
+</li>
+<li><p><code>WebViewJavascriptBridge</code> 帮助 JS 调 用 Native 的 url 有两种，一种是 <code>wvjbscheme://__BRIDGE_LOADED__</code> 而另一种是<code>wvjbscheme://__WVJB_QUEUE_MESSAGE__</code> 前者只有在调用<code>setupWebViewJavascriptBridge</code> 的时候执行一次，一般来说这个url 如果没有页面应该只会执行一次；第二种 url 所有 JS 调用 Native 功能时，都会使用到</p>
+</li>
+<li><p>在拦截到自定义的 url 时，<code>WebViewJavascriptBridge</code> 分了三种情况，如果是 <code>wvjbscheme://__BRIDGE_LOADED__</code>，就往 HMTL 中注入已经写好的 JS ，这个 JS 在 <code>WebViewJavascriptBridge_JS</code> 中；如果是 <code>wvjbscheme://__WVJB_QUEUE_MESSAGE__</code>，那就利用<code>stringByEvaluatingJavaScriptFromString</code>，取回调用 JS 中<code>callHandler</code> 传进去的参数。<br>然后再从 <code>WebViewJavascriptBridge</code> 之前保存的 Native 方法对应的 Block，调用对应的 Block</p>
+</li>
+</ol>
+<h3 id="4-WebViewJavascriptBridge-在-JS-和-Native-相互调用的实现原理"><a href="#4-WebViewJavascriptBridge-在-JS-和-Native-相互调用的实现原理" class="headerlink" title="4.WebViewJavascriptBridge 在 JS 和 Native 相互调用的实现原理"></a>4.WebViewJavascriptBridge 在 JS 和 Native 相互调用的实现原理</h3><h4 id="4-1-JS-调用-Native-的原理"><a href="#4-1-JS-调用-Native-的原理" class="headerlink" title="4.1 JS 调用 Native 的原理"></a>4.1 JS 调用 Native 的原理</h4><p>从上面第三部分可以看到，JS 和 Native 的相互调用都是需要其中一方注册方法，另一方就可以根据注册的方法名调用到相应的方法</p>
+<p>JS 调用 Native 的时候，在 JS 里调用 native 的代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">payClick</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> params = &#123;<span class="string">'order_no'</span>:<span class="string">'201511120981234'</span>,<span class="string">'channel'</span>:<span class="string">'wx'</span>,<span class="string">'amount'</span>:<span class="string">'1'</span>,<span class="string">'subject'</span>:<span class="string">'粉色外套'</span>&#125;;</div><div class="line">    WebViewJavascriptBridge.callHandler(<span class="string">'payClick'</span>,params,<span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;</div><div class="line">        alert(response);</div><div class="line">        <span class="built_in">document</span>.getElementById(<span class="string">"returnValue"</span>).value = response;</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里 <code>callHandler</code> 前的 <code>WebViewJavascriptBridge</code>，其实就是上一步注入到 JS 中的代码中，动态创建属性，动态赋值的属性，如下代码片段可以在 <code>WebViewJavascriptBridge_JS</code> 中找到：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">window</span>.WebViewJavascriptBridge = &#123;</div><div class="line">  <span class="attr">registerHandler</span>: registerHandler,</div><div class="line">  <span class="attr">callHandler</span>: callHandler,</div><div class="line">  <span class="attr">disableJavscriptAlertBoxSafetyTimeout</span>: disableJavscriptAlertBoxSafetyTimeout,</div><div class="line">  <span class="attr">_fetchQueue</span>: _fetchQueue,</div><div class="line">  <span class="attr">_handleMessageFromObjC</span>: _handleMessageFromObjC</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>而 <code>callHandler</code> 内部调用了另一个 JS <code>function _doSend</code>，而<code>_doSend</code> 内部其实就是把 <code>handlerName</code> 和参数 <code>data</code>，再加上<code>callbackId</code> 装成键值对，然后保存到数组 <code>sendMessageQueue</code>，同时加载一次 <code>wvjbscheme://__WVJB_QUEUE_MESSAGE__</code> 到此利用 <code>WebViewJavascriptBridge</code> 实现 JS 调用 iOS Native 就完成了</p>
+<h4 id="4-2-Native-调用-JS-的原理"><a href="#4-2-Native-调用-JS-的原理" class="headerlink" title="4.2  Native 调用 JS 的原理"></a>4.2  Native 调用 JS 的原理</h4><p>Native 调用 JS 的功能，也需要先在 JS 中为要调用的功能注册一个别名:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">setupWebViewJavascriptBridge(<span class="function"><span class="keyword">function</span>(<span class="params">bridge</span>) </span>&#123;</div><div class="line">     bridge.registerHandler(<span class="string">'testJSFunction'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">data, responseCallback</span>) </span>&#123;</div><div class="line">        alert(<span class="string">'JS方法被调用:'</span>+data);</div><div class="line">        responseCallback(<span class="string">'js执行过了'</span>);</div><div class="line">     &#125;)</div><div class="line">    <span class="comment">// 注册其他的功能</span></div><div class="line">    <span class="comment">//bridge.regsiterHandler.....</span></div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>Native 调用功能的通过别名 <code>handlerName</code> 调用 JS:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[_webViewBridge callHandler:@<span class="string">"testJSFunction"</span> data:@<span class="string">"一个字符串"</span> responseCallback:^(id responseData) &#123;</div><div class="line">    <span class="type">NSLog</span>(@<span class="string">"调用完JS后的回调：%@"</span>,responseData);</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<p>而 <code>callHandler</code> 方法又是如何实现调用 JS 方法的呢？<br><code>callHandler</code> 内部是将传递给 JS 的参数、<code>handlerName</code>、<code>callbackId</code> 组合成字典，然后把字典转换成字符串，将转换后的字符串以参数的形式，通过 <code>stringByEvaluatingJavaScriptFromString</code> 传递给 JS ，JS 中将传递过来的字符串转成 json，然后通过 <code>handlerName</code> 获取对应的 <code>function</code>执行，这是关键的几个代码段：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)_dispatchMessage:(WVJBMessage*)message &#123;</div><div class="line">    <span class="built_in">NSString</span> *messageJSON = [<span class="keyword">self</span> _serializeMessage:message pretty:<span class="literal">NO</span>];</div><div class="line">    [<span class="keyword">self</span> _log:<span class="string">@"SEND"</span> json:messageJSON];</div><div class="line">    messageJSON = [messageJSON stringByReplacingOccurrencesOfString:<span class="string">@"\\"</span> withString:<span class="string">@"\\\\"</span>];</div><div class="line">    messageJSON = [messageJSON stringByReplacingOccurrencesOfString:<span class="string">@"\""</span> withString:<span class="string">@"\\\""</span>];</div><div class="line">    messageJSON = [messageJSON stringByReplacingOccurrencesOfString:<span class="string">@"\'"</span> withString:<span class="string">@"\\\'"</span>];</div><div class="line">    messageJSON = [messageJSON stringByReplacingOccurrencesOfString:<span class="string">@"\n"</span> withString:<span class="string">@"\\n"</span>];</div><div class="line">    messageJSON = [messageJSON stringByReplacingOccurrencesOfString:<span class="string">@"\r"</span> withString:<span class="string">@"\\r"</span>];</div><div class="line">    messageJSON = [messageJSON stringByReplacingOccurrencesOfString:<span class="string">@"\f"</span> withString:<span class="string">@"\\f"</span>];</div><div class="line">    messageJSON = [messageJSON stringByReplacingOccurrencesOfString:<span class="string">@"\u2028"</span> withString:<span class="string">@"\\u2028"</span>];</div><div class="line">    messageJSON = [messageJSON stringByReplacingOccurrencesOfString:<span class="string">@"\u2029"</span> withString:<span class="string">@"\\u2029"</span>];</div><div class="line">    </div><div class="line">    <span class="built_in">NSString</span>* javascriptCommand = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"WebViewJavascriptBridge._handleMessageFromObjC('%@');"</span>, messageJSON];</div><div class="line">    <span class="keyword">if</span> ([[<span class="built_in">NSThread</span> currentThread] isMainThread]) &#123;</div><div class="line">        [<span class="keyword">self</span> _evaluateJavascript:javascriptCommand];</div><div class="line"></div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="built_in">dispatch_sync</span>(dispatch_get_main_queue(), ^&#123;</div><div class="line">            [<span class="keyword">self</span> _evaluateJavascript:javascriptCommand];</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>下面这里是在 <code>WebViewJavascriptBridge_JS</code> 里面找到 <code>handlerName</code> 对应的 <code>function</code>，并执行<code>function</code> </p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> handler = messageHandlers[message.handlerName];</div><div class="line"><span class="keyword">if</span> (!handler) &#123;</div><div class="line">	console.log(<span class="string">"WebViewJavascriptBridge: WARNING: no handler for message from ObjC:"</span>, message);</div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">	handler(message.data, responseCallback);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>至此利用 WebViewJavascriptBridge 实现 Native 和 JS 相互调用的功能就完成了</p>
+<h3 id="5-总结"><a href="#5-总结" class="headerlink" title="5 总结"></a>5 总结</h3><p>利用 WebViewJavascriptBridge 来实现 JS 与 Native 的交互的优点：</p>
+<ul>
+<li>获取参数时，更方便一些，如果参数中有一些特殊符号或者url带参数，能够很好的解析<br>也有一些缺点：</li>
+<li>做一次交互，需要执行的 JS 与原生的交互步骤较多，至少有两次。</li>
+<li>需要花较多的时间，理解WebViewJavascriptBridge的原理和使用步骤</li>
+</ul>
+<p>原文地址： <a href="http://www.jianshu.com/p/2be213e3f673" target="_blank" rel="external">iOS下JS与OC互相调用（五）–UIWebView + WebViewJavascriptBridge</a> </p>
+<p>原文是讨论 OC 与 JS 的交互，我按照作者的思路，用 Swift 实现 Native 与 JS 的交互，这是 <a href="https://github.com/shuishangshu/JavaScript_Swift" target="_blank" rel="external">代码地址</a></p>
+<p><strong>本人刚开始写博客，技术一般，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能帮到别人也是荣幸之至！如有错误，欢迎各位指正！</strong></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+            <a href="/tags/Swift/" rel="tag"># Swift</a>
+          
+            <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/17/iOS10-3-更换应用图标/" rel="next" title="iOS10.3 更换应用图标">
+                <i class="fa fa-chevron-left"></i> iOS10.3 更换应用图标
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/21/iOS-Touch-ID（指纹识别）基本开发实践/" rel="prev" title="iOS Touch ID（指纹识别）基本开发实践">
+                iOS Touch ID（指纹识别）基本开发实践 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Xiaovv" />
+          <p class="site-author-name" itemprop="name">Xiaovv</p>
+           
+              <p class="site-description motion-element" itemprop="description">以绝大多数人的努力程度之低，根本轮不到去拼天赋</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-引入-WebViewJavascriptBridge-框架"><span class="nav-number">1.</span> <span class="nav-text">1.引入 WebViewJavascriptBridge 框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-WebViewJavascriptBridge的使用"><span class="nav-number">2.</span> <span class="nav-text">2. WebViewJavascriptBridge的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-创建并初始化-UIWebView"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 创建并初始化 UIWebView</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-创建并初始化-WebJavaScriptBridge"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 创建并初始化 WebJavaScriptBridge</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-JS-和-Swift-的相互调用"><span class="nav-number">3.</span> <span class="nav-text">3. JS 和 Swift 的相互调用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-在控制器里注册-JS-要调用的-Native-的方法"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 在控制器里注册 JS 要调用的 Native 的方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-Native-调用-JS-的实现"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 Native 调用 JS 的实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-WebViewJavascriptBridge-在-JS-和-Native-相互调用的实现原理"><span class="nav-number">4.</span> <span class="nav-text">4.WebViewJavascriptBridge 在 JS 和 Native 相互调用的实现原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-JS-调用-Native-的原理"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 JS 调用 Native 的原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-Native-调用-JS-的原理"><span class="nav-number">4.2.</span> <span class="nav-text">4.2  Native 调用 JS 的原理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-总结"><span class="nav-number">5.</span> <span class="nav-text">5 总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaovv</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
