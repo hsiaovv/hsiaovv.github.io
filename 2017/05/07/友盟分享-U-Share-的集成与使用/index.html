@@ -1,0 +1,905 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="在 iOS 开发中，社交分享或者第三方授权登录已经是一个常见的功能了，当我们需要快速集成多个平台的分享或者登录的时候，如果把一个个的第三方 SDK 导入工程项目里，费时费力还容易出错，这个时候我们使用 ShareSDK、友盟等第三方的分享平台可以快速在项目中集成多个社交平台的分享或者授权登录 下面就介绍一下如何在 iOS 项目中集成和使用友盟，本文使用的是最新版的友盟 U-Share SDK v6">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="友盟分享 U-Share 的集成与使用">
+<meta property="og:url" content="http://yoursite.com/2017/05/07/友盟分享-U-Share-的集成与使用/index.html">
+<meta property="og:site_name" content="笑忘书店">
+<meta property="og:description" content="在 iOS 开发中，社交分享或者第三方授权登录已经是一个常见的功能了，当我们需要快速集成多个平台的分享或者登录的时候，如果把一个个的第三方 SDK 导入工程项目里，费时费力还容易出错，这个时候我们使用 ShareSDK、友盟等第三方的分享平台可以快速在项目中集成多个社交平台的分享或者授权登录 下面就介绍一下如何在 iOS 项目中集成和使用友盟，本文使用的是最新版的友盟 U-Share SDK v6">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/ushare_scheme.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/ushare_select.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/ushare_add.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/ushare_appinfo.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/ushare_appkey.PNG">
+<meta property="og:updated_time" content="2017-05-07T06:27:23.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="友盟分享 U-Share 的集成与使用">
+<meta name="twitter:description" content="在 iOS 开发中，社交分享或者第三方授权登录已经是一个常见的功能了，当我们需要快速集成多个平台的分享或者登录的时候，如果把一个个的第三方 SDK 导入工程项目里，费时费力还容易出错，这个时候我们使用 ShareSDK、友盟等第三方的分享平台可以快速在项目中集成多个社交平台的分享或者授权登录 下面就介绍一下如何在 iOS 项目中集成和使用友盟，本文使用的是最新版的友盟 U-Share SDK v6">
+<meta name="twitter:image" content="http://onzskckoz.bkt.clouddn.com/ushare_scheme.PNG">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/05/07/友盟分享-U-Share-的集成与使用/"/>
+
+
+
+
+
+  <title> 友盟分享 U-Share 的集成与使用 | 笑忘书店 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笑忘书店</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/07/友盟分享-U-Share-的集成与使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaovv">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笑忘书店">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                友盟分享 U-Share 的集成与使用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-07T14:26:13+08:00">
+                2017-05-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在 iOS 开发中，社交分享或者第三方授权登录已经是一个常见的功能了，当我们需要快速集成多个平台的分享或者登录的时候，如果把一个个的第三方 SDK 导入工程项目里，费时费力还容易出错，这个时候我们使用 ShareSDK、友盟等第三方的分享平台可以快速在项目中集成多个社交平台的分享或者授权登录</p>
+<p>下面就介绍一下如何在 iOS 项目中集成和使用友盟，本文使用的是最新版的友盟 <a href="http://dev.umeng.com/social/ios/sdk-download" target="_blank" rel="external">U-Share SDK v6.4.3</a>，SDK 的<a href="http://dev.umeng.com/social/ios/quick-integration" target="_blank" rel="external">集成文档</a>十分详细，本文只是做一个简单的整理和归纳</p>
+<h3 id="U-Share-SDK-集成与配置"><a href="#U-Share-SDK-集成与配置" class="headerlink" title="U-Share SDK 集成与配置"></a>U-Share SDK 集成与配置</h3><h4 id="通过-Cocoapods-集成"><a href="#通过-Cocoapods-集成" class="headerlink" title="通过 Cocoapods 集成"></a>通过 Cocoapods 集成</h4><p>友盟支持手动集成和通过 Cocoapods 两种方式集成，手动集成需要手动倒入 SDK、配置参数以及添加各种依赖库，操作起来比较麻烦，本文只介绍通过 Cocoapods 集成，手动集成可以参考<a href="http://dev.umeng.com/social/ios/quick-integration#1_1" target="_blank" rel="external">官方文档</a></p>
+<p><a href="https://cocoapods.org/" target="_blank" rel="external">Cocoapods</a> 的安装本文不做介绍，网上有很多资料了</p>
+<p>首先从终端 cd 到项目根目录，执行下面的命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pod init</div></pre></td></tr></table></figure>
+<p>接着项目根目录下吗面就添加好了一个 <code>Podfile</code> 文件，用 vim 打开这个文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ vim Podfile</div></pre></td></tr></table></figure>
+<p>Cocoapods 集成 U-Share SDK 可灵活配置平台，可选添加以下平台代码到 <code>Podfile</code> 文件中：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Uncomment the next line to define a global platform for your project</span></div><div class="line"><span class="comment"># platform :ios, '9.0'</span></div><div class="line"></div><div class="line">target <span class="string">'UMengDemo'</span> <span class="keyword">do</span></div><div class="line">  <span class="comment"># Uncomment the next line if you're using Swift or would like to use dynamic frameworks</span></div><div class="line">  <span class="comment"># use_frameworks!</span></div><div class="line">    </div><div class="line">    <span class="comment"># U-Share SDK UI模块（分享面板，建议添加）</span></div><div class="line">    pod ‘UMengUShare/UI’</div><div class="line"></div><div class="line">    <span class="comment"># 集成微信(精简版0.2M)</span></div><div class="line">    pod ‘UMengUShare/Social/ReducedWeChat<span class="string">'</span></div><div class="line"></div><div class="line">    # 集成微信(完整版14.4M)</div><div class="line">    pod ‘UMengUShare/Social/WeChat'</div><div class="line"></div><div class="line">    <span class="comment"># 集成QQ(精简版0.5M)</span></div><div class="line">    pod ‘UMengUShare/Social/ReducedQQ<span class="string">'</span></div><div class="line"></div><div class="line">    # 集成QQ(完整版7.6M)</div><div class="line">    pod ‘UMengUShare/Social/QQ'</div><div class="line"></div><div class="line">    <span class="comment"># 集成新浪微博(精简版1M)</span></div><div class="line">    pod ‘UMengUShare/Social/ReducedSina<span class="string">'</span></div><div class="line"></div><div class="line">    # 集成新浪微博(完整版25.3M)</div><div class="line">    pod ‘UMengUShare/Social/Sina'</div><div class="line"></div><div class="line">    <span class="comment"># 集成Facebook/Messenger</span></div><div class="line">    pod ‘UMengUShare/Social/Facebook<span class="string">'</span></div><div class="line"></div><div class="line">    # 集成Twitter</div><div class="line">    pod ‘UMengUShare/Social/Twitter'</div><div class="line"></div><div class="line">    <span class="comment"># 集成支付宝</span></div><div class="line">    pod ‘UMengUShare/Social/AlipayShare<span class="string">'</span></div><div class="line"></div><div class="line">    # 集成钉钉</div><div class="line">    pod ‘UMengUShare/Social/DingDing'</div><div class="line"></div><div class="line">    <span class="comment"># 集成豆瓣</span></div><div class="line">    pod ‘UMengUShare/Social/Douban<span class="string">'</span></div><div class="line"></div><div class="line">    # 集成人人</div><div class="line">    pod ‘UMengUShare/Social/Renren'</div><div class="line"></div><div class="line">    <span class="comment"># 集成腾讯微博</span></div><div class="line">    pod ‘UMengUShare/Social/TencentWeibo<span class="string">'</span></div><div class="line"></div><div class="line">    # 集成来往(点点虫)</div><div class="line">    pod ‘UMengUShare/Social/LaiWang'</div><div class="line"></div><div class="line">    <span class="comment"># 集成易信</span></div><div class="line">    pod ‘UMengUShare/Social/YiX<span class="keyword">in</span><span class="string">'</span></div><div class="line"></div><div class="line">    # 集成领英</div><div class="line">    pod ‘UMengUShare/Social/Linkedin'</div><div class="line"></div><div class="line">    <span class="comment"># 集成Flickr</span></div><div class="line">    pod ‘UMengUShare/Social/Flickr<span class="string">'</span></div><div class="line"></div><div class="line">    # 集成Kakao</div><div class="line">    pod ‘UMengUShare/Social/Kakao'</div><div class="line"></div><div class="line">    <span class="comment"># 集成Tumblr</span></div><div class="line">    pod ‘UMengUShare/Social/Tumblr<span class="string">'</span></div><div class="line"></div><div class="line">    # 集成Pinterest</div><div class="line">    pod ‘UMengUShare/Social/Pinterest'</div><div class="line"></div><div class="line">    <span class="comment"># 集成Instagram</span></div><div class="line">    pod ‘UMengUShare/Social/Instagram<span class="string">'</span></div><div class="line"></div><div class="line">    # 集成Line</div><div class="line">    pod ‘UMengUShare/Social/Line'</div><div class="line"></div><div class="line">    <span class="comment"># 集成WhatsApp</span></div><div class="line">    pod ‘UMengUShare/Social/WhatsApp<span class="string">'</span></div><div class="line"></div><div class="line">    # 集成有道云笔记</div><div class="line">    pod ‘UMengUShare/Social/YouDao'</div><div class="line"></div><div class="line">    <span class="comment"># 集成印象笔记</span></div><div class="line">    pod ‘UMengUShare/Social/EverNote<span class="string">'</span></div><div class="line"></div><div class="line">    # 集成Google+</div><div class="line">    pod ‘UMengUShare/Social/GooglePlus'</div><div class="line"></div><div class="line">    <span class="comment"># 集成Pocket</span></div><div class="line">    pod ‘UMengUShare/Social/Pocket<span class="string">'</span></div><div class="line"></div><div class="line">    # 集成DropBox</div><div class="line">    pod ‘UMengUShare/Social/DropBox'</div><div class="line"></div><div class="line">    <span class="comment"># 集成VKontakte</span></div><div class="line">    pod ‘UMengUShare/Social/VKontakte<span class="string">'</span></div><div class="line"></div><div class="line">    # 集成邮件</div><div class="line">    pod ‘UMengUShare/Social/Email'</div><div class="line"></div><div class="line">    <span class="comment"># 集成短信</span></div><div class="line">    pod ‘UMengUShare/Social/SMS<span class="string">'</span></div><div class="line"></div><div class="line">    # 加入IDFA获取</div><div class="line">    pod ‘UMengUShare/Plugin/IDFA'</div><div class="line">    </div><div class="line">end</div></pre></td></tr></table></figure>
+<p>友盟集成了国内外很多个社交平台，我们只需根据自己项目的情况，集成需要的的平台即可</p>
+<p>接着在项目根目录更新 U-Share SDK</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pod update</div></pre></td></tr></table></figure>
+<p>我们还可以使用 <code>pod search</code> 命令检查 U-Share SDK及其最新版本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pod search UMengUShare</div></pre></td></tr></table></figure>
+<p>Cocoapods 集成遇到问题请参考 <a href="http://dev.umeng.com/social/ios/u-share%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98#7" target="_blank" rel="external">更新Cocoapods常见问题</a></p>
+<h4 id="配置SSO白名单"><a href="#配置SSO白名单" class="headerlink" title="配置SSO白名单"></a>配置SSO白名单</h4><p>如果你的应用使用了如 SSO 授权登录或跳转到第三方分享功能，在iOS9/10 下就需要增加一个可跳转的白名单，即<code>LSApplicationQueriesSchemes</code>，否则将在 SDK 判断是否跳转时用到的canOpenURL 时返回 NO，进而只进行webview授权或授权/分享失败。 在项目中的 <code>info.plist</code> 中加入应用白名单，右键<code>info.plist</code> 选择 <code>source code</code> 打开(<code>plist</code> 具体设置在<code>Build Setting -&gt; Packaging -&gt; Info.plist File</code> 可获取<code>plist</code> 路径) 请根据选择的平台进行配置：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>LSApplicationQueriesSchemes<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">array</span>&gt;</span></div><div class="line">    <span class="comment">&lt;!-- 微信 URL Scheme 白名单--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>wechat<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>weixin<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!-- 新浪微博 URL Scheme 白名单--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>sinaweibohd<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>sinaweibo<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>sinaweibosso<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>weibosdk<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>weibosdk2.5<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!-- QQ、Qzone URL Scheme 白名单--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>mqqapi<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>mqq<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>mqqOpensdkSSoLogin<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>mqqconnect<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>mqqopensdkdataline<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>mqqopensdkgrouptribeshare<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>mqqopensdkfriend<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>mqqopensdkapi<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>mqqopensdkapiV2<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>mqqopensdkapiV3<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>mqqopensdkapiV4<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>mqzoneopensdk<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>wtloginmqq<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>wtloginmqq2<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>mqqwpa<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>mqzone<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>mqzonev2<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>mqzoneshare<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>wtloginqzone<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>mqzonewx<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>mqzoneopensdkapiV2<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>mqzoneopensdkapi19<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>mqzoneopensdkapi<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>mqqbrowser<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>mttbrowser<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!-- 支付宝 URL Scheme 白名单--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>alipay<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>alipayshare<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!-- 钉钉 URL Scheme 白名单--&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">string</span>&gt;</span>dingtalk<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">string</span>&gt;</span>dingtalk-open<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!--Linkedin URL Scheme 白名单--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>linkedin<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>linkedin-sdk2<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>linkedin-sdk<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!-- 点点虫 URL Scheme 白名单--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>laiwangsso<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!-- 易信 URL Scheme 白名单--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>yixin<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>yixinopenapi<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!-- instagram URL Scheme 白名单--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>instagram<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!-- whatsapp URL Scheme 白名单--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>whatsapp<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!-- line URL Scheme 白名单--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>line<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!-- Facebook URL Scheme 白名单--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>fbapi<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>fb-messenger-api<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>fbauth2<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>fbshareextension<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!-- Kakao URL Scheme 白名单--&gt;</span>  </div><div class="line">    <span class="comment">&lt;!-- 注：以下第一个参数需替换为自己的kakao appkey--&gt;</span> </div><div class="line">    <span class="comment">&lt;!-- 格式为 kakao + "kakao appkey"--&gt;</span>    </div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>kakaofa63a0b2356e923f3edd6512d531f546<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>kakaokompassauth<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>storykompassauth<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>kakaolink<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>kakaotalk-4.5.0<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>kakaostory-2.9.0<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"></div><div class="line">   <span class="comment">&lt;!-- pinterest URL Scheme 白名单--&gt;</span>  </div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>pinterestsdk.v1<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"></div><div class="line">   <span class="comment">&lt;!-- Tumblr URL Scheme 白名单--&gt;</span>  </div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>tumblr<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"></div><div class="line">   <span class="comment">&lt;!-- 印象笔记 --&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>evernote<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>en<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>enx<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>evernotecid<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>evernotemsg<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"></div><div class="line">   <span class="comment">&lt;!-- 有道云笔记--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>youdaonote<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>ynotedictfav<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>com.youdao.note.todayViewNote<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>ynotesharesdk<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"></div><div class="line">   <span class="comment">&lt;!-- Google+--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>gplus<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"></div><div class="line">   <span class="comment">&lt;!-- Pocket--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>pocket<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>readitlater<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>pocket-oauth-v1<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>fb131450656879143<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>en-readitlater-5776<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>com.ideashower.ReadItLaterPro3<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>com.ideashower.ReadItLaterPro<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>com.ideashower.ReadItLaterProAlpha<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>com.ideashower.ReadItLaterProEnterprise<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"></div><div class="line">   <span class="comment">&lt;!-- VKontakte--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>vk<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>vk-share<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>vkauthorize<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">array</span>&gt;</span></div></pre></td></tr></table></figure>
+<h4 id="配置-URL-Scheme"><a href="#配置-URL-Scheme" class="headerlink" title="配置 URL Scheme"></a>配置 URL Scheme</h4><p>URL Scheme 是通过系统找到并跳转对应 App 的一类设置，通过向项目中的 <code>info.plist</code> 文件中加入 <code>URL types</code> 可使用第三方平台所注册的 appkey 信息向系统注册你的 App，当跳转到第三方应用授权或分享后，可直接跳转回你的 App</p>
+<p>添加 <code>URL Types</code> 可在工程设置面板设置，如下：</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/ushare_scheme.PNG" alt=""></p>
+<p>配置第三方平台 URL Scheme，未列出则不需设置</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">平台</th>
+<th style="text-align:left">格式</th>
+<th style="text-align:left">举例</th>
+<th style="text-align:left">备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">微信</td>
+<td style="text-align:left">微信appKey</td>
+<td style="text-align:left">wxdc1e388c3822c80b</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">QQ/Qzone</td>
+<td style="text-align:left">需要添加两项URL Scheme：<br> 1、”tencent”+腾讯QQ互联应用appID <br> 2、”QQ”+腾讯QQ互联应用appID转换成十六进制（不足8位前面补0）</td>
+<td style="text-align:left">如appID：100424468 <br>1、tencent100424468 <br> 2、QQ05fc5b14</td>
+<td style="text-align:left">QQ05fc5b14为100424468转十六进制而来，因不足8位向前补0，然后加”QQ”前缀</td>
+</tr>
+<tr>
+<td style="text-align:left">新浪微博</td>
+<td style="text-align:left">“wb”+新浪appKey</td>
+<td style="text-align:left">wb3921700954</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">支付宝</td>
+<td style="text-align:left">“ap”+appID</td>
+<td style="text-align:left">ap2015111700822536</td>
+<td style="text-align:left">URL Type中的identifier填”alipayShare”</td>
+</tr>
+<tr>
+<td style="text-align:left">钉钉</td>
+<td style="text-align:left">钉钉appkey</td>
+<td style="text-align:left">dingoalmlnohc0wggfedpk</td>
+<td style="text-align:left">identifier的参数都使用dingtalk</td>
+</tr>
+<tr>
+<td style="text-align:left">易信</td>
+<td style="text-align:left">易信appkey</td>
+<td style="text-align:left">yx35664bdff4db42c2b7b<br>e1e29390c1a06</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">点点虫</td>
+<td style="text-align:left">点点虫appID</td>
+<td style="text-align:left">8112117817424282305</td>
+<td style="text-align:left">URL Type中的identifier填”Laiwang”</td>
+</tr>
+<tr>
+<td style="text-align:left">领英</td>
+<td style="text-align:left">“li”+appID</td>
+<td style="text-align:left">li4768945</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">Facebook</td>
+<td style="text-align:left">“fb”+FacebookID</td>
+<td style="text-align:left">fb506027402887373</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">VKontakte</td>
+<td style="text-align:left">“vk”+ VKontakteID</td>
+<td style="text-align:left">vk5786123</td>
+<td style="text-align:left">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p>新浪微博事儿比较多，如果发现使用微博分享发现有问题，请参考<a href="http://dev.umeng.com/social/ios/%E8%BF%9B%E9%98%B6%E6%96%87%E6%A1%A3#1_2" target="_blank" rel="external">新浪微博集成说明</a></p>
+<p>官方文档还有部分平台集成的 <a href="http://dev.umeng.com/social/ios/%E8%BF%9B%E9%98%B6%E6%96%87%E6%A1%A3#1" target="_blank" rel="external">特别说明</a></p>
+<h3 id="初始化设置"><a href="#初始化设置" class="headerlink" title="初始化设置"></a>初始化设置</h3><p>通过前面几步之后，SDK 和 配置都就绪后，就开始进行U-Share和第三方平台的初始化工作</p>
+<h4 id="获取友盟-AppKey"><a href="#获取友盟-AppKey" class="headerlink" title="获取友盟 AppKey"></a>获取友盟 AppKey</h4><p>首先需要注册并登录友盟账号之后，在我的产品中，找到 U-Share,然后选择立即使用</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/ushare_select.PNG" alt=""></p>
+<p>选择添加应用</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/ushare_add.PNG" alt=""></p>
+<p>填写应用基本信息，然后提交并获取 AppKey</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/ushare_appinfo.PNG" alt=""></p>
+<p>然后就获得了这个应用对应的 AppKey</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/ushare_appkey.PNG" alt=""></p>
+<p>之后再去你需要集成的各大<a href="http://dev.umeng.com/social/ios/operation" target="_blank" rel="external">第三方平台注册自己帐号</a>并且添加自己的应用，各大平台也都大同小异的会给你一个对应这个应用的 AppKey 和 AppSecret，这些 AppKey 和 AppSecret 会在友盟初始化平台的时候使用到</p>
+<h4 id="初始化U-Share及第三方平台"><a href="#初始化U-Share及第三方平台" class="headerlink" title="初始化U-Share及第三方平台"></a>初始化U-Share及第三方平台</h4><p>上面说了一大堆，终于开始进入正题，开始写代码了，首先在 <code>AppDelegate.m</code> 中设置如下代码</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">&lt;UMSocialCore/UMSocialCore.h&gt;</span></span></div><div class="line"></div><div class="line">- (<span class="built_in">BOOL</span>)application:(<span class="built_in">UIApplication</span> *)application didFinishLaunchingWithOptions:(<span class="built_in">NSDictionary</span> *)launchOptions &#123;</div><div class="line">    <span class="comment">/* 打开调试日志 */</span></div><div class="line">    [[UMSocialManager defaultManager] openLog:<span class="literal">YES</span>];</div><div class="line">    <span class="comment">/* 设置友盟appkey */</span></div><div class="line">    [[UMSocialManager defaultManager] setUmSocialAppkey:USHARE_DEMO_APPKEY];</div><div class="line">    <span class="comment">/* 初始化需要的第三方平台*/</span></div><div class="line">    [<span class="keyword">self</span> configUSharePlatforms];</div><div class="line">    ／* 初始化分享的其他一些设置*／</div><div class="line">    [<span class="keyword">self</span> confitUShareSettings];</div><div class="line">    <span class="comment">// Custom code</span></div><div class="line">    <span class="keyword">return</span> <span class="literal">YES</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)confitUShareSettings&#123;</div><div class="line">    <span class="comment">/* 打开图片水印 */</span></div><div class="line">    <span class="comment">//[UMSocialGlobal shareInstance].isUsingWaterMark = YES;</span></div><div class="line"></div><div class="line">    <span class="comment">/*</span></div><div class="line">     * 关闭强制验证https，可允许http图片分享，但需要在info.plist设置安全域名</div><div class="line">     &lt;key&gt;NSAppTransportSecurity&lt;/key&gt;</div><div class="line">     &lt;dict&gt;</div><div class="line">     &lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;</div><div class="line">     &lt;true/&gt;</div><div class="line">     &lt;/dict&gt;</div><div class="line">     */</div><div class="line">    </div><div class="line">    <span class="comment">//[UMSocialGlobal shareInstance].isUsingHttpsWhenShareContent = NO;</span></div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)configUSharePlatforms&#123;</div><div class="line">    <span class="comment">/* 设置微信的appKey和appSecret */</span></div><div class="line">    [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_WechatSession appKey:<span class="string">@"wxdc1e388c3822c80b"</span> appSecret:<span class="string">@"3baf1193c85774b3fd9d18447d76cab0"</span> redirectURL:<span class="string">@"http://mobile.umeng.com/social"</span>];</div><div class="line">    <span class="comment">/*</span></div><div class="line">     * 移除相应平台的分享，如微信收藏</div><div class="line">     */</div><div class="line">    <span class="comment">//[[UMSocialManager defaultManager] removePlatformProviderWithPlatformTypes:@[@(UMSocialPlatformType_WechatFavorite)]];</span></div><div class="line"></div><div class="line">    <span class="comment">/* 设置分享到QQ互联的appID</span></div><div class="line">     * U-Share SDK为了兼容大部分平台命名，统一用appKey和appSecret进行参数设置，而QQ平台仅需将appID作为U-Share的appKey参数传进即可。</div><div class="line">    */</div><div class="line">    [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_QQ appKey:<span class="string">@"1105821097"</span><span class="comment">/*设置QQ平台的appID*/</span>  appSecret:<span class="literal">nil</span> redirectURL:<span class="string">@"http://mobile.umeng.com/social"</span>];</div><div class="line"></div><div class="line">    <span class="comment">/* 设置新浪的appKey和appSecret */</span></div><div class="line">    [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_Sina appKey:<span class="string">@"3921700954"</span>  appSecret:<span class="string">@"04b48b094faeb16683c32669824ebdad"</span> redirectURL:<span class="string">@"https://sns.whalecloud.com/sina2/callback"</span>];</div><div class="line"></div><div class="line">    </div><div class="line">    <span class="comment">/* 设置Facebook的appKey和UrlString */</span></div><div class="line">    [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_Facebook appKey:<span class="string">@"506027402887373"</span>  appSecret:<span class="literal">nil</span> redirectURL:<span class="string">@"http://www.umeng.com/social"</span>];</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="添加系统回调方法"><a href="#添加系统回调方法" class="headerlink" title="添加系统回调方法"></a>添加系统回调方法</h4><p>添加系统回调方法一共有三个，下面这个方法支持全部 iOS 系统</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 支持所有iOS系统</span></div><div class="line">- (<span class="built_in">BOOL</span>)application:(<span class="built_in">UIApplication</span> *)application openURL:(<span class="built_in">NSURL</span> *)url sourceApplication:(<span class="built_in">NSString</span> *)sourceApplication annotation:(<span class="keyword">id</span>)annotation</div><div class="line">&#123;</div><div class="line">    <span class="comment">//6.3的新的API调用，是为了兼容国外平台(例如:新版facebookSDK,VK等)的调用[如果用6.2的api调用会没有回调],对国内平台没有影响</span></div><div class="line">    <span class="built_in">BOOL</span> result = [[UMSocialManager defaultManager] handleOpenURL:url sourceApplication:sourceApplication annotation:annotation];</div><div class="line">    <span class="keyword">if</span> (!result) &#123;</div><div class="line">         <span class="comment">// 其他如支付等SDK的回调</span></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> result;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>注：以上方法为建议使用的系统openURL回调方法，且 新浪 平台仅支持以上方法的回调</p>
+</blockquote>
+<p>还有以下两种回调方法</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">BOOL</span>)application:(<span class="built_in">UIApplication</span> *)app openURL:(<span class="built_in">NSURL</span> *)url options:(<span class="built_in">NSDictionary</span>&lt;<span class="built_in">UIApplicationOpenURLOptionsKey</span>, <span class="keyword">id</span>&gt; *)options&#123;</div><div class="line">    <span class="comment">//6.3的新的API调用，是为了兼容国外平台(例如:新版facebookSDK,VK等)的调用[如果用6.2的api调用会没有回调],对国内平台没有影响</span></div><div class="line">    <span class="built_in">BOOL</span> result = [[UMSocialManager defaultManager]  handleOpenURL:url options:options];</div><div class="line">    <span class="keyword">if</span> (!result) &#123;</div><div class="line">        <span class="comment">// 其他如支付等SDK的回调</span></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> result;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>注：上面的回调方法仅支持 iOS9 以上系统，iOS8及以下系统不会回调</p>
+</blockquote>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">BOOL</span>)application:(<span class="built_in">UIApplication</span> *)application handleOpenURL:(<span class="built_in">NSURL</span> *)url</div><div class="line">&#123;</div><div class="line">    <span class="built_in">BOOL</span> result = [[UMSocialManager defaultManager] handleOpenURL:url];</div><div class="line">    <span class="keyword">if</span> (!result) &#123;</div><div class="line">        <span class="comment">// 其他如支付等SDK的回调</span></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> result;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>注：这个回调方法支持全部iOS系统，但是 iOS9 之后就废弃了 </p>
+</blockquote>
+<h3 id="分享到第三方平台"><a href="#分享到第三方平台" class="headerlink" title="分享到第三方平台"></a>分享到第三方平台</h3><p>友盟分享目前支持的类型有：</p>
+<ul>
+<li>网页类型（网页链接）</li>
+<li>图片</li>
+<li>文本</li>
+<li>表情（GIF图片，即Emotion类型，只有微信支持）</li>
+<li>图文（包含一张图片和一段文本）</li>
+<li>视频（只支持视频URL、缩略图及描述）</li>
+<li>音乐（只支持音乐URL、缩略图及描述）</li>
+</ul>
+<h4 id="分享文本"><a href="#分享文本" class="headerlink" title="分享文本"></a>分享文本</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)shareTextToPlatformType:(UMSocialPlatformType)platformType</div><div class="line">&#123;</div><div class="line">    <span class="comment">//创建分享消息对象</span></div><div class="line">    UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];</div><div class="line">    <span class="comment">//设置文本</span></div><div class="line">    messageObject.text = <span class="string">@"社会化组件UShare将各大社交平台接入您的应用，快速武装App。"</span>;</div><div class="line"></div><div class="line">    <span class="comment">//调用分享接口</span></div><div class="line">    [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:<span class="keyword">self</span> completion:^(<span class="keyword">id</span> data, <span class="built_in">NSError</span> *error) &#123;</div><div class="line">        <span class="keyword">if</span> (error) &#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"************Share fail with error %@*********"</span>,error);</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"response data is %@"</span>,data);</div><div class="line">        &#125;</div><div class="line">    &#125;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>调用友盟的分享接口的时候需要传入一个 <code>UMSocialPlatformType</code>，表示分享的内容需要分享到那个平台，这是一个枚举类型，里面对应了分享平台的类型,下面列举部分：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="built_in">NS_ENUM</span>(<span class="built_in">NSInteger</span>,UMSocialPlatformType)</div><div class="line">&#123;</div><div class="line">    UMSocialPlatformType_Sina               = <span class="number">0</span>, <span class="comment">//新浪</span></div><div class="line">    UMSocialPlatformType_WechatSession      = <span class="number">1</span>, <span class="comment">//微信聊天</span></div><div class="line">    UMSocialPlatformType_WechatTimeLine     = <span class="number">2</span>,<span class="comment">//微信朋友圈</span></div><div class="line">    UMSocialPlatformType_WechatFavorite     = <span class="number">3</span>,<span class="comment">//微信收藏</span></div><div class="line">    UMSocialPlatformType_QQ                 = <span class="number">4</span>,<span class="comment">//QQ聊天页面</span></div><div class="line">    UMSocialPlatformType_Qzone              = <span class="number">5</span>,<span class="comment">//qq空间  </span></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h4 id="分享图片"><a href="#分享图片" class="headerlink" title="分享图片"></a>分享图片</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)shareImageToPlatformType:(UMSocialPlatformType)platformType&#123;</div><div class="line">    <span class="comment">//创建分享消息对象</span></div><div class="line">    UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];</div><div class="line"></div><div class="line">    <span class="comment">//创建图片内容对象</span></div><div class="line">    UMShareImageObject *shareObject = [[UMShareImageObject alloc] init];</div><div class="line">    <span class="comment">//如果有缩略图，则设置缩略图</span></div><div class="line">    shareObject.thumbImage = [<span class="built_in">UIImage</span> imageNamed:<span class="string">@"icon"</span>];</div><div class="line">    [shareObject setShareImage:<span class="string">@"http://upload-images.jianshu.io/upload_images/7114-3ccd44494b31077a.jpg"</span>];</div><div class="line"></div><div class="line">    <span class="comment">//分享消息对象设置分享内容对象</span></div><div class="line">    messageObject.shareObject = shareObject;</div><div class="line"></div><div class="line">    <span class="comment">//调用分享接口</span></div><div class="line">    [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:<span class="keyword">self</span> completion:^(<span class="keyword">id</span> data, <span class="built_in">NSError</span> *error) &#123;</div><div class="line">        <span class="keyword">if</span> (error) &#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"************Share fail with error %@*********"</span>,error);</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"response data is %@"</span>,data);</div><div class="line">        &#125;</div><div class="line">    &#125;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="分享图文（新浪支持，微信-QQ仅支持图或文本分享）"><a href="#分享图文（新浪支持，微信-QQ仅支持图或文本分享）" class="headerlink" title="分享图文（新浪支持，微信/QQ仅支持图或文本分享）"></a>分享图文（新浪支持，微信/QQ仅支持图或文本分享）</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)shareImageAndTextToPlatformType:(UMSocialPlatformType)platformType&#123;</div><div class="line">    <span class="comment">//创建分享消息对象</span></div><div class="line">    UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];</div><div class="line"></div><div class="line">    <span class="comment">//设置文本</span></div><div class="line">    messageObject.text = <span class="string">@"社会化组件UShare将各大社交平台接入您的应用，快速武装App。"</span>;</div><div class="line"></div><div class="line">    <span class="comment">//创建图片内容对象</span></div><div class="line">    UMShareImageObject *shareObject = [[UMShareImageObject alloc] init];</div><div class="line">    <span class="comment">//如果有缩略图，则设置缩略图</span></div><div class="line">    shareObject.thumbImage = [<span class="built_in">UIImage</span> imageNamed:<span class="string">@"icon"</span>];</div><div class="line">    [shareObject setShareImage:<span class="string">@"https://www.umeng.com/img/index/demo/1104.4b2f7dfe614bea70eea4c6071c72d7f5.jpg"</span>];</div><div class="line"></div><div class="line">    <span class="comment">//分享消息对象设置分享内容对象</span></div><div class="line">    messageObject.shareObject = shareObject;</div><div class="line"></div><div class="line">    <span class="comment">//调用分享接口</span></div><div class="line">    [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:<span class="keyword">self</span> completion:^(<span class="keyword">id</span> data, <span class="built_in">NSError</span> *error) &#123;</div><div class="line">        <span class="keyword">if</span> (error) &#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"************Share fail with error %@*********"</span>,error);</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"response data is %@"</span>,data);</div><div class="line">        &#125;</div><div class="line">    &#125;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="分享网页"><a href="#分享网页" class="headerlink" title="分享网页"></a>分享网页</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)shareWebPageToPlatformType:(UMSocialPlatformType)platformType</div><div class="line">&#123;</div><div class="line">    <span class="comment">//创建分享消息对象</span></div><div class="line">    UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];</div><div class="line"></div><div class="line">    <span class="comment">//创建网页内容对象</span></div><div class="line">    UMShareWebpageObject *shareObject = [UMShareWebpageObject shareObjectWithTitle:<span class="string">@"分享标题"</span> descr:<span class="string">@"分享内容描述"</span> thumImage:[<span class="built_in">UIImage</span> imageNamed:<span class="string">@"icon"</span>]];</div><div class="line">    <span class="comment">//设置网页地址</span></div><div class="line">    shareObject.webpageUrl =<span class="string">@"http://shuishangshu.coding.me/"</span>;</div><div class="line"></div><div class="line">    <span class="comment">//分享消息对象设置分享内容对象</span></div><div class="line">    messageObject.shareObject = shareObject;</div><div class="line"></div><div class="line">    <span class="comment">//调用分享接口</span></div><div class="line">    [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:<span class="keyword">self</span> completion:^(<span class="keyword">id</span> data, <span class="built_in">NSError</span> *error) &#123;</div><div class="line">        <span class="keyword">if</span> (error) &#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"************Share fail with error %@*********"</span>,error);</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"response data is %@"</span>,data);</div><div class="line">        &#125;</div><div class="line">    &#125;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="分享音乐"><a href="#分享音乐" class="headerlink" title="分享音乐"></a>分享音乐</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)shareMusicToPlatformType:(UMSocialPlatformType)platformType&#123;</div><div class="line">    <span class="comment">//创建分享消息对象</span></div><div class="line">    UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];</div><div class="line"></div><div class="line">    <span class="comment">//创建音乐内容对象</span></div><div class="line">    UMShareMusicObject *shareObject = [UMShareMusicObject shareObjectWithTitle:<span class="string">@"分享标题"</span> descr:<span class="string">@"分享内容描述"</span> thumImage:[<span class="built_in">UIImage</span> imageNamed:<span class="string">@"icon"</span>]];</div><div class="line">    <span class="comment">//设置音乐网页播放地址</span></div><div class="line">    shareObject.musicUrl = <span class="string">@"http://c.y.qq.com/v8/playsong.html?songid=108782194&amp;source=yqq#wechat_redirect"</span>;</div><div class="line">    <span class="comment">//            shareObject.musicDataUrl = @"这里设置音乐数据流地址（如果有的话，而且也要看所分享的平台支不支持）";</span></div><div class="line">    <span class="comment">//分享消息对象设置分享内容对象</span></div><div class="line">    messageObject.shareObject = shareObject;</div><div class="line"></div><div class="line">    <span class="comment">//调用分享接口</span></div><div class="line">    [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:<span class="keyword">self</span> completion:^(<span class="keyword">id</span> data, <span class="built_in">NSError</span> *error) &#123;</div><div class="line">        <span class="keyword">if</span> (error) &#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"************Share fail with error %@*********"</span>,error);</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"response data is %@"</span>,data);</div><div class="line">        &#125;</div><div class="line">    &#125;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="分享视频"><a href="#分享视频" class="headerlink" title="分享视频"></a>分享视频</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)shareVedioToPlatformType:(UMSocialPlatformType)platformType&#123;</div><div class="line">    <span class="comment">//创建分享消息对象</span></div><div class="line">    UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];</div><div class="line"></div><div class="line">    <span class="comment">//创建视频内容对象</span></div><div class="line">    UMShareVideoObject *shareObject = [UMShareVideoObject shareObjectWithTitle:<span class="string">@"分享标题"</span> descr:<span class="string">@"分享内容描述"</span> thumImage:[<span class="built_in">UIImage</span> imageNamed:<span class="string">@"icon"</span>]];</div><div class="line">    <span class="comment">//设置视频网页播放地址</span></div><div class="line">    shareObject.videoUrl = <span class="string">@"http://www.eyepetizer.net/detail.html?utm_source=wechat-moments&amp;utm_campaign=routine&amp;udid=ea2ca1eda657617ef73589c0083ea8028ff8352d&amp;vid=19533&amp;vc=2751&amp;deviceModel=iPhone%206s&amp;utm_medium=share&amp;vn=3.5.1"</span>;</div><div class="line">    <span class="comment">//            shareObject.videoStreamUrl = @"这里设置视频数据流地址（如果有的话，而且也要看所分享的平台支不支持）";</span></div><div class="line"></div><div class="line">    <span class="comment">//分享消息对象设置分享内容对象</span></div><div class="line">    messageObject.shareObject = shareObject;</div><div class="line"></div><div class="line">    <span class="comment">//调用分享接口</span></div><div class="line">    [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:<span class="keyword">self</span> completion:^(<span class="keyword">id</span> data, <span class="built_in">NSError</span> *error) &#123;</div><div class="line">        <span class="keyword">if</span> (error) &#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"************Share fail with error %@*********"</span>,error);</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"response data is %@"</span>,data);</div><div class="line">        &#125;</div><div class="line">    &#125;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="分享微信小程序"><a href="#分享微信小程序" class="headerlink" title="分享微信小程序"></a>分享微信小程序</h4><p>我目前没法测试分享微信小程序，所以无法验证开发文档中的代码的效果</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)shareMiniProgramToPlatformType:(UMSocialPlatformType)platformType&#123;</div><div class="line">    <span class="comment">//创建分享消息对象</span></div><div class="line">    UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];</div><div class="line"></div><div class="line">    UMShareMiniProgramObject *shareObject = [UMShareMiniProgramObject shareObjectWithTitle:<span class="string">@"小程序标题"</span> descr:<span class="string">@"小程序内容描述"</span> thumImage:[<span class="built_in">UIImage</span> imageNamed:<span class="string">@"icon"</span>]];</div><div class="line">    shareObject.webpageUrl = <span class="string">@"兼容微信低版本网页地址"</span>;</div><div class="line">    shareObject.userName = <span class="string">@"小程序username，如 gh_3ac2059ac66f"</span>;</div><div class="line">    shareObject.path = <span class="string">@"小程序页面路径，如 pages/page10007/page10007"</span>;</div><div class="line">    messageObject.shareObject = shareObject;</div><div class="line"></div><div class="line">    <span class="comment">//调用分享接口</span></div><div class="line">    [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:<span class="keyword">self</span> completion:^(<span class="keyword">id</span> data, <span class="built_in">NSError</span> *error)&#123;</div><div class="line">        <span class="keyword">if</span> (error) &#123;</div><div class="line">            UMSocialLogInfo(<span class="string">@"************Share fail with error %@*********"</span>,error);</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            <span class="keyword">if</span> ([data isKindOfClass:[UMSocialShareResponse <span class="keyword">class</span>]]) &#123;</div><div class="line">                UMSocialShareResponse *resp = data;</div><div class="line">                <span class="comment">//分享结果消息</span></div><div class="line">                UMSocialLogInfo(<span class="string">@"response message is %@"</span>,resp.message);</div><div class="line">                <span class="comment">//第三方原始返回的数据</span></div><div class="line">                UMSocialLogInfo(<span class="string">@"response originalResponse data is %@"</span>,resp.originalResponse);</div><div class="line"></div><div class="line">            &#125;<span class="keyword">else</span>&#123;</div><div class="line">                UMSocialLogInfo(<span class="string">@"response data is %@"</span>,data);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        [<span class="keyword">self</span> alertWithError:error];</div><div class="line">    &#125;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="友盟分享注意事项"><a href="#友盟分享注意事项" class="headerlink" title="友盟分享注意事项"></a>友盟分享注意事项</h3><p>1.分享的图片地址如果是 HTTP 而不是 HTTPS SDK 会报错</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">2017-05-07 01:07:27 UShare(Error):[UMSocialWechatHandler:1052](iOS.6.4.3): UMeng提示助手编号[wechat_share_error_5]:&lt;下载UMShareImageObject的shareImage失败，请检查图片参数是否正确。（本地图片，请检查是否赋值，网络图片请检查是否为https，防止下载失败）。&gt;</div><div class="line">2017-05-07 01:07:27.025951+0800 UMengDemo[5588:1612809] (null)---Error Domain=UMSocialPlatformErrorDomain Code=2014 <span class="string">"(null)"</span> UserInfo=&#123;message=you must using https url, <span class="keyword">for</span> support the new strategy of AppStore.&#125;</div></pre></td></tr></table></figure>
+<p>需要在 <code>AppDelegate.m</code> 里设置</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[UMSocialGlobal shareInstance].isUsingHttpsWhenShareContent = <span class="literal">NO</span>;</div></pre></td></tr></table></figure>
+<p>2.未安装新浪微博客户端使用微博分享是会出现微博登录界面一闪而过或者直接报错无法调起微博登录授权界面，这是由于新浪微博 SDK 还未更新 ATS 的支持，故目前需要对其进行配置，把新浪微博的 HTTP 地址添加进 ATS 的白名单， 右键 <code>info.plist</code> 选择用 <code>Source Code</code> 打开，然后添加如下代码：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>NSAppTransportSecurity<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">dict</span>&gt;</span></div><div class="line">   <span class="tag">&lt;<span class="name">key</span>&gt;</span>NSExceptionDomains<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">   <span class="tag">&lt;<span class="name">dict</span>&gt;</span></div><div class="line">       <span class="comment">&lt;!-- 集成新浪微博对应的HTTP白名单--&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">key</span>&gt;</span>sina.com.cn<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">dict</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">key</span>&gt;</span>NSIncludesSubdomains<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">true</span>/&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">key</span>&gt;</span>NSThirdPartyExceptionAllowsInsecureHTTPLoads<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">true</span>/&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">key</span>&gt;</span>NSThirdPartyExceptionRequiresForwardSecrecy<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">false</span>/&gt;</span></div><div class="line">       <span class="tag">&lt;/<span class="name">dict</span>&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">key</span>&gt;</span>sinaimg.cn<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">dict</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">key</span>&gt;</span>NSIncludesSubdomains<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">true</span>/&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">key</span>&gt;</span>NSThirdPartyExceptionAllowsInsecureHTTPLoads<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">true</span>/&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">key</span>&gt;</span>NSThirdPartyExceptionRequiresForwardSecrecy<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">false</span>/&gt;</span></div><div class="line">       <span class="tag">&lt;/<span class="name">dict</span>&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">key</span>&gt;</span>sinajs.cn<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">dict</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">key</span>&gt;</span>NSIncludesSubdomains<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">true</span>/&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">key</span>&gt;</span>NSThirdPartyExceptionAllowsInsecureHTTPLoads<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">true</span>/&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">key</span>&gt;</span>NSThirdPartyExceptionRequiresForwardSecrecy<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">false</span>/&gt;</span></div><div class="line">       <span class="tag">&lt;/<span class="name">dict</span>&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">key</span>&gt;</span>sina.cn<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">dict</span>&gt;</span></div><div class="line">           <span class="comment">&lt;!-- 适配iOS10 --&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">key</span>&gt;</span>NSExceptionMinimumTLSVersion<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">string</span>&gt;</span>TLSv1.0<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">key</span>&gt;</span>NSIncludesSubdomains<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">true</span>/&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">key</span>&gt;</span>NSThirdPartyExceptionRequiresForwardSecrecy<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">false</span>/&gt;</span></div><div class="line">       <span class="tag">&lt;/<span class="name">dict</span>&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">key</span>&gt;</span>weibo.cn<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">dict</span>&gt;</span></div><div class="line">           <span class="comment">&lt;!-- 适配iOS10 --&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">key</span>&gt;</span>NSExceptionMinimumTLSVersion<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">string</span>&gt;</span>TLSv1.0<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">key</span>&gt;</span>NSIncludesSubdomains<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">true</span>/&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">key</span>&gt;</span>NSThirdPartyExceptionRequiresForwardSecrecy<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">false</span>/&gt;</span></div><div class="line">       <span class="tag">&lt;/<span class="name">dict</span>&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">key</span>&gt;</span>weibo.com<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">dict</span>&gt;</span></div><div class="line">           <span class="comment">&lt;!-- 适配iOS10 --&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">key</span>&gt;</span>NSExceptionMinimumTLSVersion<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">string</span>&gt;</span>TLSv1.0<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">key</span>&gt;</span>NSIncludesSubdomains<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">true</span>/&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">key</span>&gt;</span>NSThirdPartyExceptionAllowsInsecureHTTPLoads<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">true</span>/&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">key</span>&gt;</span>NSThirdPartyExceptionRequiresForwardSecrecy<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">false</span>/&gt;</span></div><div class="line">       <span class="tag">&lt;/<span class="name">dict</span>&gt;</span></div><div class="line">       <span class="comment">&lt;!-- 新浪微博--&gt;</span></div><div class="line">   <span class="tag">&lt;/<span class="name">dict</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">dict</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>或者你也可以更加暴力的完全禁止 ATS</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>NSAppTransportSecurity<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">dict</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>NSAllowsArbitraryLoads<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">true</span>/&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">dict</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>但是不建议这种方式，毕竟现在苹果现在对App的审核要求是全部使用HTTPS，为了避免审核出现被拒的情况，建议 APP 所以的请求都采用 HTTPS，如果一些涉及到第三方还在采用 HTTP 的时候就按照上面微博的情况添加到白名单</p>
+<p>关于 ATS 的问题可以参看喵神的博文 <a href="https://onevcat.com/2016/06/ios-10-ats/" target="_blank" rel="external">关于iOS 10 中 ATS 的问题</a></p>
+<p>3.App 引入第三方分享或授权登录的时候必须检测该平台是否已经安装并且支持分享，App时候只显示已经安装的平台，否则苹果审核可能会被拒，<code>UMSocialManager</code>提供了检测平台是否已经安装和是否支持分享的方法</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> *  平台是否安装</div><div class="line"> *  @param platformType 平台类型 @see UMSocialPlatformType</div><div class="line"> *  @return YES 代表安装，NO 代表未安装</div><div class="line"> *  @note 调用前请检查是否配置好平台相关白名单: http://dev.umeng.com/social/ios/quick-integration#1_3 </div><div class="line"> *  在判断QQ空间的App的时候，QQApi判断会出问题</div><div class="line"> */</div><div class="line">-(<span class="built_in">BOOL</span>) isInstall:(UMSocialPlatformType)platformType;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> *  当前平台是否支持分享</div><div class="line"> *  @param platformType 平台类型 @see UMSocialPlatformType</div><div class="line"> *  @return YES代表支持，NO代表不支持</div><div class="line"> */</div><div class="line">-(<span class="built_in">BOOL</span>) isSupport:(UMSocialPlatformType)platformType;</div></pre></td></tr></table></figure>
+<h3 id="友盟分享面板UI"><a href="#友盟分享面板UI" class="headerlink" title="友盟分享面板UI"></a>友盟分享面板UI</h3><h4 id="分享面板的使用"><a href="#分享面板的使用" class="headerlink" title="分享面板的使用"></a>分享面板的使用</h4><p>友盟提供了自己的分享面板UI，如果项目中没有要求可以使用友盟自带的分享面板，使用起来非常简单</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">&lt;UShareUI/UShareUI.h&gt;</span></span></div><div class="line"><span class="comment">// 定制自己的分享面板预定义平台</span></div><div class="line"><span class="built_in">NSMutableArray</span> *platforms = [<span class="built_in">NSMutableArray</span> array];</div><div class="line">    </div><div class="line"><span class="keyword">if</span> ([[UMSocialManager defaultManager] isInstall:UMSocialPlatformType_WechatSession] &amp;&amp; [[UMSocialManager defaultManager] isSupport:UMSocialPlatformType_WechatSession]) &#123;</div><div class="line">    [platforms addObject:@(UMSocialPlatformType_WechatSession)];</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="keyword">if</span> ([[UMSocialManager defaultManager] isInstall:UMSocialPlatformType_Sina] &amp;&amp; [[UMSocialManager defaultManager] isSupport:UMSocialPlatformType_Sina]) &#123;</div><div class="line">    [platforms addObject:@(UMSocialPlatformType_Sina)];</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="keyword">if</span> ([[UMSocialManager defaultManager] isInstall:UMSocialPlatformType_Facebook] &amp;&amp; [[UMSocialManager defaultManager] isSupport:UMSocialPlatformType_Facebook]) &#123;</div><div class="line">    [platforms addObject:@(UMSocialPlatformType_Facebook)];</div><div class="line">&#125;</div><div class="line"></div><div class="line">[UMSocialUIManager setPreDefinePlatforms:@[@(UMSocialPlatformType_Sina),@(UMSocialPlatformType_QQ),@(UMSocialPlatformType_WechatSession)]];</div><div class="line"></div><div class="line"><span class="comment">//调用分享面板</span></div><div class="line">[UMSocialUIManager showShareMenuViewInWindowWithPlatformSelectionBlock:^(UMSocialPlatformType platformType, <span class="built_in">NSDictionary</span> *userInfo) &#123;</div><div class="line">       <span class="comment">// 根据获取的platformType确定所选平台进行下一步操作</span></div><div class="line">       [<span class="keyword">self</span> shareWebPageToPlatformType:platformType];</div><div class="line">    &#125;];</div></pre></td></tr></table></figure>
+<blockquote>
+<p>注： <code>setPreDefinePlatforms</code> 传入的平台必须是合法并且是core模块已经检测到的已经存在的平台，不然会被过滤掉(此条款是上线AppStore审核的条件)</p>
+</blockquote>
+<h4 id="分享面板-UI-的定制"><a href="#分享面板-UI-的定制" class="headerlink" title="分享面板 UI 的定制"></a>分享面板 UI 的定制</h4><p>友盟的分享面板由四个主体控件组成，可以根据自己的需求来自定义这四个控件；</p>
+<ul>
+<li>UMSocialShareTitleView title控件，对应的配置类 –&gt; UMSocialShareTitleViewConfig</li>
+<li>UMSocialSharePageScrollView 分页控件，对应的配置类 –&gt; UMSocialSharePageScrollViewConfig</li>
+<li>UMSocialSharePageControl PageControl控件，对应的配置类 –&gt; UMSocialSharePageControlConfig</li>
+<li>UMSocialShareCancelControl CancelControl控件，对应的配置类 –&gt; UMSocialShareCancelControlConfig</li>
+</ul>
+<p>用户通过修改每个对应的控件对应相应的配置类的参数来控制控件的外观</p>
+<p><code>UMSocialShareTitleViewConfig</code> 的参数如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">BOOL</span> isShow;<span class="comment">//是否显示</span></div><div class="line"><span class="built_in">NSString</span>* shareTitleViewTitleString;<span class="comment">//标题的文字</span></div><div class="line"><span class="built_in">UIFont</span>* shareTitleViewFont;<span class="comment">//字体</span></div><div class="line"><span class="built_in">UIColor</span>* shareTitleViewTitleColor;<span class="comment">//文字颜色</span></div><div class="line"><span class="built_in">UIColor</span>* shareTitleViewBackgroundColor;<span class="comment">//背景颜色</span></div><div class="line"><span class="built_in">CGFloat</span> shareTitleViewPaddingTop;<span class="comment">//title的内边距top</span></div><div class="line"><span class="built_in">CGFloat</span> shareTitleViewPaddingBottom;<span class="comment">//title的内边距Bottom</span></div></pre></td></tr></table></figure>
+<p><code>UMSocialSharePageScrollViewConfig</code> 的参数如下:</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">CGFloat</span> shareScrollViewPageMaxItemWidth; <span class="comment">//每页Items的最大宽度</span></div><div class="line"><span class="built_in">CGFloat</span> shareScrollViewPageMaxItemHeight; <span class="comment">//每页Items的最大高度</span></div><div class="line">UMSocialPlatformItemViewBackgroudType shareScrollViewPageItemStyleType;<span class="comment">//每个Item的背景类型</span></div><div class="line"><span class="built_in">CGFloat</span> shareScrollViewPageMaxRowCountForPortraitAndBottom; <span class="comment">//每页显示最大的行(在底部显示手机处于肖像模式)</span></div><div class="line"><span class="built_in">CGFloat</span> shareScrollViewPageMaxColumnCountForPortraitAndBottom; <span class="comment">//每页显示最大的列(在底部显示手机处于肖像模式)</span></div><div class="line">....</div></pre></td></tr></table></figure>
+<p><code>UMSocialSharePageControlConfig</code> 的参数如下:</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">BOOL</span> isShow;<span class="comment">//是否显示</span></div><div class="line"><span class="built_in">UIColor</span>*  sharePageControlPageIndicatorTintColor;<span class="comment">//指示器颜色</span></div><div class="line"><span class="built_in">UIColor</span>*  sharePageControlCurrentPageIndicatorTintColor;<span class="comment">//当前的页的颜色</span></div><div class="line"><span class="built_in">BOOL</span>      sharePageControlHidesForSinglePage;<span class="comment">//为一页是会隐藏</span></div><div class="line"><span class="built_in">UIColor</span>*  sharePageControlBackgroundColor;<span class="comment">//背景色</span></div></pre></td></tr></table></figure>
+<p><code>UMSocialShareCancelControlConfig</code> 的参数如下:</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">BOOL</span> isShow;<span class="comment">//是否显示</span></div><div class="line"><span class="built_in">NSString</span>* shareCancelControlText;<span class="comment">//相对父view的左边距</span></div><div class="line"><span class="built_in">UIColor</span>* shareCancelControlTextColor;<span class="comment">//文字颜色</span></div><div class="line"><span class="built_in">UIFont</span>* shareCancelControlTextFont;<span class="comment">//文字字体</span></div><div class="line"><span class="built_in">UIColor</span>* shareCancelControlBackgroundColor;<span class="comment">//背景颜色;</span></div></pre></td></tr></table></figure>
+<p>假如要修改当前分享面板为:无titleview,面板显示再中间，肖像模式下的2行3列，风景模式2行6列，没有取消控件，在调用显示分享面板的时候添加如下代码即可：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[UMSocialShareUIConfig shareInstance].shareTitleViewConfig.isShow = <span class="literal">NO</span>;</div><div class="line">[UMSocialShareUIConfig shareInstance].sharePageGroupViewConfig.sharePageGroupViewPostionType = UMSocialSharePageGroupViewPositionType_Middle;</div><div class="line">[UMSocialShareUIConfig shareInstance].sharePageScrollViewConfig.shareScrollViewPageMaxRowCountForPortraitAndMid = <span class="number">2</span>;</div><div class="line">[UMSocialShareUIConfig shareInstance].sharePageScrollViewConfig.shareScrollViewPageMaxColumnCountForPortraitAndMid = <span class="number">3</span>;</div><div class="line">[UMSocialShareUIConfig shareInstance].sharePageScrollViewConfig.shareScrollViewPageMaxRowCountForLandscapeAndMid = <span class="number">2</span>;</div><div class="line">[UMSocialShareUIConfig shareInstance].sharePageScrollViewConfig.shareScrollViewPageMaxColumnCountForLandscapeAndMid = <span class="number">6</span>;</div><div class="line">[UMSocialShareUIConfig shareInstance].shareCancelControlConfig.isShow = <span class="literal">NO</span>;</div></pre></td></tr></table></figure>
+<p>分享面板的其他功能使用可以参考官方文档：<a href="http://dev.umeng.com/social/ios/%E8%BF%9B%E9%98%B6%E6%96%87%E6%A1%A3#3" target="_blank" rel="external">分享面板UI</a></p>
+<h3 id="第三方登录集成"><a href="#第三方登录集成" class="headerlink" title="第三方登录集成"></a>第三方登录集成</h3><p>第三方登录主要用于简化用户登录流程，通过用户拥有的微博、QQ、微信等第三方账号进行登录，最终通过调用登录接口，获取用户在第三方平台的用户ID、头像等资料完成自己App账号体系的构建</p>
+<p>支持的平台：</p>
+<ul>
+<li>国内平台 微信、QQ、新浪、腾讯微博、人人网、豆瓣</li>
+<li>国外平台 Facebook、Twitter、linkedIn、Kakao</li>
+</ul>
+<p>在需要进行获取登录信息的控制器中加入如下代码：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">&lt;UMSocialCore/UMSocialCore.h&gt;</span></span></div><div class="line"></div><div class="line">[[UMSocialManager defaultManager] getUserInfoWithPlatform:UMSocialPlatformType_Sina currentViewController:<span class="keyword">self</span> completion:^(<span class="keyword">id</span> result, <span class="built_in">NSError</span> *error) &#123;</div><div class="line">        </div><div class="line">    <span class="keyword">if</span> (error) &#123;</div><div class="line">    </div><div class="line">    &#125;<span class="keyword">else</span>&#123;</div><div class="line">        </div><div class="line">        UMSocialUserInfoResponse *userInfo = result;</div><div class="line">        </div><div class="line">        <span class="comment">// 第三方登录数据(为空表示平台未提供)</span></div><div class="line">        <span class="comment">// 授权数据</span></div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@" uid: %@"</span>, userInfo.uid);</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@" openid: %@"</span>, userInfo.openid);</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@" accessToken: %@"</span>, userInfo.accessToken);</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@" refreshToken: %@"</span>, userInfo.refreshToken);</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@" expiration: %@"</span>, userInfo.expiration);</div><div class="line">        </div><div class="line">        <span class="comment">// 用户数据</span></div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@" name: %@"</span>, userInfo.name);</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@" iconurl: %@"</span>, userInfo.iconurl);</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@" gender: %@"</span>, userInfo.gender);</div><div class="line">        </div><div class="line">        <span class="comment">// 第三方平台SDK原始数据</span></div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@" originaluserInfoonse: %@"</span>, userInfo.originalResponse);</div><div class="line">    &#125;</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<p>授权登录成功后，第三方平台会将用户资料传回，由于各个平台对于用户资料的标识不同，因此为了便于开发者使用，友盟将一些常用的字段做了统一封装，开发者可以直接获取，不再需要对不同平台的不同字段名做转换，这里列出封装的字段及含义：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">UShare封装后字段名</th>
+<th style="text-align:left">QQ原始字段名</th>
+<th style="text-align:left">微信原始字段名</th>
+<th style="text-align:left">新浪原始字段名</th>
+<th style="text-align:left">字段含义</th>
+<th style="text-align:left">备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">uid</td>
+<td style="text-align:left">openid</td>
+<td style="text-align:left">unionid</td>
+<td style="text-align:left">id</td>
+<td style="text-align:left">用户唯一标识uid如果要实现 Android 与 iOS 平台打通，必须确保为统一APPID</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">name</td>
+<td style="text-align:left">screen_name</td>
+<td style="text-align:left">screen_name</td>
+<td style="text-align:left">screen_name</td>
+<td style="text-align:left">用户昵称</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">gender</td>
+<td style="text-align:left">gender</td>
+<td style="text-align:left">gender</td>
+<td style="text-align:left">gender</td>
+<td style="text-align:left">用户性别</td>
+<td style="text-align:left">该字段会直接返回男女</td>
+</tr>
+<tr>
+<td style="text-align:left">iconurl</td>
+<td style="text-align:left">profile_image_url</td>
+<td style="text-align:left">profile_image_ur</td>
+<td style="text-align:left">profile_image_url</td>
+<td style="text-align:left">用户头像</td>
+<td style="text-align:left">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p>以上就是友盟分享 U-Share 的集成与使用，基本都是来自<a href="http://dev.umeng.com/social/ios/quick-integration" target="_blank" rel="external">官方文档</a>，官方文档写的很详细，集成过程中遇到问题和错误在文档中基本可以找得到解决的办法</p>
+<p><strong>本人刚开始写博客，技术一般，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能帮到别人也是荣幸之至！如有错误，欢迎各位指正！</strong></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/04/程序员技术练级攻略/" rel="next" title="程序员技术练级攻略">
+                <i class="fa fa-chevron-left"></i> 程序员技术练级攻略
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Xiaovv" />
+          <p class="site-author-name" itemprop="name">Xiaovv</p>
+           
+              <p class="site-description motion-element" itemprop="description">以绝大多数人的努力程度之低，根本轮不到去拼天赋</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#U-Share-SDK-集成与配置"><span class="nav-number">1.</span> <span class="nav-text">U-Share SDK 集成与配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#通过-Cocoapods-集成"><span class="nav-number">1.1.</span> <span class="nav-text">通过 Cocoapods 集成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置SSO白名单"><span class="nav-number">1.2.</span> <span class="nav-text">配置SSO白名单</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置-URL-Scheme"><span class="nav-number">1.3.</span> <span class="nav-text">配置 URL Scheme</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化设置"><span class="nav-number">2.</span> <span class="nav-text">初始化设置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#获取友盟-AppKey"><span class="nav-number">2.1.</span> <span class="nav-text">获取友盟 AppKey</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#初始化U-Share及第三方平台"><span class="nav-number">2.2.</span> <span class="nav-text">初始化U-Share及第三方平台</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#添加系统回调方法"><span class="nav-number">2.3.</span> <span class="nav-text">添加系统回调方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分享到第三方平台"><span class="nav-number">3.</span> <span class="nav-text">分享到第三方平台</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分享文本"><span class="nav-number">3.1.</span> <span class="nav-text">分享文本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分享图片"><span class="nav-number">3.2.</span> <span class="nav-text">分享图片</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分享图文（新浪支持，微信-QQ仅支持图或文本分享）"><span class="nav-number">3.3.</span> <span class="nav-text">分享图文（新浪支持，微信/QQ仅支持图或文本分享）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分享网页"><span class="nav-number">3.4.</span> <span class="nav-text">分享网页</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分享音乐"><span class="nav-number">3.5.</span> <span class="nav-text">分享音乐</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分享视频"><span class="nav-number">3.6.</span> <span class="nav-text">分享视频</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分享微信小程序"><span class="nav-number">3.7.</span> <span class="nav-text">分享微信小程序</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#友盟分享注意事项"><span class="nav-number">4.</span> <span class="nav-text">友盟分享注意事项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#友盟分享面板UI"><span class="nav-number">5.</span> <span class="nav-text">友盟分享面板UI</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分享面板的使用"><span class="nav-number">5.1.</span> <span class="nav-text">分享面板的使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分享面板-UI-的定制"><span class="nav-number">5.2.</span> <span class="nav-text">分享面板 UI 的定制</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三方登录集成"><span class="nav-number">6.</span> <span class="nav-text">第三方登录集成</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaovv</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
