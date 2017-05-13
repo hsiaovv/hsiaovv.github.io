@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="iOS," />
+  <meta name="keywords" content="iOS,Swift," />
 
 
 
@@ -87,18 +87,19 @@
 
 
 
-<meta name="description" content="iOS 开发过程中，经常需要在 Debug 模式下使用 NSLog 打印日志输出进行调试，但是 Release 之后打包生成安装文件之后就不要这些输出了，并且 Release 之后 NSLog 打印还会影响 App 的性能，为了让 NSLog 在 Debug 模式下打印输出，Release 模式之后不打印输出，可以使用如下宏定义，把下面的代码加入到工程的 PCH 文件中即可： 12345#ifde">
-<meta name="keywords" content="iOS">
+<meta name="description" content="iOS 开发过程中，经常需要在 Debug 模式下使用打印日志输出（在 OC 中默认是使用 NSLog 打印, Swift 中默认使用 print 打印）进行调试，但是 Release 之后打包生成安装文件之后就不需要这些输出了，并且 Release 之后打印输出还会影响 App 的性能，苹果上架审核规则也是不允许的，下面就分别介绍 OC 和 Swift 下怎么实现 Debug 模式下打印输出，R">
+<meta name="keywords" content="iOS,Swift">
 <meta property="og:type" content="article">
-<meta property="og:title" content="自定义 NSLog 输出">
-<meta property="og:url" content="http://yoursite.com/2017/05/13/自定义-NSLog-输出/index.html">
+<meta property="og:title" content="OC 和 Swift 自定义打印输出">
+<meta property="og:url" content="http://yoursite.com/2017/05/13/OC 和 Swift 自定义打印输出/index.html">
 <meta property="og:site_name" content="笑忘书店">
-<meta property="og:description" content="iOS 开发过程中，经常需要在 Debug 模式下使用 NSLog 打印日志输出进行调试，但是 Release 之后打包生成安装文件之后就不要这些输出了，并且 Release 之后 NSLog 打印还会影响 App 的性能，为了让 NSLog 在 Debug 模式下打印输出，Release 模式之后不打印输出，可以使用如下宏定义，把下面的代码加入到工程的 PCH 文件中即可： 12345#ifde">
+<meta property="og:description" content="iOS 开发过程中，经常需要在 Debug 模式下使用打印日志输出（在 OC 中默认是使用 NSLog 打印, Swift 中默认使用 print 打印）进行调试，但是 Release 之后打包生成安装文件之后就不需要这些输出了，并且 Release 之后打印输出还会影响 App 的性能，苹果上架审核规则也是不允许的，下面就分别介绍 OC 和 Swift 下怎么实现 Debug 模式下打印输出，R">
 <meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/setpchpath.png">
-<meta property="og:updated_time" content="2017-05-12T16:40:25.000Z">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/setswiftdebug.png">
+<meta property="og:updated_time" content="2017-05-13T00:52:18.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="自定义 NSLog 输出">
-<meta name="twitter:description" content="iOS 开发过程中，经常需要在 Debug 模式下使用 NSLog 打印日志输出进行调试，但是 Release 之后打包生成安装文件之后就不要这些输出了，并且 Release 之后 NSLog 打印还会影响 App 的性能，为了让 NSLog 在 Debug 模式下打印输出，Release 模式之后不打印输出，可以使用如下宏定义，把下面的代码加入到工程的 PCH 文件中即可： 12345#ifde">
+<meta name="twitter:title" content="OC 和 Swift 自定义打印输出">
+<meta name="twitter:description" content="iOS 开发过程中，经常需要在 Debug 模式下使用打印日志输出（在 OC 中默认是使用 NSLog 打印, Swift 中默认使用 print 打印）进行调试，但是 Release 之后打包生成安装文件之后就不需要这些输出了，并且 Release 之后打印输出还会影响 App 的性能，苹果上架审核规则也是不允许的，下面就分别介绍 OC 和 Swift 下怎么实现 Debug 模式下打印输出，R">
 <meta name="twitter:image" content="http://onzskckoz.bkt.clouddn.com/setpchpath.png">
 
 
@@ -127,13 +128,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/05/13/自定义-NSLog-输出/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/05/13/OC 和 Swift 自定义打印输出/"/>
 
 
 
 
 
-  <title> 自定义 NSLog 输出 | 笑忘书店 </title>
+  <title> OC 和 Swift 自定义打印输出 | 笑忘书店 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -252,7 +253,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/13/自定义-NSLog-输出/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/13/OC 和 Swift 自定义打印输出/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Xiaovv">
@@ -273,7 +274,7 @@
             
             
               
-                自定义 NSLog 输出
+                OC 和 Swift 自定义打印输出
               
             
           </h1>
@@ -324,12 +325,13 @@
       
 
       
-        <p>iOS 开发过程中，经常需要在 Debug 模式下使用 NSLog 打印日志输出进行调试，但是 Release 之后打包生成安装文件之后就不要这些输出了，并且 Release 之后 NSLog 打印还会影响 App 的性能，为了让 NSLog 在 Debug 模式下打印输出，Release 模式之后不打印输出，可以使用如下宏定义，把下面的代码加入到工程的 <code>PCH</code> 文件中即可：</p>
+        <p>iOS 开发过程中，经常需要在 Debug 模式下使用打印日志输出（在 OC 中默认是使用 <code>NSLog</code> 打印, Swift 中默认使用 <code>print</code> 打印）进行调试，但是 Release 之后打包生成安装文件之后就不需要这些输出了，并且 Release 之后打印输出还会影响 App 的性能，苹果上架审核规则也是不允许的，下面就分别介绍 OC 和 Swift 下怎么实现 Debug 模式下打印输出，Release 模式之后不打印输出</p>
+<h3 id="OC-自定义-NSLog-输出"><a href="#OC-自定义-NSLog-输出" class="headerlink" title="OC 自定义 NSLog 输出"></a>OC 自定义 NSLog 输出</h3><p>在 OC 中可以使用如下宏定义，把下面的代码加入到工程的 <code>PCH</code> 文件中即可：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#ifdef DEBUG</span></div><div class="line"><span class="meta">#define NSLog(format, ...) NSLog(format, ## __VA_ARGS__)</span></div><div class="line"><span class="meta">#else</span></div><div class="line"><span class="meta">#define NSLog(format, ...)</span></div><div class="line"><span class="meta">#endif</span></div></pre></td></tr></table></figure>
 <p>上面这段代码的意思就是用宏指令做一个判断，如果 DEBUG 为真，则编译#ifdef到#endif宏定义，否则编译器就不编译，然后就可以在项目里继续使用 NSLog 打印日志输出了，不用担心 Release 下还会打印日志输出了</p>
 <p>既然可以自己定义 NSLog 那为什么不让打印的信息更佳丰富一些呢，比如加入打印的文件名、函数名、打印位置的行数呢，然后可以修改一下上面的代码：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#if DEBUG</span></div><div class="line"><span class="meta">#define NSLog(FORMAT, ...) NSLog(@<span class="meta-string">"File:%s Function:%s Line:%d Content:%@\n"</span>, __FILE__,__FUNCTION__, __LINE__, [NSString stringWithFormat:FORMAT, ##__VA_ARGS__])</span></div><div class="line"><span class="meta">#else</span></div><div class="line"><span class="meta">#define NSLog(FORMAT, ...)</span></div><div class="line"><span class="meta">#endif</span></div></pre></td></tr></table></figure>
-<p>使用上面的宏定义就可以得到了下面的打印信息的效果：</p>
+<p>使用上面的宏定义就可以得到了下面的打印的结果如下：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">2017-05-12 23:54:25.888 NSLogDemo[15672:715649] File:/Users/xiaovv/Documents/DemoCode/NSLogDemo/NSLogDemo/ViewController.m Function:-[ViewController viewDidLoad] Line:20 Content:NSLogDemo</div></pre></td></tr></table></figure>
 <p>下面介绍一下宏定义里面几个参数：</p>
 <ul>
@@ -338,12 +340,54 @@
 <li>__LINE__宏在预编译时会替换成当前的行号</li>
 <li>__FUNCTION__宏在预编译时会替换成当前的函数名称</li>
 </ul>
-<p><strong>补充 Xcode 8 如何添加 <code>PCH</code> 文件</strong>:</p>
+<p><strong>补充1 Xcode 8 如何添加 <code>PCH</code> 文件</strong>:</p>
 <p>1. 打开你的 Xcode 工程. 在Supporting Files目录下,使用 <code>Command</code> + <code>N</code> 新建一个文件选择 other 下面的 <code>PCH File</code>，<code>PCH</code> 文件名格式建议为 <code>工程名-Prefix.pch</code>，比如：<code>NSLogDemo-Prefix.pch</code></p>
 <p>2. 在工程的 <code>Build Settings</code> 里搜索找到 <code>Prefix Header</code> 选项，然后给这个选项配置路径为：项目名称/PCH 文件名，比如：NSLogDemo/NSLogDemo-Prefix.pch</p>
-<p>3. 将 Precompile Prefix Header为YES，预编译后的 PCH 文件会被缓存起来，可以提高编译速度</p>
+<p>3. 将 <code>Precompile Prefix Header</code> 为 <code>YES</code>，预编译后的 <code>PCH</code> 文件会被缓存起来，可以提高编译速度</p>
 <p><img src="http://onzskckoz.bkt.clouddn.com/setpchpath.png" alt=""></p>
 <p>4. Clean 一下工程，就可以使用 <code>PCH</code> 文件了</p>
+<h3 id="Swift-自定义-Print-输出"><a href="#Swift-自定义-Print-输出" class="headerlink" title="Swift 自定义 Print 输出"></a>Swift 自定义 Print 输出</h3><p>Swift 中已经没有宏定义文件了，但是 Swift 只要在一个文件中声明了一个公开的方法, 其他文件都是可以访问到的. 所以可以把自定义 Log 的方法放到一个公共使用的方法的文件中，可以这样定义：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> UIKit</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">XWLog</span>&lt;T&gt;<span class="params">(<span class="number">_</span> messsage : T, file : String = #file, funcName : String = #function, lineNum : Int = #line&#123;</span></span></div><div class="line">    </div><div class="line">    #<span class="keyword">if</span> DEBUG</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> fileName = <span class="params">(file <span class="keyword">as</span> NSString)</span>.lastPathComponent</div><div class="line">        </div><div class="line">        <span class="built_in">print</span>(<span class="string">"File:\(fileName) Function:\(funcName) Line:\(lineNum) Content:\(messsage)"</span>)</div><div class="line">        </div><div class="line">    #endif</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用上面的 <code>XWLog</code> 打印的结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">File:ViewController.swift Function:viewDidLoad() Line:18 Content:LogDemo</div></pre></td></tr></table></figure>
+<p>这里 <code>#if DEBUG</code> 以及 <code>#endif</code> 还是宏，但是这个宏和 OC 中的宏是两回事了，因为这个是我们自定义的宏，Swift2 需要我们自己去配置这个自定义的宏，Swift 3 貌似默认已经配置了，Swift 2 需要在 <code>Building Settings</code> 进行如下设置</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/setswiftdebug.png" alt=""></p>
+<p>解释一下 <code>XWLog</code> 函数：</p>
+<ul>
+<li>使用泛型函数（<t> 标志）,可以让调用者传递任意的类型,进行打印Log的操作，可以自行搜索 Swift 泛型函数相关内容</t></li>
+<li><code>#file，#function，#line</code> 是编译器几个很有用的编译符号</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">符号</th>
+<th style="text-align:left">类型</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">#file</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">包含这个符号的文件的路径</td>
+</tr>
+<tr>
+<td style="text-align:left">#line</td>
+<td style="text-align:left">Int</td>
+<td style="text-align:left">符号出现处的行号</td>
+</tr>
+<tr>
+<td style="text-align:left">#column</td>
+<td style="text-align:left">Int</td>
+<td style="text-align:left">符号出现处的列</td>
+</tr>
+<tr>
+<td style="text-align:left">#function</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">包含这个符号的方法名字</td>
+</tr>
+</tbody>
+</table>
 <p>以上</p>
 <p><strong>本人刚开始写博客，技术一般，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能帮到别人也是荣幸之至！如有错误，欢迎各位指正！</strong></p>
 
@@ -376,6 +420,8 @@
         <div class="post-tags">
           
             <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+            <a href="/tags/Swift/" rel="tag"># Swift</a>
           
         </div>
       
@@ -443,8 +489,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.jpg"
@@ -497,6 +552,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#OC-自定义-NSLog-输出"><span class="nav-number">1.</span> <span class="nav-text">OC 自定义 NSLog 输出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Swift-自定义-Print-输出"><span class="nav-number">2.</span> <span class="nav-text">Swift 自定义 Print 输出</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
