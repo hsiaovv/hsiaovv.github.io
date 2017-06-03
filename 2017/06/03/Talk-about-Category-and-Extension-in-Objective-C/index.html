@@ -1,0 +1,716 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="OC," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="OC 的分类（类别）和扩展基本上是面试必问的一个知识点，它们在日常开发中用的也非常多，相关文章网上非常多，好多都是一样的内容，本文也不免俗，按我自己的整理记录一下这个知识点 分类／类别（Category）分类能够做到的事情主要是：即使在你不知道一个类的源码情况下，向这个类添加扩展的方法，通过分类可以将庞大一个类的方法进行划分,从而便于代码的日后的维护、更新以及提高代码的阅读性，那么怎么样新建一个分">
+<meta name="keywords" content="OC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OC 的类别和扩展（Category 和 Extension）">
+<meta property="og:url" content="http://yoursite.com/2017/06/03/Talk-about-Category-and-Extension-in-Objective-C/index.html">
+<meta property="og:site_name" content="笑忘书店">
+<meta property="og:description" content="OC 的分类（类别）和扩展基本上是面试必问的一个知识点，它们在日常开发中用的也非常多，相关文章网上非常多，好多都是一样的内容，本文也不免俗，按我自己的整理记录一下这个知识点 分类／类别（Category）分类能够做到的事情主要是：即使在你不知道一个类的源码情况下，向这个类添加扩展的方法，通过分类可以将庞大一个类的方法进行划分,从而便于代码的日后的维护、更新以及提高代码的阅读性，那么怎么样新建一个分">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/addCategory1.png">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/addCategory2.png">
+<meta property="og:updated_time" content="2017-06-03T07:10:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OC 的类别和扩展（Category 和 Extension）">
+<meta name="twitter:description" content="OC 的分类（类别）和扩展基本上是面试必问的一个知识点，它们在日常开发中用的也非常多，相关文章网上非常多，好多都是一样的内容，本文也不免俗，按我自己的整理记录一下这个知识点 分类／类别（Category）分类能够做到的事情主要是：即使在你不知道一个类的源码情况下，向这个类添加扩展的方法，通过分类可以将庞大一个类的方法进行划分,从而便于代码的日后的维护、更新以及提高代码的阅读性，那么怎么样新建一个分">
+<meta name="twitter:image" content="http://onzskckoz.bkt.clouddn.com/addCategory1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/06/03/Talk-about-Category-and-Extension-in-Objective-C/"/>
+
+
+
+
+
+  <title> OC 的类别和扩展（Category 和 Extension） | 笑忘书店 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笑忘书店</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/03/Talk-about-Category-and-Extension-in-Objective-C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaovv">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笑忘书店">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                OC 的类别和扩展（Category 和 Extension）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-03T14:54:00+08:00">
+                2017-06-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>OC 的分类（类别）和扩展基本上是面试必问的一个知识点，它们在日常开发中用的也非常多，相关文章网上非常多，好多都是一样的内容，本文也不免俗，按我自己的整理记录一下这个知识点</p>
+<h3 id="分类／类别（Category）"><a href="#分类／类别（Category）" class="headerlink" title="分类／类别（Category）"></a>分类／类别（Category）</h3><p><strong>分类能够做到的事情主要是：即使在你不知道一个类的源码情况下，向这个类添加扩展的方法</strong>，通过分类可以将庞大一个类的方法进行划分,从而便于代码的日后的维护、更新以及提高代码的阅读性，那么怎么样新建一个分类呢？</p>
+<p>在项目工程里使用快捷键 <code>Command</code> + <code>N</code> 新建文件，选择 <code>Objective-C File</code></p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/addCategory1.png" alt=""></p>
+<p>然后在 <code>File</code> 给这个分类的取个名字， <code>File Type</code> 选择 <code>Category</code>，<code>Class</code> 选择你需要为那个类新建一个分类</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/addCategory2.png" alt=""></p>
+<p>之后就创建好了一个叫 <code>NSString+Utility</code> 的分类</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// .h</span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">NSString</span> (<span class="title">Utility</span>)</span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="comment">// .m</span></div><div class="line"><span class="meta">#import <span class="meta-string">"NSString+Utility.h"</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">NSString</span> (<span class="title">Utility</span>)</span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>然后我们就可以在这个分类里添加方法，既然叫 <code>Utility</code> 那么我就添加一个 <code>NSString</code> 相关的工具方法，比如增加一个给字符串 MD5 加密的方法</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// .h</span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">NSString</span> (<span class="title">Utility</span>)</span></div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 32位MD5加密</div><div class="line"> */</div><div class="line">- (<span class="built_in">NSString</span>*)MD5;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="comment">// .m</span></div><div class="line"><span class="meta">#import <span class="meta-string">"NSString+Utility.h"</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;CommonCrypto/CommonDigest.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">NSString</span> (<span class="title">Utility</span>)</span></div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 32位MD5加密</div><div class="line"> */</div><div class="line">- (<span class="built_in">NSString</span>*)MD5&#123;</div><div class="line">    </div><div class="line">    <span class="comment">// Create pointer to the string as UTF8</span></div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *ptr = [<span class="keyword">self</span> UTF8String];</div><div class="line">    </div><div class="line">    <span class="comment">// Create byte array of unsigned chars</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> md5Buffer[CC_MD5_DIGEST_LENGTH];</div><div class="line">    </div><div class="line">    <span class="comment">// Create 16 byte MD5 hash value, store in buffer</span></div><div class="line">    CC_MD5(ptr, (CC_LONG)strlen(ptr), md5Buffer);</div><div class="line">    </div><div class="line">    <span class="comment">// Convert MD5 value in the buffer to NSString of hex values</span></div><div class="line">    <span class="built_in">NSMutableString</span> *output = [<span class="built_in">NSMutableString</span> stringWithCapacity:CC_MD5_DIGEST_LENGTH * <span class="number">2</span>];</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; CC_MD5_DIGEST_LENGTH; i++)</div><div class="line">        [output appendFormat:<span class="string">@"%02x"</span>,md5Buffer[i]];</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> output;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>分类写好之后，在需要使用分类的文件里 <code>#import &quot;NSString+Utility.h&quot;</code> 就可以使用分类里面的方法了</p>
+<p>使用分类需要注意</p>
+<ul>
+<li>分类不能为已存在的类添加属性和实例变量，但是分类可以访问原来类中的成员变量</li>
+<li>如果分类和原来类出现同名的方法, 优先调用分类中的方法, 原来类中的方法会被忽略</li>
+<li>类别可以被继承，如果一个父类中定义了类别，那么其子类中也会继承此类别</li>
+<li>在实际开发中要注意的是，分类的方法可能会覆盖于同一个类的其它分类中的方法，但也可能被覆盖，因为不法预知他们的加载优先顺序，出现这种情况通常会在编译时出错，如果在一个开发的SDK中使用了分类， 就最好保证分类名不同于使用者的分类名以及分类方法也不同于使用者的分类方法名，看过开源框架就知道，通常是通过加前缀来区分</li>
+</ul>
+<p>虽然默认情况下，我们不能为分类添加属性和成员变量，但是，如果我们一定要为分类添加属性和成员变量也是可以的，这就需要用到 <code>Runtime</code> 里面的 <code>objc_getAssociatedObject / objc_setAssociatedObject</code> 来访问和生成关联对象</p>
+<p>继续用上面的分类 <code>NSString+Utility.h</code> 举例，往这个分类里面添加一个 <code>extensionName</code> 属性</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// .h </span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">NSString</span> (<span class="title">Utility</span>)</span></div><div class="line"></div><div class="line"><span class="comment">//@property在通常情况下，除了生成setter和getter方法以外，如果没有该成员变量还会生成一个带下划线的成员变量，而在分类中，@property只是生成setter和getter方法</span></div><div class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>) <span class="built_in">NSString</span> *extensionName;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 32位MD5加密</div><div class="line"> */</div><div class="line">- (<span class="built_in">NSString</span>*)MD5;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="comment">// .m</span></div><div class="line"><span class="meta">#import <span class="meta-string">"NSString+Utility.h"</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;CommonCrypto/CommonDigest.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;objc/runtime.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">void</span> *extensionNameKey = &amp;extensionNameKey;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">NSString</span> (<span class="title">Utility</span>)</span></div><div class="line"></div><div class="line">- (<span class="built_in">NSString</span> *)extensionName&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> objc_getAssociatedObject(<span class="keyword">self</span>, extensionNameKey);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)setExtensionName:(<span class="built_in">NSString</span> *)extensionName&#123;</div><div class="line">    <span class="comment">//这个方法有四个参数，分别是：1.源对象，2.关联时的用来标记是哪一个属性的key（因为你可能要添加很多属性），3.关联的对象，4.一个关联策略</span></div><div class="line">    <span class="keyword">return</span> objc_setAssociatedObject(<span class="keyword">self</span>, extensionNameKey, extensionName, OBJC_ASSOCIATION_COPY_NONATOMIC);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 32位MD5加密方式</div><div class="line"> */</div><div class="line">- (<span class="built_in">NSString</span>*)MD5&#123;</div><div class="line">    </div><div class="line">    <span class="comment">// Create pointer to the string as UTF8</span></div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *ptr = [<span class="keyword">self</span> UTF8String];</div><div class="line">    </div><div class="line">    <span class="comment">// Create byte array of unsigned chars</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> md5Buffer[CC_MD5_DIGEST_LENGTH];</div><div class="line">    </div><div class="line">    <span class="comment">// Create 16 byte MD5 hash value, store in buffer</span></div><div class="line">    CC_MD5(ptr, (CC_LONG)strlen(ptr), md5Buffer);</div><div class="line">    </div><div class="line">    <span class="comment">// Convert MD5 value in the buffer to NSString of hex values</span></div><div class="line">    <span class="built_in">NSMutableString</span> *output = [<span class="built_in">NSMutableString</span> stringWithCapacity:CC_MD5_DIGEST_LENGTH * <span class="number">2</span>];</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; CC_MD5_DIGEST_LENGTH; i++)</div><div class="line">        [output appendFormat:<span class="string">@"%02x"</span>,md5Buffer[i]];</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%lu"</span>, (<span class="keyword">unsigned</span> <span class="keyword">long</span>)<span class="keyword">self</span>.length);</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> output;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>成员变量和属性的区别</p>
+<blockquote>
+<p>声明一个属性:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">@property (nonatomic, strong) NSString *myString;</div></pre></td></tr></table></figure>
+<p>声明一个成员变量(实例变量):</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">@interface ViewController : UIViewController</div><div class="line">&#123;</div><div class="line">    NSString *_myString;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure>
+<p>我们声明了一个属性,因为现在我们用的编译器已经是LLVM了，所以不再需要为属性声明实例变量了。如果LLVM发现一个没有匹配实例变量的属性，它将为你生成以下划线开头的实例变量_myString，不需要自己手动再去写实例变量。而且也不需要在.m文件中写@synthesize myString；也会自动为你生成setter，getter方法 @synthesize的作用就是让编译器为你自动生成setter与getter方法。那么在.m文件中可以直接的使用 _myString 实例变量，也可以通过属性self.myString.两者都是一样的,只不过后者是通过调用_myString的setter/getter方法</p>
+<p>@synthesize 还有一个作用，可以指定与属性对应的实例变量，例如@synthesize myString= xxxx；<br>那么self.myString其实是操作的实例变量xxxx，而不是_myString了</p>
+<p>分类中用@property定义变量，只会生成变量的getter，setter方法的声明，不能生成方法实现和带下划线<br>的成员变量</p>
+</blockquote>
+<h3 id="类扩展（Extension）"><a href="#类扩展（Extension）" class="headerlink" title="类扩展（Extension）"></a>类扩展（Extension）</h3><p>类扩展(Extension）是 <code>Category</code> 的一个特例，有时候也被称为匿名分类，它的作用是为一个类添加一些私有的成员变量和方法，使用类扩展的方法必须在 <code>@implementation</code> 中实现，否则编译会报错</p>
+<p>类扩展看起来有点复杂，类扩展即可以声明成员变量又可以声明方法，其实我们很早就已经使用过类扩展了，先看一下类扩展的写法</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//这就是类扩展的写法，是不是很熟悉</span></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">className</span> ()</span></div><div class="line"><span class="comment">// ...</span></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>类扩展通常定义在 .m 文件中，这种扩展方式中定义的变量和方法都是私有的，当然也可以定义在 .h 文件中，这样定义的变量和方法就是共有的都可以访问和使用，类扩展在 .m 文件中声明私有方法和私有变量是非常好的方式，现在自动生成的 .m 文件的上面都自带扩展了</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// .m 文件</span></div><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">"ViewController.h"</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">"NSString+Utility.h"</span></span></div><div class="line"></div><div class="line"><span class="comment">//类扩展区域</span></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ViewController</span> ()</span></div><div class="line"></div><div class="line"><span class="comment">//类扩展属性，私有</span></div><div class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>) <span class="built_in">NSString</span> *privateName;</div><div class="line"></div><div class="line"><span class="comment">//类扩展方法，必须实现</span></div><div class="line">+ (<span class="keyword">void</span>)extensionClassMethod;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)extensionInstanceMethod;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">ViewController</span></span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</div><div class="line">    [<span class="keyword">super</span> viewDidLoad];</div><div class="line">    <span class="comment">// Do any additional setup after loading the view, typically from a nib.</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">//类扩展方法实现</span></div><div class="line">- (<span class="keyword">void</span>)extensionInstanceMethod&#123;</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"This is Instance method"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line">+ (<span class="keyword">void</span>)extensionClassMethod&#123;</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"This is Class method"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>当然我们也可以参照上面的新建分类的的方法用单独的文件定义类扩展，只是 <code>File Type</code> 选择 <code>Extension</code>，生成的类扩展文件名格式为：<code>主类名_扩展名.h</code>，类扩展文件只有 .h 文件，没有 .m 文件，我们在主类的 .m 文件中 <code>#import</code> 该类扩展文件，并且在主类的 .m文件中实现类扩展文件声明的方法，看看具体怎么实现</p>
+<p>首先，新建了一个 <code>ViewController</code> 的类扩展文件 <code>ViewController_ExtensionController.h</code> ，代码如下</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//和直接在 .m 文件中使用是一样的</span></div><div class="line"><span class="meta">#import <span class="meta-string">"ViewController.h"</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ViewController</span> ()</span></div><div class="line"></div><div class="line"><span class="comment">//声明类扩展属性和方法</span></div><div class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>) <span class="built_in">NSString</span> *extensionName;</div><div class="line"></div><div class="line">+ (<span class="keyword">void</span>)extensionClassMethod;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)extensionInstanceMethod;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>然后，在 <code>ViewController</code> 引入该类扩展文件，并且实现类扩展文件中声明的方法</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">"ViewController.h"</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">"NSString+Utility.h"</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">"ViewController_ExtensionController.h"</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ViewController</span> ()</span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">ViewController</span></span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</div><div class="line">    [<span class="keyword">super</span> viewDidLoad];</div><div class="line">    </div><div class="line">    <span class="keyword">self</span>.extensionName = <span class="string">@"extensionName"</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//类扩展方法实现</span></div><div class="line">- (<span class="keyword">void</span>)extensionInstanceMethod&#123;</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"This is Instance method"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line">+ (<span class="keyword">void</span>)extensionClassMethod&#123;</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"This is Class method"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>类扩展需要注意</p>
+<ul>
+<li>类扩展是类的一部分，在编译器和头文件的 <code>@interface</code> 和实现文件里的 <code>@implement</code> 一起形成了一个完整的类</li>
+<li>类扩展伴随着类的产生而产生，也随着类的消失而消失。</li>
+<li>类扩展一般用来隐藏类的私有消息，你必须有一个类的源码才能添加一个类的 <code>Extension</code>，所以对于系统一些类，如 <code>NSString</code>，就无法添加类扩展</li>
+</ul>
+<p>以上就是 OC 中分类（类别）和扩展的介绍</p>
+<p><strong>本人刚开始写博客，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能让别人有所启发也是荣幸之至！如有错误，欢迎指正！</strong></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/OC/" rel="tag"># OC</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/28/MBProgressHUD-Source-notes/" rel="next" title="MBProgressHUD 源码笔记">
+                <i class="fa fa-chevron-left"></i> MBProgressHUD 源码笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Xiaovv" />
+          <p class="site-author-name" itemprop="name">Xiaovv</p>
+           
+              <p class="site-description motion-element" itemprop="description">以绝大多数人的努力程度之低，根本轮不到去拼天赋</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#分类／类别（Category）"><span class="nav-number">1.</span> <span class="nav-text">分类／类别（Category）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类扩展（Extension）"><span class="nav-number">2.</span> <span class="nav-text">类扩展（Extension）</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaovv</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

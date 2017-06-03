@@ -96,7 +96,7 @@
 <meta property="og:description" content="iOS 10.3 新增了更换 App 图标的功能，这个功能使用起来也不复杂，这篇文章就介绍一下 iOS 10.3 怎么更换 App 的图标 官方文档介绍更换图标的需要用到下面几个新 API 方法： 1234567891011// If false, alternate icons are not supported for the current process.@available(iOS 10">
 <meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/changeIconPlist.png">
 <meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/changIcon.PNG">
-<meta property="og:updated_time" content="2017-04-24T10:46:14.000Z">
+<meta property="og:updated_time" content="2017-06-03T07:14:12.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS10.3 更换应用图标">
 <meta name="twitter:description" content="iOS 10.3 新增了更换 App 图标的功能，这个功能使用起来也不复杂，这篇文章就介绍一下 iOS 10.3 怎么更换 App 的图标 官方文档介绍更换图标的需要用到下面几个新 API 方法： 1234567891011// If false, alternate icons are not supported for the current process.@available(iOS 10">
@@ -356,7 +356,7 @@
     <span class="keyword">if</span> <span class="type">UIApplication</span>.shared.supportsAlternateIcons {<span class="comment">//判断设备是否支持更换图标      </span>
         <span class="type">UIApplication</span>.shared.setAlternateIconName(iconName, completionHandler: { (error) <span class="keyword">in</span>
             <span class="keyword">if</span> error != <span class="literal">nil</span> {
-                 <span class="built_in">print</span>(<span class="string">"替换icon失败<span class="subst">\(String(describing: error?.localizedDescription)</span>)"</span>)
+                 <span class="built_in">print</span>(<span class="string">"替换icon失败\(String(describing: error?.localizedDescription))"</span>)
             }
         })
     }<span class="keyword">else</span> {
@@ -368,7 +368,7 @@
 <p><img src="http://onzskckoz.bkt.clouddn.com/changIcon.PNG" alt=""></p>
 <p>如果需要恢复原来的图标 <code>setAlternateIconName</code> 传 <code>nil</code> 就可以恢复了</p>
 <p>这是 <a href="https://github.com/shuishangshu/iOS10.3ChangesAppIconDemo" target="_blank" rel="external">demo 代码地址</a> </p>
-<p><strong>本人刚开始写博客，技术一般，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能帮到别人也是荣幸之至！如有错误，欢迎各位指正！</strong></p>
+<p><strong>本人刚开始写博客，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能让别人有所启发也是荣幸之至！如有错误，欢迎指正！</strong></p>
 
       
     </div>
@@ -495,7 +495,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-count">26</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

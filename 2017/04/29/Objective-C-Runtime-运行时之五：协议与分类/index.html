@@ -94,7 +94,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/04/29/Objective-C-Runtime-运行时之五：协议与分类/index.html">
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="本系列文章转载自南峰子的技术博客 本文原地址：Objective-C Runtime 运行时之五：协议与分类 Objective-C 中的分类允许我们通过给一个类添加方法来扩充它（但是通过 category 不能添加新的实例变量），并且我们不需要访问类中的代码就可以做到。 Objective-C 中的协议是普遍存在的接口定义方式，即在一个类中通过@protocol 定义接口，在另外类中实现接口，这">
-<meta property="og:updated_time" content="2017-04-29T07:23:39.000Z">
+<meta property="og:updated_time" content="2017-06-03T07:12:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Objective-C Runtime 运行时之五：协议与分类">
 <meta name="twitter:description" content="本系列文章转载自南峰子的技术博客 本文原地址：Objective-C Runtime 运行时之五：协议与分类 Objective-C 中的分类允许我们通过给一个类添加方法来扩充它（但是通过 category 不能添加新的实例变量），并且我们不需要访问类中的代码就可以做到。 Objective-C 中的协议是普遍存在的接口定义方式，即在一个类中通过@protocol 定义接口，在另外类中实现接口，这">
@@ -350,6 +350,7 @@
 <p>需要强调的是，协议一旦注册后就不可再修改，即无法再通过调用<code>protocol_addMethodDescription</code>、<code>protocol_addProtocol和protocol_addProperty</code> 往协议中添加方法等</p>
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>Runtime 并没有提供过多的函数来处理分类。对于协议，我们可以动态地创建协议，并向其添加方法、属性及继承的协议，并在运行时动态地获取这些信息。</p>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://developer.apple.com/reference/objectivec/objective_c_runtime" target="_blank" rel="external">Objective-C Runtime Reference</a></p>
+<p><strong>本人刚开始写博客，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能让别人有所启发也是荣幸之至！如有错误，欢迎指正！</strong></p>
 
       
     </div>
@@ -480,7 +481,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-count">26</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

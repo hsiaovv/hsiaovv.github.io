@@ -94,7 +94,7 @@
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="MBProgressHUD 是开发中使用非常平凡的一个提示框的第三方库，MBProgressHUD 用法简单、源代码也比较少，它的使用方法可以参考Github 上的说明，网络上也有很多对 MBProgressHUD 的源码解析，但是别人的解析终归是别人的，我们只能作为参考，作为学习还是需要亲自去源码里一探究竟的，下面就记录一下我对 MBProgressHUD 框架的源码的学习记录，本文使用的源代码">
 <meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/MBProgressHUDMode.png">
-<meta property="og:updated_time" content="2017-05-28T12:14:04.000Z">
+<meta property="og:updated_time" content="2017-06-03T07:10:51.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MBProgressHUD 源码笔记">
 <meta name="twitter:description" content="MBProgressHUD 是开发中使用非常平凡的一个提示框的第三方库，MBProgressHUD 用法简单、源代码也比较少，它的使用方法可以参考Github 上的说明，网络上也有很多对 MBProgressHUD 的源码解析，但是别人的解析终归是别人的，我们只能作为参考，作为学习还是需要亲自去源码里一探究竟的，下面就记录一下我对 MBProgressHUD 框架的源码的学习记录，本文使用的源代码">
@@ -366,7 +366,7 @@
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)done &#123;</div><div class="line">    <span class="comment">// 移除延迟隐藏的定时器</span></div><div class="line">    [<span class="keyword">self</span>.hideDelayTimer invalidate];</div><div class="line">    [<span class="keyword">self</span> setNSProgressDisplayLinkEnabled:<span class="literal">NO</span>];</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.hasFinished) &#123;</div><div class="line">        <span class="keyword">self</span>.alpha = <span class="number">0.0</span>f;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">self</span>.removeFromSuperViewOnHide) &#123;</div><div class="line">            [<span class="keyword">self</span> removeFromSuperview];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    MBProgressHUDCompletionBlock completionBlock = <span class="keyword">self</span>.completionBlock;</div><div class="line">    <span class="keyword">if</span> (completionBlock) &#123;</div><div class="line">        completionBlock();</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">//代理</span></div><div class="line">    <span class="keyword">id</span>&lt;MBProgressHUDDelegate&gt; delegate = <span class="keyword">self</span>.delegate;</div><div class="line">    <span class="keyword">if</span> ([delegate respondsToSelector:<span class="keyword">@selector</span>(hudWasHidden:)]) &#123;</div><div class="line">        [delegate performSelector:<span class="keyword">@selector</span>(hudWasHidden:) withObject:<span class="keyword">self</span>];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>如果 <code>removeFromSuperViewOnHide</code> 属性为 <code>YES</code>，则将 HUD 从父视图上移除，如果有 <code>completionBlock</code> 回调函数，则执行回调，如果实现了代理并实现了代理方法，则执行代理方法</p>
 <p>以上就是对 MBProgressHUD 源码的一些简单的总结和认识，MBProgressHUD 代码很少，结构也十分清晰，作为源码解析入门还是很不错的</p>
-<p><strong>本人刚开始写博客，技术一般，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能帮到别人也是荣幸之至！如有错误，欢迎各位指正！</strong></p>
+<p><strong>本人刚开始写博客，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能让别人有所启发也是荣幸之至！如有错误，欢迎指正！</strong></p>
 
       
     </div>
@@ -412,6 +412,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/03/Talk-about-Category-and-Extension-in-Objective-C/" rel="prev" title="OC 的类别和扩展（Category 和 Extension）">
+                OC 的类别和扩展（Category 和 Extension） <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -483,7 +487,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-count">26</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
