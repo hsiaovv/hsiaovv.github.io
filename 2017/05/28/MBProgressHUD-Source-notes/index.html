@@ -87,17 +87,17 @@
 
 
 
-<meta name="description" content="MBProgressHUD 是开发中使用非常平凡的一个提示框的第三方库，MBProgressHUD 用法简单、源代码也比较少，它的使用方法可以参考Github 上的说明，网络上也有很多对 MBProgressHUD 的源码解析，但是别人的解析终归是别人的，我们只能作为参考，作为学习还是需要亲自去源码里一探究竟的，下面就记录一下我对 MBProgressHUD 框架的源码的学习记录，本文使用的源代码">
+<meta name="description" content="MBProgressHUD 是开发中使用非常频繁的一个提示框的第三方库，MBProgressHUD 用法简单、源代码也比较少，它的使用方法可以参考Github 上的说明，网络上也有很多对 MBProgressHUD 的源码解析，但是别人的解析终归是别人的，我们只能作为参考，作为学习还是需要亲自去源码里一探究竟的，下面就记录一下我对 MBProgressHUD 框架的源码的学习记录，本文使用的源代码">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MBProgressHUD 源码笔记">
 <meta property="og:url" content="http://yoursite.com/2017/05/28/MBProgressHUD-Source-notes/index.html">
 <meta property="og:site_name" content="笑忘书店">
-<meta property="og:description" content="MBProgressHUD 是开发中使用非常平凡的一个提示框的第三方库，MBProgressHUD 用法简单、源代码也比较少，它的使用方法可以参考Github 上的说明，网络上也有很多对 MBProgressHUD 的源码解析，但是别人的解析终归是别人的，我们只能作为参考，作为学习还是需要亲自去源码里一探究竟的，下面就记录一下我对 MBProgressHUD 框架的源码的学习记录，本文使用的源代码">
+<meta property="og:description" content="MBProgressHUD 是开发中使用非常频繁的一个提示框的第三方库，MBProgressHUD 用法简单、源代码也比较少，它的使用方法可以参考Github 上的说明，网络上也有很多对 MBProgressHUD 的源码解析，但是别人的解析终归是别人的，我们只能作为参考，作为学习还是需要亲自去源码里一探究竟的，下面就记录一下我对 MBProgressHUD 框架的源码的学习记录，本文使用的源代码">
 <meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/MBProgressHUDMode.png">
-<meta property="og:updated_time" content="2017-06-03T07:10:51.000Z">
+<meta property="og:updated_time" content="2017-06-04T15:24:27.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MBProgressHUD 源码笔记">
-<meta name="twitter:description" content="MBProgressHUD 是开发中使用非常平凡的一个提示框的第三方库，MBProgressHUD 用法简单、源代码也比较少，它的使用方法可以参考Github 上的说明，网络上也有很多对 MBProgressHUD 的源码解析，但是别人的解析终归是别人的，我们只能作为参考，作为学习还是需要亲自去源码里一探究竟的，下面就记录一下我对 MBProgressHUD 框架的源码的学习记录，本文使用的源代码">
+<meta name="twitter:description" content="MBProgressHUD 是开发中使用非常频繁的一个提示框的第三方库，MBProgressHUD 用法简单、源代码也比较少，它的使用方法可以参考Github 上的说明，网络上也有很多对 MBProgressHUD 的源码解析，但是别人的解析终归是别人的，我们只能作为参考，作为学习还是需要亲自去源码里一探究竟的，下面就记录一下我对 MBProgressHUD 框架的源码的学习记录，本文使用的源代码">
 <meta name="twitter:image" content="http://onzskckoz.bkt.clouddn.com/MBProgressHUDMode.png">
 
 
@@ -323,7 +323,7 @@
       
 
       
-        <p><a href="https://github.com/jdg/MBProgressHUD" target="_blank" rel="external">MBProgressHUD</a> 是开发中使用非常平凡的一个提示框的第三方库，MBProgressHUD 用法简单、源代码也比较少，它的使用方法可以参考Github 上的说明，网络上也有很多对 MBProgressHUD 的源码解析，但是别人的解析终归是别人的，我们只能作为参考，作为学习还是需要亲自去源码里一探究竟的，下面就记录一下我对 MBProgressHUD 框架的源码的学习记录，本文使用的源代码版本为：1.0.0</p>
+        <p><a href="https://github.com/jdg/MBProgressHUD" target="_blank" rel="external">MBProgressHUD</a> 是开发中使用非常频繁的一个提示框的第三方库，MBProgressHUD 用法简单、源代码也比较少，它的使用方法可以参考Github 上的说明，网络上也有很多对 MBProgressHUD 的源码解析，但是别人的解析终归是别人的，我们只能作为参考，作为学习还是需要亲自去源码里一探究竟的，下面就记录一下我对 MBProgressHUD 框架的源码的学习记录，本文使用的源代码版本为：1.0.0</p>
 <h3 id="核心方法和属性"><a href="#核心方法和属性" class="headerlink" title="核心方法和属性"></a>核心方法和属性</h3><h4 id="核心方法"><a href="#核心方法" class="headerlink" title="核心方法"></a>核心方法</h4><p>类方法</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//创建一个HUD并且添加到view上</span></div><div class="line">+ (<span class="keyword">instancetype</span>)showHUDAddedTo:(<span class="built_in">UIView</span> *)view animated:(<span class="built_in">BOOL</span>)animated;</div><div class="line"></div><div class="line"><span class="comment">//隐藏view上的HUD</span></div><div class="line">+ (<span class="built_in">BOOL</span>)hideHUDForView:(<span class="built_in">UIView</span> *)view animated:(<span class="built_in">BOOL</span>)animated;</div><div class="line"></div><div class="line"><span class="comment">//找到view最顶层的HUD并返回，上面的方法内部会调用这个方法拿到HUD</span></div><div class="line">+ (<span class="keyword">nullable</span> MBProgressHUD *)HUDForView:(<span class="built_in">UIView</span> *)view;</div></pre></td></tr></table></figure>
 <p>实例方法</p>
