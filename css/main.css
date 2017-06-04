@@ -1119,6 +1119,16 @@ pre .javascript .function {
   -o-transform: rotate(30deg);
   transform: rotate(30deg);
 }
+.post-body p a {
+  color: #0593d3;
+  border-bottom: none;
+  border-bottom: 1px solid #0593d3;
+}
+.post-body p a:hover {
+  color: #fc6423;
+  border-bottom: none;
+  border-bottom: 1px solid #fc6423;
+}
 .posts-expand {
   padding-top: 40px;
 }
@@ -1684,7 +1694,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #21da42;
+  background: #ff3783;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -2771,4 +2781,27 @@ hr {
     width: auto;
     text-align: center;
   }
+}
+.site-author-image {
+  border-radius: 100%;
+  padding: 2px;
+  border: 2px solid #fff;
+  animation: cycle 2s 0.5s forwards;
+  transition: border-radius 2s;
+}
+code {
+  color: #757677;
+  background: #e8f2fb;
+  margin: 2px;
+}
+.highlight,
+pre {
+  margin: 5px 0;
+  padding: 5px;
+  border-radius: 3px;
+}
+.highlight,
+code,
+pre {
+  border: 1px solid #d6d6d6;
 }
