@@ -109,7 +109,7 @@
 <meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/localization12.png">
 <meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/localization15.png">
 <meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/localization16.png">
-<meta property="og:updated_time" content="2017-06-04T10:22:07.000Z">
+<meta property="og:updated_time" content="2017-06-11T08:12:08.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS 语言本地化&#x2F;国际化">
 <meta name="twitter:description" content="语言本地化，又叫做语言国际化，是指根据用户操作系统的语言设置，自动将应用程序的语言设置为和用户操作系统语言一致的语言，这就要求应用程序所展示的文字、图片等信息，能够让使用不同语言的用户读懂、看懂，进而需要为同一个应用程序适配多种语言，我们日常使用的微信、支付宝等 App，都做了比较好的本地化，App 会根据系统的语言匹配合适的 App 内部语言，也可以直接在 App 内部切换成自己需要的语言，趁着">
@@ -414,6 +414,14 @@
 <p>不过，最好是把 Xib 中的页面全部布局好了，再去做本地化，后续添加控件再去更新，Storyboard 的本地化和 Xib 是类似的就不再赘述</p>
 <h3 id="其他国际化"><a href="#其他国际化" class="headerlink" title="其他国际化"></a>其他国际化</h3><p>项目里可能还有音频文件、视频文件等资源文件需要国际化，这些文件一般是通过文件目录访问的，完全可以用不同名字去区分，根据语言环境对应的加载这些资源文件</p>
 <p>以上就是开发中 iOS 开发中本地化的基本过程</p>
+<p><strong>2016/06/11 补充</strong></p>
+<p>补充一下本地化的测试相关内容，本地化要看效果每次都去设置里切换语言是在太累</p>
+<p>在 Xcode 中，可以使用预览功能，在不运行应用的情况下，检测国际化和本地化的结果，选择一个 <code>.storyboard</code> 或 <code>.xib</code> 文件，打开辅助编辑器，在左边的弹出菜单中选择 <code>Preview</code>，通过右下角语言选项，选择不同的本地化语言查看预览效果</p>
+<p>预览过后，可以通过设置应用启动时的参数，在设备上测试国际化和本地化的结果，而不需要修改设备的设置。编辑 <code>Scheme</code>，选择 <code>Run -&gt; Options</code>，在 <code>Application Language</code> 一项中，可以选择对应语言资源，这样就不用测试不同的语言都去设置里面修改了</p>
+<p>另外如果你的项目使用 <code>Auto layout</code>，可以选择 <code>Double-Length Pseudolocalizations</code>，它会重复重复本地化字符串，更改视图的大小和位置</p>
+<p>还可以用选择 <code>Right to Left Pseudolocalizations</code>，测试从右往左书写的语言如阿拉伯语言的效果</p>
+<p>勾选 <code>Show non-localized strings</code> 项，可以检测未本地化的文本，其会以大写形式显示</p>
+<p>相关官方文档：<a href="https://developer.apple.com/library/content/documentation/MacOSX/Conceptual/BPInternational/TestingYourInternationalApp/TestingYourInternationalApp.html" target="_blank" rel="external">Testing Your Internationalized App</a></p>
 <p><strong>本人刚开始写博客，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能让别人有所启发也是荣幸之至！如有错误，欢迎指正！</strong></p>
 
       
