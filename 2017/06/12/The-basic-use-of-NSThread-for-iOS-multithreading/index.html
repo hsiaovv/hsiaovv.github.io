@@ -1,0 +1,706 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="多线程在需要执行耗时任务的时候非常用，大多时候我们不希望耗时任务阻塞主线程，因为处理用户界面的事件的相关操作都是放在主线程当中处理的，多线程也可以用来把复杂的任务分成多个比较小的任务，这样可以充分利用多核处理器的性能 基本概念进程进程（Process）是指正在执行的应用程序，具体来说进程是一个具有独立功能的程序关于某个数据集合进行的运行活动，包括申请和拥有系统资源，是一个活动的实体，每个进程之间是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 多线程之 NSThread 的基本使用">
+<meta property="og:url" content="http://yoursite.com/2017/06/12/The-basic-use-of-NSThread-for-iOS-multithreading/index.html">
+<meta property="og:site_name" content="笑忘书店">
+<meta property="og:description" content="多线程在需要执行耗时任务的时候非常用，大多时候我们不希望耗时任务阻塞主线程，因为处理用户界面的事件的相关操作都是放在主线程当中处理的，多线程也可以用来把复杂的任务分成多个比较小的任务，这样可以充分利用多核处理器的性能 基本概念进程进程（Process）是指正在执行的应用程序，具体来说进程是一个具有独立功能的程序关于某个数据集合进行的运行活动，包括申请和拥有系统资源，是一个活动的实体，每个进程之间是">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/nsthread1.png">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/nsthread3.png">
+<meta property="og:updated_time" content="2017-06-12T14:11:45.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS 多线程之 NSThread 的基本使用">
+<meta name="twitter:description" content="多线程在需要执行耗时任务的时候非常用，大多时候我们不希望耗时任务阻塞主线程，因为处理用户界面的事件的相关操作都是放在主线程当中处理的，多线程也可以用来把复杂的任务分成多个比较小的任务，这样可以充分利用多核处理器的性能 基本概念进程进程（Process）是指正在执行的应用程序，具体来说进程是一个具有独立功能的程序关于某个数据集合进行的运行活动，包括申请和拥有系统资源，是一个活动的实体，每个进程之间是">
+<meta name="twitter:image" content="http://onzskckoz.bkt.clouddn.com/nsthread1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/06/12/The-basic-use-of-NSThread-for-iOS-multithreading/"/>
+
+
+
+
+
+  <title> iOS 多线程之 NSThread 的基本使用 | 笑忘书店 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笑忘书店</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/12/The-basic-use-of-NSThread-for-iOS-multithreading/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaovv">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笑忘书店">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS 多线程之 NSThread 的基本使用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-12T22:09:41+08:00">
+                2017-06-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>多线程在需要执行耗时任务的时候非常用，大多时候我们不希望耗时任务阻塞主线程，因为处理用户界面的事件的相关操作都是放在主线程当中处理的，多线程也可以用来把复杂的任务分成多个比较小的任务，这样可以充分利用多核处理器的性能</p>
+<h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><h4 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h4><p>进程（Process）是指正在执行的应用程序，具体来说进程是一个具有独立功能的程序关于某个数据集合进行的运行活动，包括申请和拥有系统资源，是一个活动的实体，每个进程之间是独立开来的，均运行在其专用且受保护的内存空间中</p>
+<h4 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h4><p><img src="http://onzskckoz.bkt.clouddn.com/nsthread1.png" alt=""></p>
+<p><center> macOS 中活动指示器中的进程和线程</center></p>
+<p>线程是程序执行流的最小单元，是被系统独立调度和分派的基本单位（又称之为轻量级进程），由线程ID、程序计数器、寄存器集合和堆栈等内容组成，具体来说：</p>
+<ul>
+<li><p>进程（进行中的程序）需要执行任务必须存在线程，每个进程至少得有一个线程</p>
+</li>
+<li><p>一个进程中所有任务都在线程中执行</p>
+</li>
+</ul>
+<h4 id="线程的串行"><a href="#线程的串行" class="headerlink" title="线程的串行"></a>线程的串行</h4><p>准确的说一个线程中的任务执行是串行的。即一个线程中的多个任务只能挨个依次执行，同一时间一个线程只能执行一个任务。例如一个进程中开启一个线程下载多张图片，图片只能一张一张的按顺序下载</p>
+<h4 id="线程同步"><a href="#线程同步" class="headerlink" title="线程同步"></a>线程同步</h4><p>线程同步简单来说就是多个线程协同步调在同一条线上按预定的先后次序运行，切不可理解为 “多个线程同时执行”，在 iOS 开发中常常使用到同步锁（synchronized）实现线程同步效果</p>
+<p>在多线程编程中，一些敏感数据或共享数据不允许被多个线程同时访问，此时就使用同步访问技术，保证数据在任何时刻，最多只有一个线程访问，以此保证数据安全</p>
+<h4 id="线程之间的通信"><a href="#线程之间的通信" class="headerlink" title="线程之间的通信"></a>线程之间的通信</h4><p>一个进程中如果开启了多个线程，某个线程可能需要和其它线程通信，以执行特定的任务，线程与线程间必定有一个信息传递的渠道，这种线程间的通信不但是难以避免的，而且在多线程编程中也是复杂和频繁的，线程间的通信常涉及到以下几个问题：</p>
+<ul>
+<li>线程间如何传递信息</li>
+<li>线程之间如何同步，以使一个线程的活动不会破坏另一个线程的活动</li>
+<li>当线程间具有依赖关系时，如何调度多个线程的处理顺序</li>
+<li>共享数据如何保证安全，如何避免死锁问题等等</li>
+</ul>
+<h4 id="多线程数据安全问题"><a href="#多线程数据安全问题" class="headerlink" title="多线程数据安全问题"></a>多线程数据安全问题</h4><ul>
+<li><p>线程不安全：就是不提供数据访问保护，有可能出现多个线程先后更改数据造成所得到的数据是脏数据，当多个线程访问同一块资源时，很容易引发数据错乱和数据安全问题</p>
+</li>
+<li><p>线程安全：简单来说就是多个线程同时对共享资源进行访问时，采用了加锁机制，当一个线程访问共享资源，对该资源进行保护，其他线程不能进行访问直到该线程读取完，其他线程才可使用</p>
+</li>
+</ul>
+<h4 id="iOS-主线程"><a href="#iOS-主线程" class="headerlink" title="iOS 主线程"></a>iOS 主线程</h4><p>iOS 应用启动后，系统默认为应用开启一个线程称为主线程或 UI 线程，主线程的作用是处理UI事件（点击事件、滚动事件、拖拽事情），必须注意的是：刷新UI必须放在主线程中，不要把耗时操作（下载、大量计算）放在主线程执行，这会堵塞主线程，造成界面卡顿、影响用户体验</p>
+<h4 id="iOS-子线程"><a href="#iOS-子线程" class="headerlink" title="iOS 子线程"></a>iOS 子线程</h4><p>非UI线程、主线程之外的线程，iOS 开发中通常使用子线程处理耗时操作，例如：复杂计算、大量文件读取、文件下载等</p>
+<h3 id="NSThread"><a href="#NSThread" class="headerlink" title="NSThread"></a>NSThread</h3><p>在 iOS 当中，苹果提供了三种主要的方式进行多线程编程：NSThread、Grand Central Dispatch (GCD) 和 NSOperation，本文主要讲解 NSThread 的基本使用，后续文章会讨论 GCD 和 NSOperation</p>
+<h4 id="NSThread-简介"><a href="#NSThread-简介" class="headerlink" title="NSThread 简介"></a>NSThread 简介</h4><p>NSThread 是经过 Apple 基于 pthread 封装的面向对象的多线程实现方案，它允许开发者直接以面向对象的思想对线程进行操作，每一个NSThread 对象就代表一条线程，但是开发者必须手动管理线程的生命周期</p>
+<h4 id="NSThread-的基本使用"><a href="#NSThread-的基本使用" class="headerlink" title="NSThread 的基本使用"></a>NSThread 的基本使用</h4><p>使用 NSThread 创建线程的三种方式</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 1.通过初始化方法创建线程，线程需要手动启动</span></div><div class="line"><span class="comment">// block 形式</span></div><div class="line"><span class="keyword">let</span> thread = <span class="type">Thread</span> &#123;    </div><div class="line">    <span class="built_in">print</span>(<span class="string">"a new thread"</span>)</div><div class="line">&#125;</div><div class="line">thread.start()</div><div class="line"></div><div class="line"><span class="comment">// target 形式</span></div><div class="line"><span class="keyword">let</span> thread = <span class="type">Thread</span>(target: <span class="keyword">self</span>, selector: #selector(run), object: <span class="literal">nil</span>)</div><div class="line">thread.start()</div><div class="line"></div><div class="line"><span class="comment">// 3. 隐式的从主线程分离一个自动启动的线程 </span></div><div class="line"><span class="comment">// block 形式 iOS 10 之后可用</span></div><div class="line"><span class="type">Thread</span>.detachNewThread &#123;</div><div class="line"></div><div class="line">    <span class="built_in">print</span>(<span class="type">Thread</span>.current)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// target 形式</span></div><div class="line"><span class="type">Thread</span>.detachNewThreadSelector(#selector(run), toTarget: <span class="keyword">self</span>, with: <span class="literal">nil</span>)</div><div class="line"></div><div class="line"><span class="comment">// 2.通过 performSelector 隐式的创建一个自动启动的线程</span></div><div class="line"><span class="keyword">self</span>.performSelector(inBackground: #selector(run), with: <span class="literal">nil</span>)</div></pre></td></tr></table></figure>
+<p>NSThread 的属性和相关方法</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//开启线程</span></div><div class="line">open <span class="function"><span class="keyword">func</span> <span class="title">start</span><span class="params">()</span></span></div><div class="line"></div><div class="line"><span class="comment">//取消线程</span></div><div class="line">open <span class="function"><span class="keyword">func</span> <span class="title">cancel</span><span class="params">()</span></span></div><div class="line"></div><div class="line"><span class="comment">//线程睡眠，阻塞线程</span></div><div class="line"><span class="comment">//线程睡眠到某个时间点</span></div><div class="line">open <span class="class"><span class="keyword">class</span> <span class="title">func</span> <span class="title">sleep</span>(<span class="title">until</span> <span class="title">date</span>: <span class="title">Date</span>)</span></div><div class="line">//线程睡眠给定的时间</div><div class="line"><span class="title">open</span> <span class="title">class</span> <span class="title">func</span> <span class="title">sleep</span>(<span class="title">forTimeInterval</span> <span class="title">ti</span>: <span class="title">TimeInterval</span>)</div><div class="line"></div><div class="line">/／退出线程，线程被销毁，不能再执行任务</div><div class="line"><span class="title">open</span> <span class="title">class</span> <span class="title">func</span> <span class="title">exit</span>()</div><div class="line"></div><div class="line">//判断当前线程是否为主线程</div><div class="line"><span class="title">open</span> <span class="title">class</span> <span class="title">var</span> <span class="title">isMainThread</span>: <span class="title">Bool</span> &#123; <span class="keyword">get</span> &#125;</div><div class="line"></div><div class="line"><span class="comment">//获取主线程即UI线程</span></div><div class="line">open <span class="class"><span class="keyword">class</span> <span class="title">var</span> <span class="title">main</span>: <span class="title">Thread</span> </span>&#123; <span class="keyword">get</span> &#125;</div><div class="line"></div><div class="line"><span class="comment">//获取当前线程</span></div><div class="line">open <span class="class"><span class="keyword">class</span> <span class="title">var</span> <span class="title">current</span>: <span class="title">Thread</span> </span>&#123; <span class="keyword">get</span> &#125;</div><div class="line"></div><div class="line"><span class="comment">//线程的优先级，范围 0.0～1.0 iOS 8 </span></div><div class="line">open <span class="keyword">var</span> threadPriority: <span class="type">Double</span> </div><div class="line"></div><div class="line"><span class="comment">//线程的优先级，iOS8 之后可用，线程开启之后该属性为只读</span></div><div class="line">open <span class="keyword">var</span> qualityOfService: <span class="type">QualityOfService</span></div></pre></td></tr></table></figure>
+<h4 id="线程间的通信"><a href="#线程间的通信" class="headerlink" title="线程间的通信"></a>线程间的通信</h4><p>这里模拟一下开启新线程下载图片，然后回到主线程更下载的图片显示</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">touchesBegan</span><span class="params">(<span class="number">_</span> touches: Set&lt;UITouch&gt;, with event: UIEvent?)</span></span> &#123;</div><div class="line">     </div><div class="line">    <span class="comment">//开启新线程下载图片</span></div><div class="line">    <span class="keyword">self</span>.performSelector(inBackground: #selector(download), with: <span class="literal">nil</span>)</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">download</span><span class="params">()</span></span>  &#123;</div><div class="line">    </div><div class="line">    <span class="keyword">let</span> url = <span class="type">URL</span>.<span class="keyword">init</span>(string: <span class="string">"https://www.baidu.com/img/bd_logo1.png"</span>)!</div><div class="line">    </div><div class="line">    <span class="keyword">do</span> &#123;</div><div class="line">        <span class="keyword">let</span> iamgeData = <span class="keyword">try</span> <span class="type">Data</span>.<span class="keyword">init</span>(contentsOf: url)</div><div class="line">        <span class="keyword">let</span> image = <span class="type">UIImage</span>.<span class="keyword">init</span>(data: iamgeData)</div><div class="line">        </div><div class="line">        <span class="comment">//方法一，把下载的图片传给主线程</span></div><div class="line">        <span class="keyword">self</span>.performSelector(onMainThread: #selector(updateUI(image:)), with: image, waitUntilDone: <span class="literal">true</span>)</div><div class="line">        <span class="comment">//方法二，把下载的图片传给主线程</span></div><div class="line">        <span class="keyword">self</span>.perform(#selector(updateUI(image:)), on: <span class="type">Thread</span>.main, with: image, waitUntilDone: <span class="literal">true</span>)</div><div class="line">        </div><div class="line">    &#125; <span class="keyword">catch</span> <span class="keyword">let</span> error <span class="keyword">as</span> <span class="type">NSError</span> &#123;</div><div class="line">        <span class="built_in">print</span>(error)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">updateUI</span><span class="params">(image:UIImage)</span></span> &#123;</div><div class="line">     </div><div class="line">     <span class="comment">//在主线程更新图片</span></div><div class="line">     <span class="keyword">self</span>.imageView.image = image</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="线程同步-1"><a href="#线程同步-1" class="headerlink" title="线程同步"></a>线程同步</h4><p>使用 NSThread 演示一个经典的线程安全的例子：<strong>多窗口卖票</strong>，假设一共有100张票，开启三个线程代表三个窗口同时卖票</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> thread1: <span class="type">Thread</span>? <span class="comment">//窗口1</span></div><div class="line"><span class="keyword">var</span> thread2: <span class="type">Thread</span>? <span class="comment">//窗口2</span></div><div class="line"><span class="keyword">var</span> thread3: <span class="type">Thread</span>? <span class="comment">//窗口3</span></div><div class="line">    </div><div class="line"><span class="comment">//总票数100</span></div><div class="line"><span class="keyword">var</span> totalTicketCount = <span class="number">100</span></div><div class="line">    </div><div class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">super</span>.viewDidLoad()</div><div class="line">    </div><div class="line">    <span class="comment">//创建线程</span></div><div class="line">    <span class="keyword">self</span>.thread1 = <span class="type">Thread</span>(target: <span class="keyword">self</span>, selector: #selector(saleTicket), object: <span class="literal">nil</span>)</div><div class="line">    <span class="keyword">self</span>.thread2 = <span class="type">Thread</span>(target: <span class="keyword">self</span>, selector: #selector(saleTicket), object: <span class="literal">nil</span>)</div><div class="line">    <span class="keyword">self</span>.thread3 = <span class="type">Thread</span>(target: <span class="keyword">self</span>, selector: #selector(saleTicket), object: <span class="literal">nil</span>)</div><div class="line">    </div><div class="line">    <span class="comment">//设置线程名字</span></div><div class="line">    <span class="keyword">self</span>.thread1?.name = <span class="string">"窗口1"</span></div><div class="line">    <span class="keyword">self</span>.thread2?.name = <span class="string">"窗口2"</span></div><div class="line">    <span class="keyword">self</span>.thread3?.name = <span class="string">"窗口3"</span></div><div class="line">    </div><div class="line">    <span class="comment">//开启线程</span></div><div class="line">    <span class="keyword">self</span>.thread1?.start()</div><div class="line">    <span class="keyword">self</span>.thread2?.start()</div><div class="line">    <span class="keyword">self</span>.thread3?.start()</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">saleTicket</span><span class="params">()</span></span>  &#123;</div><div class="line">    </div><div class="line">    <span class="comment">//每个线程（窗口）都在这里循坏的卖票，直到票数为0终止</span></div><div class="line">    <span class="keyword">while</span> <span class="literal">true</span> &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> currentCount = <span class="keyword">self</span>.totalTicketCount</div><div class="line">        </div><div class="line">        <span class="keyword">if</span> currentCount &gt; <span class="number">0</span> &#123;</div><div class="line">            </div><div class="line">            <span class="keyword">self</span>.totalTicketCount = currentCount - <span class="number">1</span></div><div class="line">            <span class="built_in">print</span>(<span class="string">"<span class="subst">\(String(describing: Thread.current.name!)</span>) 卖了一张车票，还剩下<span class="subst">\(<span class="keyword">self</span>.totalTicketCount)</span>张"</span>)</div><div class="line">        &#125;<span class="keyword">else</span> &#123;</div><div class="line">            </div><div class="line">            <span class="built_in">print</span>(<span class="string">"票卖完了"</span>)</div><div class="line">            <span class="keyword">break</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>打印结果如下：</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/nsthread3.png" alt=""></p>
+<p>由于多线程访问票数，所以票数数量出问题了，这个时候就需要保证票数操作的时候只能有一个线程访问，其他线程必须等待访问完才能访问，解决方案就是：<strong>同步锁</strong> </p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">saleTicket</span><span class="params">()</span></span>  &#123;</div><div class="line">        </div><div class="line">    <span class="keyword">while</span> <span class="literal">true</span> &#123;</div><div class="line">        </div><div class="line">        <span class="comment">// objc_sync_enter 和  objc_sync_exit 成对使用，他们之间的代码就是需要线程同步的代码</span></div><div class="line">        <span class="comment">// OC 使用 @synchronized 关键字</span></div><div class="line">        objc_sync_enter(<span class="keyword">self</span>)</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> currentCount = <span class="keyword">self</span>.totalTicketCount</div><div class="line">        </div><div class="line">        <span class="keyword">if</span> currentCount &gt; <span class="number">0</span> &#123;</div><div class="line">            </div><div class="line">            <span class="keyword">self</span>.totalTicketCount = currentCount - <span class="number">1</span></div><div class="line">            <span class="built_in">print</span>(<span class="string">"<span class="subst">\(String(describing: Thread.current.name!)</span>) 卖了一张车票，还剩下<span class="subst">\(<span class="keyword">self</span>.totalTicketCount)</span>张"</span>)</div><div class="line">        &#125;<span class="keyword">else</span> &#123;</div><div class="line">            </div><div class="line">            <span class="built_in">print</span>(<span class="string">"票卖完了"</span>)</div><div class="line">            <span class="keyword">break</span></div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        objc_sync_exit(<span class="keyword">self</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>同步锁除了使用上述关键字，还可以使用 <code>NSLock</code>，这里就不举例了</p>
+<p>NSThread 需要自己管理线程的生命周期，线程同步，而且线程同步对数据的加锁会有一定的系统开销，实际开发中用的也比较少，苹果官方也更加推荐开发者使用 GCD 和 NSOperation</p>
+<p><strong>本人刚开始写博客，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能让别人有所启发也是荣幸之至！如有错误，欢迎指正！</strong></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/11/Change-Localization-Internally-IniOS-Application/" rel="next" title="iOS 应用内切换语言">
+                <i class="fa fa-chevron-left"></i> iOS 应用内切换语言
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Xiaovv" />
+          <p class="site-author-name" itemprop="name">Xiaovv</p>
+           
+              <p class="site-description motion-element" itemprop="description">以绝大多数人的努力程度之低，根本轮不到去拼天赋</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">29</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本概念"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#进程"><span class="nav-number">1.1.</span> <span class="nav-text">进程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#线程"><span class="nav-number">1.2.</span> <span class="nav-text">线程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#线程的串行"><span class="nav-number">1.3.</span> <span class="nav-text">线程的串行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#线程同步"><span class="nav-number">1.4.</span> <span class="nav-text">线程同步</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#线程之间的通信"><span class="nav-number">1.5.</span> <span class="nav-text">线程之间的通信</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多线程数据安全问题"><span class="nav-number">1.6.</span> <span class="nav-text">多线程数据安全问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iOS-主线程"><span class="nav-number">1.7.</span> <span class="nav-text">iOS 主线程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iOS-子线程"><span class="nav-number">1.8.</span> <span class="nav-text">iOS 子线程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSThread"><span class="nav-number">2.</span> <span class="nav-text">NSThread</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#NSThread-简介"><span class="nav-number">2.1.</span> <span class="nav-text">NSThread 简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NSThread-的基本使用"><span class="nav-number">2.2.</span> <span class="nav-text">NSThread 的基本使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#线程间的通信"><span class="nav-number">2.3.</span> <span class="nav-text">线程间的通信</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#线程同步-1"><span class="nav-number">2.4.</span> <span class="nav-text">线程同步</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaovv</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
