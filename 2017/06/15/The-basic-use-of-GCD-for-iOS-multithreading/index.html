@@ -1,0 +1,850 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="title:date: 2017-06-13 09:42:29tags: - iOS  上篇文章讲了 NSThread 的基本使用，本文讨论一下 GCD 的基本使用 GCD 简介GCD（全称 Grand Central Dispatch），苹果在 iOS 4中首次推出，为多核的并行运算提出的解决方案，GCD 会自动管理线程的生命周期、创建线程、调度任务、销毁线程，开发者只需要关心要执行的任务而不">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS多线程之GCD的基本使用">
+<meta property="og:url" content="http://yoursite.com/2017/06/15/The-basic-use-of-GCD-for-iOS-multithreading/index.html">
+<meta property="og:site_name" content="笑忘书店">
+<meta property="og:description" content="title:date: 2017-06-13 09:42:29tags: - iOS  上篇文章讲了 NSThread 的基本使用，本文讨论一下 GCD 的基本使用 GCD 简介GCD（全称 Grand Central Dispatch），苹果在 iOS 4中首次推出，为多核的并行运算提出的解决方案，GCD 会自动管理线程的生命周期、创建线程、调度任务、销毁线程，开发者只需要关心要执行的任务而不">
+<meta property="og:updated_time" content="2017-06-15T13:57:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS多线程之GCD的基本使用">
+<meta name="twitter:description" content="title:date: 2017-06-13 09:42:29tags: - iOS  上篇文章讲了 NSThread 的基本使用，本文讨论一下 GCD 的基本使用 GCD 简介GCD（全称 Grand Central Dispatch），苹果在 iOS 4中首次推出，为多核的并行运算提出的解决方案，GCD 会自动管理线程的生命周期、创建线程、调度任务、销毁线程，开发者只需要关心要执行的任务而不">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/06/15/The-basic-use-of-GCD-for-iOS-multithreading/"/>
+
+
+
+
+
+  <title> iOS多线程之GCD的基本使用 | 笑忘书店 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笑忘书店</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/15/The-basic-use-of-GCD-for-iOS-multithreading/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaovv">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笑忘书店">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS多线程之GCD的基本使用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-15T21:55:34+08:00">
+                2017-06-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <hr>
+<p>title:<br>date: 2017-06-13 09:42:29<br>tags:</p>
+<pre><code>- iOS
+</code></pre><hr>
+<p><a href="http://shuishangshu.coding.me/2017/06/12/The-basic-use-of-NSThread-for-iOS-multithreading/" target="_blank" rel="external">上篇文章</a>讲了 NSThread 的基本使用，本文讨论一下 GCD 的基本使用</p>
+<h3 id="GCD-简介"><a href="#GCD-简介" class="headerlink" title="GCD 简介"></a>GCD 简介</h3><p>GCD（全称 Grand Central Dispatch），苹果在 iOS 4中首次推出，为多核的并行运算提出的解决方案，GCD 会自动管理线程的生命周期、创建线程、调度任务、销毁线程，开发者只需要关心要执行的任务而不用考虑任何线程管理的相关代码。由于 GCD 是基于 C 的 API，在 OC 和 Swift 2 都是 C 语言风格，在 Swift 3 中苹果使用了全新的 Swift 语法风格改写了 GCD，本文会展示 OC 和 Swift 3 两种语言的写法使用 GCD</p>
+<h3 id="任务和队列"><a href="#任务和队列" class="headerlink" title="任务和队列"></a>任务和队列</h3><p>使用 GCD 之前先了解一些基本概念</p>
+<h4 id="任务"><a href="#任务" class="headerlink" title="任务"></a>任务</h4><p>任务就是执行操作的意思，就是你在线程中执行的操作，GCD 中任务的代码放在 Block（DispatchWorkItem）中，执行任务有两种方式：<strong>同步执行（sync）</strong> 和 <strong>异步执行（async）</strong>，他们的区别就是 <strong>是否会开启新的线程</strong></p>
+<ul>
+<li><strong>同步执行（sync）</strong>，只会在当前线程执行任务，它会阻塞当前线程并等待 Block 中的任务执行完毕，然后当前线程才会继续往下运行</li>
+<li><strong>异步执行（async）</strong>，它会开启新的线程去执行 Block 中的任务，当前线程会继续执行，不会阻塞当前线程</li>
+</ul>
+<h4 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h4><p>队列这里是指任务队列，队列是一种特殊的线性表，队列遵循 FIFO 模式（先进先出）原则，意思就是先进队列的任务会先被执行，后来的任务会被插入队尾（就和排队一样买票一样，排在第一个的先买，排在最后的最后买），GCD 中有两种队列：<strong>串行队列</strong> 和 <strong>并发队列</strong></p>
+<ul>
+<li><strong>串行队列（Serial Dispatch Queue）</strong>，GCD 会按照先进先出的原则，取出任务，按顺序执行</li>
+<li><strong>并发队列（Concurrent Dispatch Queue）</strong>，可以让多个任务并发（同时）执行，GCD会按照先进先出的原则把任务取出，但是它会开启新线程去执行取出的任务，直到取完所有任务。由于取出任务很快，看起来就像是同时取出来一样，GCD 会根据系统的资源开启合适数量的线程用来并发执行任务</li>
+</ul>
+<p>GCD 的核心就是：<strong>将任务添加到队列</strong>，另外，所有的 Dispatch Queue 自身都是线程安全的，可以在多个线程并行访问</p>
+<h3 id="GCD-的基本使用"><a href="#GCD-的基本使用" class="headerlink" title="GCD 的基本使用"></a>GCD 的基本使用</h3><p>GCD 的使用步骤：先创建一个串行或者并发的队列（ Dispatch Queue ），然后将需要执行的任务添加到队列中，系统就会自动执行队列中任务</p>
+<h4 id="OC-中创建-Dispatch-Queue"><a href="#OC-中创建-Dispatch-Queue" class="headerlink" title="OC 中创建 Dispatch Queue"></a>OC 中创建 Dispatch Queue</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//创建一个串行队列</span></div><div class="line"><span class="built_in">dispatch_queue_t</span> serialQueue = dispatch_queue_create(<span class="string">"com.xiao.serialQueue"</span>, DISPATCH_QUEUE_SERIAL);</div><div class="line"></div><div class="line"><span class="comment">//创建一个并发队列</span></div><div class="line"><span class="built_in">dispatch_queue_t</span> concurrentQueue = dispatch_queue_create(<span class="string">"com.xiao.concurrentQueue"</span>, DISPATCH_QUEUE_CONCURRENT);</div></pre></td></tr></table></figure>
+<p>使用 <code>dispatch_queue_create()</code> 方法创建一个队列，需要传入两个参数，第一个参数是表示队列的唯一标识符，第二个参数表示队列的类型，<code>DISPATCH_QUEUE_SERIAL</code> 表示串行队列，<code>DISPATCH_QUEUE_CONCURRENT</code> 表示并发队列，对于并发队列，还可以使用 <code>dispatch_get_global_queue()</code> 来创建全局并发队列</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">dispatch_queue_t</span> globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>);</div></pre></td></tr></table></figure>
+<p>全局并发队列是 GCD 为我们创建的一个并发队列，<code>dispatch_get_global_queue()</code>，需要传入两个参数，第一个参数是表示队列的优先级，有<code>DISPATCH_QUEUE_PRIORITY_HIGH</code> <code>DISPATCH_QUEUE_PRIORITY_DEFAULT</code> <code>DISPATCH_QUEUE_PRIORITY_LOW</code> 和 <code>DISPATCH_QUEUE_PRIORITY_BACKGROUND</code> 四种，一般使用<code>DISPATCH_QUEUE_PRIORITY_DEFAULT</code>，第二个参数是苹果为以后设计的，暂时用不到，传 <code>0</code> 即可，注意，全局并发队列系统本身也会使用到</p>
+<p>系统还创建了一个主队列（对应主线程，即UI线程），主线程的作用是处理UI事件（点击事件、滚动事件、拖拽事情），可以通过如下方式获取</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">dispatch_queue_t</span> mainQueue = dispatch_get_main_queue();</div></pre></td></tr></table></figure>
+<h4 id="Swift-中创建-Dispatch-Queue"><a href="#Swift-中创建-Dispatch-Queue" class="headerlink" title="Swift 中创建 Dispatch Queue"></a>Swift 中创建 Dispatch Queue</h4><p>在 Swift 中，最简单的可以使用以下方法创建一个队列</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//label 是队列的唯一标识符，用于调试</span></div><div class="line"><span class="keyword">let</span> queue = <span class="type">DispatchQueue</span>(label: <span class="string">"com.xiaovv.queue"</span>)</div></pre></td></tr></table></figure>
+<p>这样初始化的队列是一个默认配置的队列，也可以显式的指明属性来创建一个队列</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> queue = <span class="type">DispatchQueue</span>(label: <span class="string">"om.xiaovv.queue"</span>, qos: <span class="type">DispatchQoS</span>.<span class="keyword">default</span>, attributes: <span class="type">DispatchQueue</span>.<span class="type">Attributes</span>.concurrent, autoreleaseFrequency: <span class="type">DispatchQueue</span>.<span class="type">AutoreleaseFrequency</span>.never, target: <span class="literal">nil</span>)</div></pre></td></tr></table></figure>
+<p>分析一下几个参数的作用：</p>
+<ul>
+<li>label：队列的标识符，方便调试</li>
+<li>qos：队列的 <a href="https://developer.apple.com/documentation/dispatch/dispatchqos" target="_blank" rel="external">quality of service</a>，用来指明队列的优先级，后文会讲到</li>
+<li>attributes：队列的属性,是一个结构体，包括两个值：initiallyInactive（表示队列需要手动触发） 和 concurrent（表示并发队列）</li>
+<li>autoreleaseFrequency：自动释放频率，有些队列是会在执行完任务后自动释放的，有些比如Timer等是不会自动释放的，需要手动释放</li>
+</ul>
+<p>所以在 Swift 上可以这样创建创建一个串行／并发队列</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//串行队列</span></div><div class="line"><span class="keyword">let</span> serialQueue = <span class="type">DispatchQueue</span>(label: <span class="string">"com.xiaovv.serialQueue"</span>)</div><div class="line"></div><div class="line"><span class="comment">//并发队列</span></div><div class="line"><span class="keyword">let</span> concurrentQueue = <span class="type">DispatchQueue</span>(label: <span class="string">"com.xiaovv.concurrentQueue"</span>, qos: .<span class="keyword">default</span>, attributes: .concurrent)</div></pre></td></tr></table></figure>
+<p>主队列和全局队列可以这样获取</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//获取主队列</span></div><div class="line"><span class="keyword">let</span> mainQueue = <span class="type">DispatchQueue</span>.main</div><div class="line"><span class="comment">//获取默认优先级的全局并发队列   </span></div><div class="line"><span class="keyword">let</span> globalQueue = <span class="type">DispatchQueue</span>.global()</div><div class="line"><span class="comment">//获取一个自定义优先级的全局并发队列</span></div><div class="line"><span class="keyword">let</span> gloabalQueueQos = <span class="type">DispatchQueue</span>.global(qos: .userInitiated)</div></pre></td></tr></table></figure>
+<h5 id="QoS"><a href="#QoS" class="headerlink" title="QoS"></a>QoS</h5><p><strong>QoS</strong> 全称 quality of service，它是一个结构体，用来规定队列的优先级，Qos 有以下四种类型：从上到下优先级依次降低</p>
+<ul>
+<li>User Interactive：和用户交互相关，比如动画、用户连续拖拽的计算等等，优先级最高</li>
+<li>User Initiated：次高优先级，需要马上得到结果，比如push一个ViewController之前的数据计算</li>
+<li>Default：默认优先级</li>
+<li>Utility：普通优先级，可以执行很长时间再通知用户结果，比如下载一个文件，给用户下载进度 </li>
+<li>Background：用户不可见，最低优先级，比如在后台存储大量数据</li>
+</ul>
+<h4 id="把任务添加到队列"><a href="#把任务添加到队列" class="headerlink" title="把任务添加到队列"></a>把任务添加到队列</h4><p>在 GCD 中队列有：串行队列、并发队列、全局队列和主队列<br>执行任务的方式有：同步执行和异步执行</p>
+<h5 id="串行队列-同步执行"><a href="#串行队列-同步执行" class="headerlink" title="串行队列 + 同步执行"></a>串行队列 + 同步执行</h5><p>OC</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)serialQueueSync&#123;</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"++start++"</span>);</div><div class="line">    <span class="built_in">dispatch_queue_t</span> serialQueue = dispatch_queue_create(<span class="string">"com.xiao.serialQueue"</span>, DISPATCH_QUEUE_SERIAL);</div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_sync</span>(serialQueue, ^&#123;</div><div class="line">        <span class="comment">//下载图片1</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://cdn.sspai.com/2017/06/09/81ed1ff1c3977e78c7631c637485b440.png"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片1下载完成%@------%@"</span>,image,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_sync</span>(serialQueue, ^&#123;</div><div class="line">        <span class="comment">//下载图片2</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://cdn.sspai.com/2017/06/09/cf03146aaa1a59e5c7fca4d8e5eb464e.jpg"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片2下载完成%@------%@"</span>,image,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_sync</span>(serialQueue, ^&#123;</div><div class="line">        <span class="comment">//下载图片3</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://cdn.sspai.com/2017/06/09/41df7c73909879220c5cac980518c774.png"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片3下载完成%@------%@"</span>,image,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"++end++"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="built_in">UIImage</span> *)downloadImage:(<span class="built_in">NSString</span> *)urlStr&#123;</div><div class="line">    </div><div class="line">    <span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:urlStr];</div><div class="line">    <span class="built_in">NSData</span> *imageData  = [<span class="built_in">NSData</span> dataWithContentsOfURL:url];</div><div class="line">    <span class="keyword">return</span> [<span class="built_in">UIImage</span> imageWithData:imageData];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Swift</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">serialQueueSync</span><span class="params">()</span></span> &#123;</div><div class="line">        </div><div class="line">    <span class="built_in">print</span>(<span class="string">"+++start+++"</span>)</div><div class="line">    <span class="keyword">let</span> serialQueue = <span class="type">DispatchQueue</span>(label: <span class="string">"com.xiaovv.serialQueue"</span>)</div><div class="line">    </div><div class="line">    serialQueue.sync &#123;</div><div class="line">        <span class="comment">//执行任务</span></div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/09/81ed1ff1c3977e78c7631c637485b440.png"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片1下载完成------<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    serialQueue.sync &#123;</div><div class="line">        <span class="comment">//执行任务</span></div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/09/cf03146aaa1a59e5c7fca4d8e5eb464e.jpg"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片2下载完成------<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    serialQueue.sync &#123;</div><div class="line">        <span class="comment">//执行任务</span></div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/09/41df7c73909879220c5cac980518c774.png"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片3下载完成------<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">    <span class="built_in">print</span>(<span class="string">"+++end+++"</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">download</span><span class="params">(urlStr: String)</span></span> -&gt; <span class="type">UIImage</span> &#123;</div><div class="line">        </div><div class="line">    <span class="keyword">let</span> url = <span class="type">URL</span>.<span class="keyword">init</span>(string: urlStr)!</div><div class="line">    <span class="keyword">var</span> image = <span class="type">UIImage</span>();</div><div class="line">    </div><div class="line">    <span class="keyword">do</span> &#123;</div><div class="line">        <span class="keyword">let</span> imageData = <span class="keyword">try</span> <span class="type">Data</span>.<span class="keyword">init</span>(contentsOf: url)</div><div class="line">        image = <span class="type">UIImage</span>(data: imageData)! </div><div class="line">    &#125; <span class="keyword">catch</span> <span class="keyword">let</span> error <span class="keyword">as</span> <span class="type">NSError</span> &#123;</div><div class="line">        <span class="built_in">print</span>(error)</div><div class="line">    &#125;</div><div class="line">   <span class="keyword">return</span> image</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>打印结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">+++start+++</div><div class="line">图片1下载完成---&lt;UIImage: 0x170093970&gt;, &#123;1912, 748&#125;&lt;NSThread: 0x17007c200&gt;&#123;number = 1, name = main&#125;</div><div class="line">图片2下载完成---&lt;UIImage: 0x170093bf0&gt;, &#123;2400, 1819&#125;&lt;NSThread: 0x17007c200&gt;&#123;number = 1, name = main&#125;</div><div class="line">图片3下载完成---&lt;UIImage: 0x170093dd0&gt;, &#123;932, 448&#125;&lt;NSThread: 0x17007c200&gt;&#123;number = 1, name = main&#125;</div><div class="line">+++end+++</div></pre></td></tr></table></figure>
+<p>从执行结果可以看出所有任务都在当前线程（主线程）执行，而由于队列是串行队列，所以任务是按顺序执行的，而且所有任务都是在 <code>start</code> 和 <code>end</code> 之间打印的，说明任务是添加的队列中立即执行的</p>
+<h5 id="串行队列-异步执行"><a href="#串行队列-异步执行" class="headerlink" title="串行队列 + 异步执行"></a>串行队列 + 异步执行</h5><p>OC </p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)serialQueueAsync&#123;</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"++start++"</span>);</div><div class="line">    <span class="built_in">dispatch_queue_t</span> serialQueue = dispatch_queue_create(<span class="string">"com.xiao.serialQueue"</span>, DISPATCH_QUEUE_SERIAL);</div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_async</span>(serialQueue, ^&#123;</div><div class="line">        <span class="comment">//下载图片1</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://cdn.sspai.com/2017/06/09/81ed1ff1c3977e78c7631c637485b440.png"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片1下载完成%@---%@"</span>,image,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_async</span>(serialQueue, ^&#123;</div><div class="line">        <span class="comment">//下载图片2</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://cdn.sspai.com/2017/06/09/cf03146aaa1a59e5c7fca4d8e5eb464e.jpg"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片2下载完成%@---%@"</span>,image,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_async</span>(serialQueue, ^&#123;</div><div class="line">        <span class="comment">//下载图片3</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://cdn.sspai.com/2017/06/09/41df7c73909879220c5cac980518c774.png"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片3下载完成%@----%@"</span>,image,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"++end++"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Swift</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">serialQueueAsync</span><span class="params">()</span></span> &#123;</div><div class="line">        </div><div class="line">    <span class="built_in">print</span>(<span class="string">"+++start+++"</span>)</div><div class="line">    <span class="keyword">let</span> serialQueue = <span class="type">DispatchQueue</span>(label: <span class="string">"com.xiaovv.serialQueue"</span>)</div><div class="line">    </div><div class="line">    serialQueue.async &#123;</div><div class="line">        <span class="comment">//下载图片1</span></div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/09/81ed1ff1c3977e78c7631c637485b440.png"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片1下载完成---<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    serialQueue.async &#123;</div><div class="line">        <span class="comment">//下载图片2</span></div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/09/cf03146aaa1a59e5c7fca4d8e5eb464e.jpg"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片2下载完成---<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    serialQueue.async &#123;</div><div class="line">        <span class="comment">//下载图片3</span></div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/09/41df7c73909879220c5cac980518c774.png"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片3下载完成---<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">    <span class="built_in">print</span>(<span class="string">"+++end+++"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>打印结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">+++start+++</div><div class="line">+++end+++</div><div class="line">图片1下载完成---&lt;UIImage: 0x17008a550&gt;, &#123;1912, 748&#125;&lt;NSThread: 0x17407cdc0&gt;&#123;number = 3, name = (null)&#125;</div><div class="line">图片2下载完成---&lt;UIImage: 0x17008a9b0&gt;, &#123;2400, 1819&#125;&lt;NSThread: 0x17407cdc0&gt;&#123;number = 3, name = (null)&#125;</div><div class="line">图片3下载完成---&lt;UIImage: 0x17008ab90&gt;, &#123;932, 448&#125;&lt;NSThread: 0x17407cdc0&gt;&#123;number = 3, name = (null)&#125;</div></pre></td></tr></table></figure>
+<p>从执行结果可以看出系统开启一条新线程，而由于队列还是串行队列，所以任务是按顺序执行的，而且所有任务都是在 <code>start</code> 和 <code>end</code> 之后打印的，说明任务添加到队列并没有立即执行，而是所有任务添加完成才开始执行</p>
+<h5 id="并发队列-异步执行"><a href="#并发队列-异步执行" class="headerlink" title="并发队列 + 异步执行"></a>并发队列 + 异步执行</h5><p>OC</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)concurrentQueueAsync&#123;</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"++start++"</span>);</div><div class="line">    <span class="built_in">dispatch_queue_t</span> concurrentQueue = dispatch_queue_create(<span class="string">"com.xiao.concurrentQueue"</span>, DISPATCH_QUEUE_CONCURRENT);</div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_async</span>(concurrentQueue, ^&#123;</div><div class="line">        <span class="comment">//下载图片1</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://cdn.sspai.com/2017/06/09/81ed1ff1c3977e78c7631c637485b440.png"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片1下载完成%@------%@"</span>,image,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_async</span>(concurrentQueue, ^&#123;</div><div class="line">        <span class="comment">//下载图片2</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://cdn.sspai.com/2017/06/09/cf03146aaa1a59e5c7fca4d8e5eb464e.jpg"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片2下载完成%@------%@"</span>,image,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_async</span>(concurrentQueue, ^&#123;</div><div class="line">        <span class="comment">//下载图片3</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://cdn.sspai.com/2017/06/09/41df7c73909879220c5cac980518c774.png"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片3下载完成%@------%@"</span>,image,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"++end++"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Swift</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">concurrentQueueAsync</span><span class="params">()</span></span> &#123;</div><div class="line">        </div><div class="line">    <span class="built_in">print</span>(<span class="string">"++start++"</span>)</div><div class="line">    <span class="keyword">let</span> concurrentQueue = <span class="type">DispatchQueue</span>(label: <span class="string">"com.xiao.concurrentQueue"</span>, qos: .<span class="keyword">default</span>, attributes: .concurrent)</div><div class="line">    </div><div class="line">    concurrentQueue.async &#123;</div><div class="line">        <span class="comment">//执行任务</span></div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/09/81ed1ff1c3977e78c7631c637485b440.png"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片1下载完成------<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    concurrentQueue.async &#123;</div><div class="line">        <span class="comment">//执行任务</span></div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/09/cf03146aaa1a59e5c7fca4d8e5eb464e.jpg"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片2下载完成------<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    concurrentQueue.async &#123;</div><div class="line">        <span class="comment">//执行任务</span></div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/09/41df7c73909879220c5cac980518c774.png"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片3下载完成------<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">    <span class="built_in">print</span>(<span class="string">"++end++"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>打印结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">++start++</div><div class="line">++end++</div><div class="line">图片3下载完成------&lt;UIImage: 0x608000090cc0&gt;, &#123;932, 448&#125;&lt;NSThread: 0x6000002757c0&gt;&#123;number = 4, name = (null)&#125;</div><div class="line">图片1下载完成------&lt;UIImage: 0x6000000932e0&gt;, &#123;1912, 748&#125;&lt;NSThread: 0x600000277240&gt;&#123;number = 5, name = (null)&#125;</div><div class="line">图片2下载完成------&lt;UIImage: 0x600000093560&gt;, &#123;2400, 1819&#125;&lt;NSThread: 0x600000277000&gt;&#123;number = 6, name = (null)&#125;</div></pre></td></tr></table></figure>
+<p>从执行结果可以看出系统开启了3条新线程，由于队列是并行行队列，所以任务是并行的、顺序不定，而且所有任务都是在 <code>start</code> 和 <code>end</code> 之后打印的，说明任务是添加到队列并没有立即执行，而是所有任务添加完成才开始异步执行的</p>
+<h5 id="并发队列-同步执行"><a href="#并发队列-同步执行" class="headerlink" title="并发队列 + 同步执行"></a>并发队列 + 同步执行</h5><p>OC</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)concurrentQueueSync&#123;</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"++start++"</span>);</div><div class="line">    <span class="built_in">dispatch_queue_t</span> concurrentQueue = dispatch_queue_create(<span class="string">"com.xiao.concurrentQueue"</span>, DISPATCH_QUEUE_CONCURRENT);</div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_sync</span>(concurrentQueue, ^&#123;</div><div class="line">        <span class="comment">//下载图片1</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://cdn.sspai.com/2017/06/09/81ed1ff1c3977e78c7631c637485b440.png"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片1下载完成%@------%@"</span>,image,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_sync</span>(concurrentQueue, ^&#123;</div><div class="line">        <span class="comment">//下载图片</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://cdn.sspai.com/2017/06/09/cf03146aaa1a59e5c7fca4d8e5eb464e.jpg"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片2下载完成%@------%@"</span>,image,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_sync</span>(concurrentQueue, ^&#123;</div><div class="line">        <span class="comment">//下载图片3</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://cdn.sspai.com/2017/06/09/41df7c73909879220c5cac980518c774.png"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片3下载完成%@------%@"</span>,image,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"++end++"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Swift</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">concurrentQueueSync</span><span class="params">()</span></span> &#123;</div><div class="line">        </div><div class="line">    <span class="built_in">print</span>(<span class="string">"++start++"</span>)</div><div class="line">    <span class="keyword">let</span> concurrentQueue = <span class="type">DispatchQueue</span>(label: <span class="string">"com.xiao.concurrentQueue"</span>, qos: .<span class="keyword">default</span>, attributes: .concurrent)</div><div class="line">    </div><div class="line">    concurrentQueue.sync &#123;</div><div class="line">        <span class="comment">//执行任务</span></div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/09/81ed1ff1c3977e78c7631c637485b440.png"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片1下载完成------<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    concurrentQueue.sync &#123;</div><div class="line">        <span class="comment">//执行任务</span></div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/09/cf03146aaa1a59e5c7fca4d8e5eb464e.jpg"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片2下载完成------<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    concurrentQueue.sync &#123;</div><div class="line">        <span class="comment">//执行任务</span></div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/09/41df7c73909879220c5cac980518c774.png"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片3下载完成------<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">    <span class="built_in">print</span>(<span class="string">"++end++"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>打印结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">++start++</div><div class="line">图片1下载完成------&lt;UIImage: 0x170282a80&gt;, &#123;1912, 748&#125;&lt;NSThread: 0x174078680&gt;&#123;number = 1, name = main&#125;</div><div class="line">图片2下载完成------&lt;UIImage: 0x170282c60&gt;, &#123;2400, 1819&#125;&lt;NSThread: 0x174078680&gt;&#123;number = 1, name = main&#125;</div><div class="line">图片3下载完成------&lt;UIImage: 0x170282e90&gt;, &#123;932, 448&#125;&lt;NSThread: 0x174078680&gt;&#123;number = 1, name = main&#125;</div><div class="line">++end++</div></pre></td></tr></table></figure>
+<p>从执行结果可以看出任务全部在主线程中执行，由于只有一条线程，所以任务是按顺序执行，而且所有任务都是在 <code>start</code> 和 <code>end</code> 之间打印的，说明任务是添加到队列中是立即执行的</p>
+<h5 id="主队列-异步执行"><a href="#主队列-异步执行" class="headerlink" title="主队列 + 异步执行"></a>主队列 + 异步执行</h5><p>OC </p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)mainQueueAsync&#123;</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"++start++"</span>);</div><div class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;</div><div class="line">        <span class="comment">//下载图片1</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://cdn.sspai.com/2017/06/09/81ed1ff1c3977e78c7631c637485b440.png"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片1下载完成%@------%@"</span>,image,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;</div><div class="line">        <span class="comment">//下载图片</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://cdn.sspai.com/2017/06/09/cf03146aaa1a59e5c7fca4d8e5eb464e.jpg"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片2下载完成%@------%@"</span>,image,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;</div><div class="line">        <span class="comment">//下载图片3</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://cdn.sspai.com/2017/06/09/41df7c73909879220c5cac980518c774.png"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片3下载完成%@------%@"</span>,image,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"++end++"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Swift</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">mainQueueAsync</span><span class="params">()</span></span> &#123;</div><div class="line">        </div><div class="line">    <span class="built_in">print</span>(<span class="string">"++start++"</span>)</div><div class="line">    <span class="type">DispatchQueue</span>.main.async &#123;</div><div class="line">        <span class="comment">//执行任务</span></div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/09/81ed1ff1c3977e78c7631c637485b440.png"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片1下载完成------<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="type">DispatchQueue</span>.main.async &#123;</div><div class="line">        <span class="comment">//执行任务</span></div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/09/cf03146aaa1a59e5c7fca4d8e5eb464e.jpg"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片2下载完成------<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="type">DispatchQueue</span>.main.async &#123;</div><div class="line">        <span class="comment">//执行任务</span></div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/09/41df7c73909879220c5cac980518c774.png"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片3下载完成------<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">    <span class="built_in">print</span>(<span class="string">"++end++"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>打印结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">++start++</div><div class="line">++end++</div><div class="line">图片1下载完成------&lt;UIImage: 0x170096d00&gt;, &#123;540, 258&#125;&lt;NSThread: 0x1740697c0&gt;&#123;number = 1, name = main&#125;</div><div class="line">图片2下载完成------&lt;UIImage: 0x170097ac0&gt;, &#123;540, 258&#125;&lt;NSThread: 0x1740697c0&gt;&#123;number = 1, name = main&#125;</div><div class="line">图片3下载完成------&lt;UIImage: 0x174094690&gt;, &#123;540, 258&#125;&lt;NSThread: 0x1740697c0&gt;&#123;number = 1, name = main&#125;</div></pre></td></tr></table></figure>
+<p>从执行结果可以看出任务全部在主线程中执行，并没有开启新线程，由于只有一条线程，所以任务是按顺序执行，而且所有任务都是在 <code>start</code> 和 <code>end</code> 之后打印的，说明任务是添加到队列中不是立即执行的，而是将所有任务添加到队列之后才开始同步执行的</p>
+<h5 id="主队列-同步执行"><a href="#主队列-同步执行" class="headerlink" title="主队列 + 同步执行"></a>主队列 + 同步执行</h5><p>OC</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)mainQueueSync&#123;</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"++start++"</span>);</div><div class="line">    <span class="built_in">dispatch_sync</span>(dispatch_get_main_queue(), ^&#123;</div><div class="line">        <span class="comment">//下载图片1</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://www.baidu.com/img/bd_logo1.png"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片1下载完成%@------%@"</span>,image,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_sync</span>(dispatch_get_main_queue(), ^&#123;</div><div class="line">        <span class="comment">//下载图片</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://www.baidu.com/img/bd_logo1.png"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片2下载完成%@------%@"</span>,image,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_sync</span>(dispatch_get_main_queue(), ^&#123;</div><div class="line">        <span class="comment">//下载图片3</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://www.baidu.com/img/bd_logo1.png"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片3下载完成%@------%@"</span>,image,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">        </div><div class="line">    &#125;);</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"++end++"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Swift</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">mainQueueSync</span><span class="params">()</span></span> &#123;</div><div class="line">        </div><div class="line">    <span class="built_in">print</span>(<span class="string">"++start++"</span>)</div><div class="line">    <span class="type">DispatchQueue</span>.main.sync &#123;</div><div class="line">        <span class="comment">//执行任务</span></div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://www.baidu.com/img/bd_logo1.png"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片1下载完成------<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="type">DispatchQueue</span>.main.sync &#123;</div><div class="line">        <span class="comment">//执行任务</span></div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://www.baidu.com/img/bd_logo1.png"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片2下载完成------<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="type">DispatchQueue</span>.main.sync &#123;</div><div class="line">        <span class="comment">//执行任务</span></div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://www.baidu.com/img/bd_logo1.png"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片3下载完成------<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">    <span class="built_in">print</span>(<span class="string">"++end++"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>打印结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">++start++</div></pre></td></tr></table></figure>
+<p>打印完 <code>start</code> 之后，系统卡死了，后面的代码不执行了，原因是：<strong>循环等待</strong>，造成线程死锁</p>
+<p>我们在主线程执行 <code>mainQueueSync()</code>，又把下载图片的任务放到了主队列里同步执行，同步执行的特点就是立即执行任务，当我们把第一张图片下载放到主队列的时候，它会立即执行，但是现在主线程正在出处理 <code>mainQueueSync()</code>，所以下载图片任务必须等 <code>mainQueueSync()</code>执行完，而<code>mainQueueSync()</code> 执行到下载第一张图片下载完之后，才能继续下载第二张和第三张图片的任务，于是 <code>mainQueueSync()</code> 和 下载第一张图片的任务都在互相等待对方执行完毕，于是线程就卡死了，什么任务都执行不了了，后面的 <code>end</code> 自然也不会打印了，如果在非主线程执行 <code>mainQueueSync()</code>，则不会出现死锁问题，任务会按顺序在主队列执行</p>
+<p>由于全局队列本质就是 <strong>并发队列</strong>，它的执行效果和并发队列是一致的</p>
+<p>总结一下各种队列+任务：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">并发队列</th>
+<th style="text-align:center">串行队列</th>
+<th style="text-align:center">主队列</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">同步（sync）</td>
+<td style="text-align:center">不开启新线程，串行执行任务</td>
+<td style="text-align:center">不开启新线程，串行执行任务</td>
+<td style="text-align:center">不开启新线程，串行执行任务</td>
+</tr>
+<tr>
+<td style="text-align:center">异步（async）</td>
+<td style="text-align:center">开启多个线程，并发执行任务</td>
+<td style="text-align:center">有开启一条新线程，串行执行任务</td>
+<td style="text-align:center">不开启新线程，串行执行任务</td>
+</tr>
+</tbody>
+</table>
+<h4 id="GCD-线程之间的通讯"><a href="#GCD-线程之间的通讯" class="headerlink" title="GCD 线程之间的通讯"></a>GCD 线程之间的通讯</h4><p>开发过程中，我们通常把一些耗时的操作放在其他线程，比如说图片下载、文件上传等耗时操作，当我们有时候在其他线程完成了耗时操作时，需要回到主线程进行UI刷新等操作，这就用到了线程之间的通讯</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="type">DispatchQueue</span>.global().async &#123; </div><div class="line">            </div><div class="line">    <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/09/41df7c73909879220c5cac980518c774.png"</span>)</div><div class="line">    <span class="type">DispatchQueue</span>.main.async &#123;</div><div class="line">        <span class="built_in">print</span>(<span class="string">"刷新图片---<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="GCD-的其他用法"><a href="#GCD-的其他用法" class="headerlink" title="GCD 的其他用法"></a>GCD 的其他用法</h3><h4 id="DispatchGroup"><a href="#DispatchGroup" class="headerlink" title="DispatchGroup"></a>DispatchGroup</h4><p>DispatchGroup 可以用来管理一组任务的执行，并且监听任务都完成的事件，DispatchGroup 中的任务可以是在不同的队列中，使用DispatchGroup 可以用来同步代码，比如：多个异步网络请求同时发出，等待所有网络请求都完成后刷新 UI，看一下如何使用 DispatchGroup</p>
+<p>OC</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)groupNotify&#123;</div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"com.xiao.groupNotify"</span>, DISPATCH_QUEUE_CONCURRENT);</div><div class="line">    dispatch_group_t group = dispatch_group_create();</div><div class="line">    <span class="comment">//把下载图片任务关联到group</span></div><div class="line">    dispatch_group_async(group, queue, ^&#123;</div><div class="line">        <span class="comment">//下载图片1</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://cdn.sspai.com/2017/06/13/36a73658d45dcf75ab291ad1f5d34446.jpg"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片1下载完成%@---%@"</span>,image,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div><div class="line">    <span class="comment">//把下载图片任务关联到group</span></div><div class="line">    dispatch_group_async(group, queue, ^&#123;</div><div class="line">        <span class="comment">//下载图片2</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://cdn.sspai.com/2017/06/13/76ea4b753f22883e6731c5bea8a61240.png"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片2下载完成%@---%@"</span>,image,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div><div class="line">    <span class="comment">//把下载图片任务关联到group</span></div><div class="line">    dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</div><div class="line">        <span class="comment">//下载图片3</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://cdn.sspai.com/2017/06/10/ae99b1c684cb23277a04bebcc3b44a91.png"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片3下载完成%@---%@"</span>,image,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div><div class="line">    <span class="comment">// group中的任务全部完成后通知</span></div><div class="line">    dispatch_group_notify(group, dispatch_get_main_queue(), ^&#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片全部下载完成---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Swift</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">groupNotify</span><span class="params">()</span></span> &#123;</div><div class="line">        </div><div class="line">    <span class="keyword">let</span> group = <span class="type">DispatchGroup</span>()</div><div class="line">    <span class="keyword">let</span> queue = <span class="type">DispatchQueue</span>(label: <span class="string">"com.xiao.groupNotify"</span>, qos: .<span class="keyword">default</span>, attributes: .concurrent)</div><div class="line">    <span class="comment">//把下载图片的任务关联到group</span></div><div class="line">    queue.async(group: group) &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/13/36a73658d45dcf75ab291ad1f5d34446.jpg"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片1下载完成---<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    <span class="comment">//把下载图片任务关联到group</span></div><div class="line">    queue.async(group: group) &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/13/76ea4b753f22883e6731c5bea8a61240.png"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片2下载完成---<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//把下载图片的任务关联到group</span></div><div class="line">    <span class="type">DispatchQueue</span>.global().async(group: group) &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/10/ae99b1c684cb23277a04bebcc3b44a91.png"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片3下载完成---<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// group中的任务全部完成后通知</span></div><div class="line">    group.notify(queue: <span class="type">DispatchQueue</span>.main) &#123;</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片全部下载完成---<span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>打印结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">图片2下载完成---&lt;UIImage: 0x608000090950&gt;, &#123;873, 690&#125;&lt;NSThread: 0x6080000717c0&gt;&#123;number = 4, name = (null)&#125;</div><div class="line">图片3下载完成---&lt;UIImage: 0x600000090f90&gt;, &#123;3157, 1688&#125;&lt;NSThread: 0x600000076dc0&gt;&#123;number = 5, name = (null)&#125;</div><div class="line">图片1下载完成---&lt;UIImage: 0x608000090ea0&gt;, &#123;2016, 1512&#125;&lt;NSThread: 0x608000078580&gt;&#123;number = 6, name = (null)&#125;</div><div class="line">图片全部下载完成---&lt;NSThread: 0x608000066ac0&gt;&#123;number = 1, name = main&#125;</div></pre></td></tr></table></figure>
+<p>队列组关联的任务全部完成之后，会发出同步信号，在 <code>notify</code> 方法中监听到任务全部完成并执行 <code>notify</code> 中的代码，另外，还可以使用 DispatchGroup 的 <code>enter()</code> 和 <code>leave()</code> 手动把任务加入队列组，<code>enter()</code> 表示接下来的任务块加入 DispatchGroup ，<code>leave()</code>表示任务块代码结束， <code>enter()</code> 和 <code>leave()</code> 必须成对出现，通过这种方式可以让就可以让 AFN 的网络请求添加的到 DispatchGroup 中，达到多个网络请求同步，上面的代码也可以这样写：</p>
+<p>OC</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)groupNotify&#123;</div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"com.xiao.groupNotify"</span>, DISPATCH_QUEUE_CONCURRENT);</div><div class="line">    dispatch_group_t group = dispatch_group_create();</div><div class="line">    </div><div class="line">    dispatch_group_enter(group);</div><div class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line">        <span class="comment">//下载图片1</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://www.baidu.com/img/bd_logo1.png"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片1下载完成%@---%@"</span>,image,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">        dispatch_group_leave(group);</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    dispatch_group_enter(group);</div><div class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line">        <span class="comment">//下载图片2</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://cdn.sspai.com/article/a4d0daed-a6e8-f134-5cfe-a13138ca18f4.jpg"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片2下载完成%@---%@"</span>,image,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">        dispatch_group_leave(group);</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    dispatch_group_enter(group);</div><div class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</div><div class="line">        <span class="comment">//下载图片3</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://cdn.sspai.com/article/a4d0daed-a6e8-f134-5cfe-a13138ca18f4.jpg"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片3下载完成%@---%@"</span>,image,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">        dispatch_group_leave(group);</div><div class="line">    &#125;);</div><div class="line">    <span class="comment">// group中的任务全部完成后通知</span></div><div class="line">    dispatch_group_notify(group, dispatch_get_main_queue(), ^&#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片全部下载完成---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Swift</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">groupNotify</span><span class="params">()</span></span> &#123;</div><div class="line">        </div><div class="line">    <span class="keyword">let</span> group = <span class="type">DispatchGroup</span>()</div><div class="line">    <span class="keyword">let</span> queue = <span class="type">DispatchQueue</span>(label: <span class="string">"com.xiao.group"</span>, qos: .<span class="keyword">default</span>, attributes: .concurrent)</div><div class="line">    </div><div class="line">    group.enter()</div><div class="line">    queue.async &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/13/36a73658d45dcf75ab291ad1f5d34446.jpg"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片1下载完成---<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">        group.leave()</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    group.enter()</div><div class="line">    queue.async(group: group) &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/13/76ea4b753f22883e6731c5bea8a61240.png"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片2下载完成---<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">        group.leave()</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    group.enter()</div><div class="line">    <span class="type">DispatchQueue</span>.global().async(group: group) &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/10/ae99b1c684cb23277a04bebcc3b44a91.png"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片3下载完成---<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">        group.leave()</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// group中的任务全部完成后通知</span></div><div class="line">    group.notify(queue: <span class="type">DispatchQueue</span>.main) &#123;</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片全部下载完成---<span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>DispatchGroup 中还有一个 <code>wait()</code> 方法，可以设置等待时间，在等待时间内会一直等待任务组中的任务完成，当任务完成或者等待超过等待时间会结束等待，<code>wait()</code> 会阻塞当前线程一直等待（所以不要放在主线程调用）</p>
+<p>OC</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">dispatch_group_wait(group, DISPATCH_TIME_NOW + <span class="number">10</span>);</div><div class="line"><span class="comment">//一直等待待任务组任务结束 </span></div><div class="line">dispatch_group_wait(group, DISPATCH_TIME_FOREVER);</div></pre></td></tr></table></figure>
+<p>Swift</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//设置等待时间为当前时间开始往后10s</span></div><div class="line">group.wait(timeout: <span class="type">DispatchTime</span>.now() + <span class="number">10</span>)</div><div class="line">group.wait(wallTimeout: <span class="type">DispatchWallTime</span>.now() + <span class="number">10</span>)</div><div class="line"><span class="comment">//一直等待待任务组任务结束 等同 于group.wait(timeout: DispatchTime.distantFuture)</span></div><div class="line">group.wait()</div></pre></td></tr></table></figure>
+<p>这里再说一下 <code>DispatchWallTime</code> 和 <code>DispatchTime</code> 的区别，当计算机进入睡眠状态的时候， <code>DispatchTime</code> 也会进入睡眠状态，而 <code>DispatchWallTime</code> 会一直运行，不会睡眠，这两个的区别使用应该是用于 macOS 开发</p>
+<h4 id="GCD-延迟执行"><a href="#GCD-延迟执行" class="headerlink" title="GCD 延迟执行"></a>GCD 延迟执行</h4><p>有时候程序需要对代码块里面的任务项进行延时操作，GCD 可以通过调用一个方法来指定某个任务在延迟特定的时间后再执行</p>
+<p>OC</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//这是在主队列延迟，也可以换成其他的队列</span></div><div class="line">dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(<span class="number">10</span> * <span class="built_in">NSEC_PER_SEC</span>)), dispatch_get_main_queue(), ^&#123;</div><div class="line">    <span class="comment">//延迟执行的代码</span></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>Swift</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//这是在主队列延迟，也可以换成其他的队列</span></div><div class="line"><span class="type">DispatchQueue</span>.main.asyncAfter(deadline: .now() + <span class="number">10</span>) &#123;        </div><div class="line">    <span class="comment">//延迟执行的代码</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="GCD-一次性代码"><a href="#GCD-一次性代码" class="headerlink" title="GCD 一次性代码"></a>GCD 一次性代码</h4><p>在创建单例、或者有整个程序运行过程中只执行一次的代码时，我们就可以使用 GCD 的 <code>dispatch_once</code> 方法，使用 <code>dispatch_once</code> 能保证某段代码在程序运行过程中只被执行1次</p>
+<p>OC</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;</div><div class="line">    <span class="built_in">dispatch_once</span>(&amp;onceToken, ^&#123;</div><div class="line">    <span class="comment">//执行一次的代码</span></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p><code>dispatch_once</code> 在 Swift 3 中已经被废弃了，实际上 Swift 内部已经在使用 <code>dispatch_once</code> 机制支持线程安全的懒加载初始化和静态变量了，Swift 的语言特性决定了我们不需要在 Swift 里面使用 <code>dispatch_once</code> 所以苹果就显式的取消了，如果需要在 Swfit3 中实现原来 <code>dispatch_once</code> 机制可以参考下面两篇文章</p>
+<p><a href="http://blog.csdn.net/mydo/article/details/52635754" target="_blank" rel="external">Swift 3 中dispatch_once废弃的解决办法</a></p>
+<p><a href="http://www.jianshu.com/p/640b64faea9a" target="_blank" rel="external">Swift 3 中实现Dispatch once扩展</a></p>
+<h4 id="GCD-快速迭代"><a href="#GCD-快速迭代" class="headerlink" title="GCD 快速迭代"></a>GCD 快速迭代</h4><p>通常我们使用 For 或者 While 循环遍历，但是普通的循环是在主线程中执行，如果循环多次过多可能会影响主线程执行，导致 UI 界面卡顿，影响用户体验，GCD 提供了一个快速循环遍历的方法，会开启新线程执行任务，但是迭代执行的顺序是不固定的，比如：从目录里遍历文件就可以使用这个方法</p>
+<p>OC</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//第一个参数表示遍历次数，第二个参数表示遍历的队列</span></div><div class="line">dispatch_apply(<span class="number">6</span>, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^(size_t index) &#123;</div><div class="line">      <span class="comment">//遍历</span></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>Swift</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//传入的参数表示遍历次数</span></div><div class="line"><span class="type">DispatchQueue</span>.concurrentPerform(iterations: <span class="number">6</span>) &#123; (index) <span class="keyword">in</span>    </div><div class="line">     <span class="comment">//遍历</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="DispatchSemaphore"><a href="#DispatchSemaphore" class="headerlink" title="DispatchSemaphore"></a>DispatchSemaphore</h4><p>DispatchSemaphore 是传统计数信号量的封装，用来控制资源被多任务访问的情况</p>
+<p>有三个主要的相关方法：<code>dispatch_semaphore_create</code>，<code>dispatch_semaphore_signal</code>，<code>dispatch_semaphore_wait</code>分别介绍一下：</p>
+<ul>
+<li><code>dispatch_semaphore_create</code> ：传入一个信号量的初始值来创建一个信号量，传入的初始值必须大于等于0</li>
+<li><code>dispatch_semaphore_wait</code>：这个方法的判断信号量的值大于0，则该方法所处的线程就会继续执行下面的语句，并且将信号量的值减1，该方法还可以传入一个超时时间，如果在等待期间获取不到信号量或者信号量一直为0，那么超时时间之后会自动执行后面的代码</li>
+<li><code>dispatch_semaphore_signal</code>：这个方法会把信号量的值加1</li>
+</ul>
+<p>关于信号量借别人一个停车场的例子：停车场剩余4个车位，那么即使同时来了四辆车也能停的下，如果此时来了五辆车，那么就有一辆需要等待。 信号量的值就相当于剩余车位的数目，<code>dispatch_semaphore_wait</code>函数就相当于来了一辆车，<code>dispatch_semaphore_signal</code> 就相当于走了一辆车。停车位的剩余数目在初始化的时候就已经指明了（<code>dispatch_semaphore_create（long value）</code>）， 调用一次 <code>dispatch_semaphore_signal</code>，剩余的车位就增加一个，调用一次<code>dispatch_semaphore_wait</code> 剩余车位就减少一个，当剩余车位为 0 时，再来车（即调用<code>dispatch_semaphore_wait</code>）就只能等待，有可能同时有几辆车等待一个停车位。有些车主没有耐心，给自己设定了一段等待时间，这段时间内等不到停车位就走了，如果等到了就开进去停车，而有些车主就想把车停在这，所以就一直等下去</p>
+<p>下面看一下如何使用信号量：</p>
+<p>OC</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)semaphore &#123;</div><div class="line">    <span class="comment">//信号量的初始值为1 </span></div><div class="line">    dispatch_semaphore_t semaphore = dispatch_semaphore_create(<span class="number">1</span>);</div><div class="line">    <span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"com.xiao.semaphore"</span>, DISPATCH_QUEUE_CONCURRENT);</div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line">        </div><div class="line">        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片1开始下载"</span>);</div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://www.baidu.com/img/bd_logo1.png"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片1下载完成---%@"</span>,image);</div><div class="line">        dispatch_semaphore_signal(semaphore);</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line">    </div><div class="line">        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片2开始下载"</span>);</div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://cdn.sspai.com/article/a4d0daed-a6e8-f134-5cfe-a13138ca18f4.jpg"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片2下载完成---%@"</span>,image);</div><div class="line">        dispatch_semaphore_signal(semaphore);</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line">    </div><div class="line">        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片3开始下载"</span>);</div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> downloadImage:<span class="string">@"https://cdn.sspai.com/article/a4d0daed-a6e8-f134-5cfe-a13138ca18f4.jpg"</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"图片3下载完成---%@"</span>,image);</div><div class="line">        dispatch_semaphore_signal(semaphore);</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Swfit</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">semaphore</span><span class="params">()</span></span> &#123;</div><div class="line">        </div><div class="line">    <span class="keyword">let</span> semaphore = <span class="type">DispatchSemaphore</span>(value: <span class="number">2</span>)</div><div class="line">    <span class="keyword">let</span> queue = <span class="type">DispatchQueue</span>(label: <span class="string">"com.xiao.semaphore"</span>, qos: .<span class="keyword">default</span>, attributes: .concurrent)</div><div class="line">    </div><div class="line">    queue.async &#123;</div><div class="line">        </div><div class="line">        semaphore.wait()</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片1开始下载"</span>)</div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/13/36a73658d45dcf75ab291ad1f5d34446.jpg"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片1下载完成---<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">        semaphore.signal()</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    queue.async &#123;</div><div class="line">        </div><div class="line">        semaphore.wait()</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片2开始下载"</span>)</div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/13/76ea4b753f22883e6731c5bea8a61240.png"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片2下载完成---<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">        semaphore.signal()</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    queue.async &#123;</div><div class="line">        </div><div class="line">        semaphore.wait()</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片3开始下载"</span>)</div><div class="line">        <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/10/ae99b1c684cb23277a04bebcc3b44a91.png"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"图片3下载完成---<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">        semaphore.signal()</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>以下是打印结果：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">图片1开始下载</div><div class="line">图片1下载完成---&lt;UIImage: 0x170089ba0&gt;, &#123;2016, 1512&#125;&lt;NSThread: 0x17007b440&gt;&#123;number = 5, name = (null)&#125;</div><div class="line">图片2开始下载</div><div class="line">图片2下载完成---&lt;UIImage: 0x17008a320&gt;, &#123;873, 690&#125;&lt;NSThread: 0x170265580&gt;&#123;number = 6, name = (null)&#125;</div><div class="line">图片3开始下载</div><div class="line">图片3下载完成---&lt;UIImage: 0x17008a190&gt;, &#123;3157, 1688&#125;&lt;NSThread: 0x170267000&gt;&#123;number = 7, name = (null)&#125;</div></pre></td></tr></table></figure>
+<p>当信号量初始值为2时，打印结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">图片1开始下载</div><div class="line">图片2开始下载</div><div class="line">图片2下载完成---&lt;UIImage: 0x1740918f0&gt;, &#123;873, 690&#125;&lt;NSThread: 0x174265bc0&gt;&#123;number = 5, name = (null)&#125;</div><div class="line">图片3开始下载</div><div class="line">图片1下载完成---&lt;UIImage: 0x174091990&gt;, &#123;2016, 1512&#125;&lt;NSThread: 0x1740740c0&gt;&#123;number = 3, name = (null)&#125;</div><div class="line">图片3下载完成---&lt;UIImage: 0x170094a50&gt;, &#123;3157, 1688&#125;&lt;NSThread: 0x170079440&gt;&#123;number = 6, name = (null)&#125;</div></pre></td></tr></table></figure>
+<p>当信号量初始值为3时，打印结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">图片2开始下载</div><div class="line">图片1开始下载</div><div class="line">图片3开始下载</div><div class="line">图片2下载完成---&lt;UIImage: 0x17008d7f0&gt;, &#123;873, 690&#125;&lt;NSThread: 0x170270080&gt;&#123;number = 5, name = (null)&#125;</div><div class="line">图片3下载完成---&lt;UIImage: 0x17008e600&gt;, &#123;3157, 1688&#125;&lt;NSThread: 0x170273240&gt;&#123;number = 6, name = (null)&#125;</div><div class="line">图片1下载完成---&lt;UIImage: 0x17008d930&gt;, &#123;2016, 1512&#125;&lt;NSThread: 0x1702737c0&gt;&#123;number = 7, name = (null)&#125;</div></pre></td></tr></table></figure>
+<p>从上面的打印结果可以看出，通过信号量可以控制并发的数量，并且可以阻塞线程达到线程同步的目的，也可以利用信号量保证只有一个线程访问同一份资源</p>
+<h4 id="DispatchWorkItem"><a href="#DispatchWorkItem" class="headerlink" title="DispatchWorkItem"></a>DispatchWorkItem</h4><p>DispatchWorkItem 代替之前的 <code>dispatch_block_t</code>, 它是一个代码块，它可以在任意一个队列上被调用，因此它里面的代码可以在后台运行，也可以在主线程运行，在 DispatchQueue 执行操作除了直接传了一个 <code>() -&gt; Void</code> 类型的闭包外，还可以传入一个 DispatchWorkItem，看一下如何使用</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> workItem1 = <span class="type">DispatchWorkItem</span> &#123;</div><div class="line">            </div><div class="line">    <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/13/36a73658d45dcf75ab291ad1f5d34446.jpg"</span>)</div><div class="line">    <span class="built_in">print</span>(<span class="string">"图片1下载完成---<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="keyword">let</span> workItem2 = <span class="type">DispatchWorkItem</span>(qos: .<span class="keyword">default</span>, flags: .enforceQoS) &#123;</div><div class="line">    </div><div class="line">    <span class="keyword">let</span> image = <span class="keyword">self</span>.download(urlStr: <span class="string">"https://cdn.sspai.com/2017/06/13/76ea4b753f22883e6731c5bea8a61240.png"</span>)</div><div class="line">    <span class="built_in">print</span>(<span class="string">"图片2下载完成---<span class="subst">\(image)</span><span class="subst">\(Thread.current)</span>"</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="type">DispatchQueue</span>.global().async(execute: workItem1)</div><div class="line"><span class="type">DispatchQueue</span>.global().async(execute: workItem2)</div></pre></td></tr></table></figure>
+<p>DispatchWorkItem  的初始化函数 <code>DispatchWorkItem(qos: .default, flags: .enforceQoS)</code> 可以设置两个参数</p>
+<ul>
+<li>QoS：quality of service 上面已经解释过了</li>
+<li>DispatchWorkItemFlags：指定这个任务的配饰信息，这个参数分为两组<ul>
+<li>执行情况：barrier、detached、assignCurrentContext</li>
+<li>QoS覆盖信息：noQoS（没有QoS）、inheritQoS（继承Queue的QoS）、enforceQoS（自己的QoS覆盖Queue）</li>
+</ul>
+</li>
+</ul>
+<p>GCD 还有很多高级用法需要深入的学习，本文仅仅列举了 GCD 的一些基本用法，不过已经可以满足日常的大部分多线程的开发工作了</p>
+<p>其他相关文章：</p>
+<p><a href="http://shuishangshu.coding.me/2017/06/12/The-basic-use-of-NSThread-for-iOS-multithreading/" target="_blank" rel="external">iOS 多线程之 NSThread 的基本使用</a></p>
+<p>本文参考：</p>
+<p><a href="http://www.swift.gg/2016/11/30/grand-central-dispatch/" target="_blank" rel="external">Grand Central Dispatch (GCD) and Dispatch Queues in Swift 3</a></p>
+<p><a href="http://blog.csdn.net/Hello_Hwc/article/details/54293280?winzoom=1&amp;utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">GCD精讲（Swift 3）</a></p>
+<p><a href="http://www.jianshu.com/p/2d57c72016c6" target="_blank" rel="external">iOS多线程–彻底学会多线程之『GCD』</a></p>
+<p><strong>本人刚开始写博客，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能让别人有所启发也是荣幸之至！如有错误，欢迎指正！</strong></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/12/The-basic-use-of-NSThread-for-iOS-multithreading/" rel="next" title="iOS 多线程之 NSThread 的基本使用">
+                <i class="fa fa-chevron-left"></i> iOS 多线程之 NSThread 的基本使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Xiaovv" />
+          <p class="site-author-name" itemprop="name">Xiaovv</p>
+           
+              <p class="site-description motion-element" itemprop="description">以绝大多数人的努力程度之低，根本轮不到去拼天赋</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#GCD-简介"><span class="nav-number">1.</span> <span class="nav-text">GCD 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#任务和队列"><span class="nav-number">2.</span> <span class="nav-text">任务和队列</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#任务"><span class="nav-number">2.1.</span> <span class="nav-text">任务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#队列"><span class="nav-number">2.2.</span> <span class="nav-text">队列</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GCD-的基本使用"><span class="nav-number">3.</span> <span class="nav-text">GCD 的基本使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#OC-中创建-Dispatch-Queue"><span class="nav-number">3.1.</span> <span class="nav-text">OC 中创建 Dispatch Queue</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Swift-中创建-Dispatch-Queue"><span class="nav-number">3.2.</span> <span class="nav-text">Swift 中创建 Dispatch Queue</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#QoS"><span class="nav-number">3.2.1.</span> <span class="nav-text">QoS</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#把任务添加到队列"><span class="nav-number">3.3.</span> <span class="nav-text">把任务添加到队列</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#串行队列-同步执行"><span class="nav-number">3.3.1.</span> <span class="nav-text">串行队列 + 同步执行</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#串行队列-异步执行"><span class="nav-number">3.3.2.</span> <span class="nav-text">串行队列 + 异步执行</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#并发队列-异步执行"><span class="nav-number">3.3.3.</span> <span class="nav-text">并发队列 + 异步执行</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#并发队列-同步执行"><span class="nav-number">3.3.4.</span> <span class="nav-text">并发队列 + 同步执行</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#主队列-异步执行"><span class="nav-number">3.3.5.</span> <span class="nav-text">主队列 + 异步执行</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#主队列-同步执行"><span class="nav-number">3.3.6.</span> <span class="nav-text">主队列 + 同步执行</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GCD-线程之间的通讯"><span class="nav-number">3.4.</span> <span class="nav-text">GCD 线程之间的通讯</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GCD-的其他用法"><span class="nav-number">4.</span> <span class="nav-text">GCD 的其他用法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#DispatchGroup"><span class="nav-number">4.1.</span> <span class="nav-text">DispatchGroup</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GCD-延迟执行"><span class="nav-number">4.2.</span> <span class="nav-text">GCD 延迟执行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GCD-一次性代码"><span class="nav-number">4.3.</span> <span class="nav-text">GCD 一次性代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GCD-快速迭代"><span class="nav-number">4.4.</span> <span class="nav-text">GCD 快速迭代</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DispatchSemaphore"><span class="nav-number">4.5.</span> <span class="nav-text">DispatchSemaphore</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DispatchWorkItem"><span class="nav-number">4.6.</span> <span class="nav-text">DispatchWorkItem</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaovv</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
