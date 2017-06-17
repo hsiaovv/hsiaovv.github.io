@@ -356,7 +356,7 @@
     <span class="keyword">if</span> <span class="type">UIApplication</span>.shared.supportsAlternateIcons {<span class="comment">//判断设备是否支持更换图标      </span>
         <span class="type">UIApplication</span>.shared.setAlternateIconName(iconName, completionHandler: { (error) <span class="keyword">in</span>
             <span class="keyword">if</span> error != <span class="literal">nil</span> {
-                 <span class="built_in">print</span>(<span class="string">"替换icon失败\(String(describing: error?.localizedDescription))"</span>)
+                 <span class="built_in">print</span>(<span class="string">"替换icon失败<span class="subst">\(String(describing: error?.localizedDescription)</span>)"</span>)
             }
         })
     }<span class="keyword">else</span> {
