@@ -94,7 +94,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/04/15/iOS下JS与Swift互相调用（四）JavaScriptCore/index.html">
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="这篇文章讲一下 JavaScriptCore，它是从 iOS7 开始加入的，这个框架其实只是基于 webkit 中以 C/C++ 实现的JavaScriptCore的一个包装，该框架让Objective-C、Swift 和 JavaScript 代码直接的交互变得更加的简单方便 关于 JavaScriptCore 的使用可以先看这两篇文章： NSHipster 中文版的 Java​Script​C">
-<meta property="og:updated_time" content="2017-06-03T07:14:39.000Z">
+<meta property="og:updated_time" content="2017-07-04T14:11:13.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS下JS与Swift互相调用（四）JavaScriptCore">
 <meta name="twitter:description" content="这篇文章讲一下 JavaScriptCore，它是从 iOS7 开始加入的，这个框架其实只是基于 webkit 中以 C/C++ 实现的JavaScriptCore的一个包装，该框架让Objective-C、Swift 和 JavaScript 代码直接的交互变得更加的简单方便 关于 JavaScriptCore 的使用可以先看这两篇文章： NSHipster 中文版的 Java​Script​C">
@@ -450,7 +450,7 @@
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> context = <span class="keyword">self</span>.webView?.value(forKeyPath: <span class="string">"documentView.webView.mainFrame.javaScriptContext"</span>) <span class="keyword">as</span>! <span class="type">JSContext</span></div></pre></td></tr></table></figure>
 <p>所以就不能在 WKWebView 中使用 JavaScriptCore，但是 WKWebView 可以使用WKScriptMessageHandler 的方式和 JS 交互，这种方式更加简单方便</p>
 <p>原文地址： <a href="http://www.jianshu.com/p/4db513ed2c1a" target="_blank" rel="external">iOS 下 JS 与 OC 互相调用（四）– JavaScriptCore</a> </p>
-<p>原文是讨论 OC 与 JS 的交互，我按照作者的思路，用 Swift 实现 Native 与 JS 的交互，这是 <a href="https://github.com/shuishangshu/JavaScript_Swift" target="_blank" rel="external">代码地址</a></p>
+<p>原文是讨论 OC 与 JS 的交互，我按照作者的思路，用 Swift 实现 Native 与 JS 的交互，这是 <a href="https://github.com/hsiaovv/JavaScript_Swift" target="_blank" rel="external">代码地址</a></p>
 <p>更多参考文章：</p>
 <p><a href="http://blog.csdn.net/json_vip/article/details/51615029" target="_blank" rel="external">iOS 开发 - Swift 使用 JavaScriptCore 与 JS 交互</a></p>
 <p><a href="http://www.jianshu.com/p/f896d73c670a" target="_blank" rel="external">Objective-C 与 JavaScript 交互的那些事</a></p>
