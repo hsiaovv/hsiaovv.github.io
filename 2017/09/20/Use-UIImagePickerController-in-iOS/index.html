@@ -1,0 +1,830 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS,Swift," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="iOS 开发中不可避免要调用系统相机完成照片或者视频的拍摄，使用相机有两种方式：AVFoundation 和 UIImagePickerController，如果需求比较简单并且对UI没有特殊要求可以使用 UIImagePickerController，本文就介绍一下UIImagePickerController 的使用 UIImagePickerController 基本使用UIImagePic">
+<meta name="keywords" content="iOS,Swift">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 使用相机之 UIImagePickerController">
+<meta property="og:url" content="http://yoursite.com/2017/09/20/Use-UIImagePickerController-in-iOS/index.html">
+<meta property="og:site_name" content="笑忘书店">
+<meta property="og:description" content="iOS 开发中不可避免要调用系统相机完成照片或者视频的拍摄，使用相机有两种方式：AVFoundation 和 UIImagePickerController，如果需求比较简单并且对UI没有特殊要求可以使用 UIImagePickerController，本文就介绍一下UIImagePickerController 的使用 UIImagePickerController 基本使用UIImagePic">
+<meta property="og:updated_time" content="2017-09-19T16:19:22.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS 使用相机之 UIImagePickerController">
+<meta name="twitter:description" content="iOS 开发中不可避免要调用系统相机完成照片或者视频的拍摄，使用相机有两种方式：AVFoundation 和 UIImagePickerController，如果需求比较简单并且对UI没有特殊要求可以使用 UIImagePickerController，本文就介绍一下UIImagePickerController 的使用 UIImagePickerController 基本使用UIImagePic">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/09/20/Use-UIImagePickerController-in-iOS/"/>
+
+
+
+
+
+  <title> iOS 使用相机之 UIImagePickerController | 笑忘书店 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笑忘书店</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/20/Use-UIImagePickerController-in-iOS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Hsiaovv">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笑忘书店">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS 使用相机之 UIImagePickerController
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-20T00:14:22+08:00">
+                2017-09-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/09/20/Use-UIImagePickerController-in-iOS/" class="leancloud_visitors" data-flag-title="iOS 使用相机之 UIImagePickerController">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>iOS 开发中不可避免要调用系统相机完成照片或者视频的拍摄，使用相机有两种方式：<code>AVFoundation</code> 和 <code>UIImagePickerController</code>，如果需求比较简单并且对UI没有特殊要求可以使用 <code>UIImagePickerController</code>，本文就介绍一下<code>UIImagePickerController</code> 的使用</p>
+<h3 id="UIImagePickerController-基本使用"><a href="#UIImagePickerController-基本使用" class="headerlink" title="UIImagePickerController 基本使用"></a>UIImagePickerController 基本使用</h3><p><code>UIImagePickerController</code> 是苹果官方提供的一套相机、相册处理的方式，使用 <code>UIImagePickerController</code>你可以调用相机拍摄照片视频、调用相册功能，它提供了非常简单的拍照方法，支持所有的基本功能，比如切换到前置摄像头、开关闪光灯、点击屏幕区域实现对焦和调整曝光等</p>
+<p><code>UIImagePickerController</code> 的基本使用比较简单，主要有以下两步；</p>
+<ul>
+<li><p>初始化 <code>UIImagePickerController</code> 类的实例对象，并且设置该实例对象的相关属性</p>
+</li>
+<li><p>实现 <code>UIImagePickerController</code> 的相关代理方法</p>
+</li>
+</ul>
+<p>先看一下 <code>UIImagePickerController</code> 的相关属性</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 数据来源类型，决定要跳转到哪个界面（相机拍照、照片图库、相册） </span></div><div class="line"><span class="comment">// camera（相机） photoLibrary（图库） savedPhotosAlbum（相册）</span></div><div class="line"><span class="keyword">var</span> sourceType: <span class="type">UIImagePickerControllerSourceType</span> </div><div class="line"></div><div class="line"><span class="comment">// UIImagePickerController 根据这个的值来决定选择或拍摄的媒体类型，</span></div><div class="line"><span class="comment">// KUTTypeImage（图片，默认）、KUTTypeMovie（视频）、kUTTypeLivePhoto（LivePhoto）</span></div><div class="line"><span class="keyword">var</span> mediaTypes: [<span class="type">String</span>]</div><div class="line"></div><div class="line"><span class="comment">// 选择或者拍摄的照片或者视频是否可编辑，默认NO</span></div><div class="line"><span class="keyword">var</span> allowsEditing: <span class="type">Bool</span></div><div class="line"></div><div class="line"><span class="comment">// 以下是视频的相关属性，设置它们必须保证mediaTypes 包含 kUTTypeMovie</span></div><div class="line"><span class="comment">// 视频最大录制时间，默认 10分钟</span></div><div class="line"><span class="keyword">var</span> videoMaximumDuration: <span class="type">TimeInterval</span></div><div class="line"></div><div class="line"><span class="comment">// 录制视频的质量，默认typeMedium</span></div><div class="line"><span class="comment">// 有六种质量可选（typeHigh，typeMedium，typeLow，type640x480，typeIFrame1280x720，typeIFrame960x540）</span></div><div class="line"><span class="keyword">var</span> videoQuality: <span class="type">UIImagePickerControllerQualityType</span></div><div class="line"></div><div class="line"><span class="comment">// sourceType 必须为相机才可用的设置</span></div><div class="line"><span class="comment">// 设置相机的捕获模式 有 Photo（默认）和 Video ,mediaTypes 必须包含 kUTTypeMovie</span></div><div class="line"><span class="keyword">var</span> cameraCaptureMode: <span class="type">UIImagePickerControllerCameraCaptureMode</span></div><div class="line"></div><div class="line"><span class="comment">// 设置前置摄像头还是后置摄像头，front 和 rear（默认）</span></div><div class="line"><span class="keyword">var</span> cameraDevice: <span class="type">UIImagePickerControllerCameraDevice</span></div><div class="line"></div><div class="line"><span class="comment">// 闪光灯设置，有off、auto（默认） 和 on</span></div><div class="line"><span class="keyword">var</span> cameraFlashMode: <span class="type">UIImagePickerControllerCameraFlashMode</span></div></pre></td></tr></table></figure>
+<p>以上就是使用 <code>UIImagePickerController</code> 用到的大部分属性了，下面代码演示具体使用</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//判断设备是否支持数据来源</span></div><div class="line"><span class="keyword">if</span> <span class="type">UIImagePickerController</span>.isSourceTypeAvailable(.camera) &#123;</div><div class="line">    </div><div class="line">    <span class="comment">// 实例化 UIImagePickerController 对象</span></div><div class="line">    <span class="keyword">let</span> picker = <span class="type">UIImagePickerController</span>()</div><div class="line">    </div><div class="line">    <span class="comment">// 设置数据来源类型</span></div><div class="line">    <span class="comment">//相机</span></div><div class="line">    picker.sourceType = .camera </div><div class="line">    <span class="comment">// 数据来源类型设置为图库，UIImagePickerController 就变成了一个照片和视频选择器，视频以及camera相关属性不可用，否则会 crash</span></div><div class="line">    picker.sourceType = .photoLibrary </div><div class="line">    </div><div class="line">    <span class="comment">//设置可用的媒体类型,需要导入 MobileCoreServices</span></div><div class="line">    picker.mediaTypes = [kUTTypeImage <span class="keyword">as</span> <span class="type">String</span>, kUTTypeMovie <span class="keyword">as</span> <span class="type">String</span>];</div><div class="line">    </div><div class="line">    picker.allowsEditing = <span class="literal">true</span></div><div class="line">    </div><div class="line">    <span class="comment">//视频相关设置</span></div><div class="line">    <span class="comment">//设置拍摄视频的最长时间 20s</span></div><div class="line">    picker.videoMaximumDuration = <span class="number">20.0</span></div><div class="line">    </div><div class="line">    <span class="comment">//设置拍摄视频的质量</span></div><div class="line">    picker.videoQuality = .typeHigh</div><div class="line">    </div><div class="line">    <span class="comment">// sourceType 必须为相机才可用的设置</span></div><div class="line">    <span class="comment">// mediaTypes 包含 kUTTypeMovie</span></div><div class="line">    picker.cameraCaptureMode = .video</div><div class="line">    </div><div class="line">    <span class="comment">//设置为前置或者后置摄像头</span></div><div class="line">    picker.cameraDevice = .front</div><div class="line">    </div><div class="line">    <span class="comment">//摄像头闪光灯设置</span></div><div class="line">    picker.cameraFlashMode = .off</div><div class="line">    </div><div class="line">    picker.delegate = <span class="keyword">self</span></div><div class="line">    </div><div class="line">    <span class="keyword">self</span>.present(picker, animated: <span class="literal">true</span>, completion: <span class="literal">nil</span>)</div><div class="line">    </div><div class="line">&#125;<span class="keyword">else</span> &#123;</div><div class="line">    </div><div class="line">    <span class="keyword">let</span> alertVc = <span class="type">UIAlertController</span>(title: <span class="string">"提示"</span>, message: <span class="string">"相机不可用"</span>, preferredStyle: .alert)</div><div class="line">    </div><div class="line">    <span class="keyword">let</span> sureAction = <span class="type">UIAlertAction</span>(title: <span class="string">"确定"</span>, style: .<span class="keyword">default</span>, handler: <span class="literal">nil</span>)</div><div class="line">    </div><div class="line">    alertVc.addAction(sureAction)</div><div class="line">    </div><div class="line">    <span class="keyword">self</span>.present(alertVc, animated: <span class="literal">true</span>, completion: <span class="literal">nil</span>)</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>UIImagePickerControlle</code> 既可以调用相机拍摄照片和视频，也可以设置 <code>sourceType</code> 获取相册或者图库中的照片和视频（本文不做讨论），除了<code>UIImagePickerControlle</code> iOS 还有另外两个框架：<code>AssetsLibrary</code> 和 <code>PhotoKit</code> 也可以访问 iOS 设备的照片和视频，以后有机会讨论一下这三者的用法</p>
+<p>在使用 <code>UIImagePickerController</code> 的时候的时候，最好先判断一下相机或者相关 <code>sourceType</code> 是否可用</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 当前 SourceType 类型是否可用</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">func</span> <span class="title">isSourceTypeAvailable</span>(<span class="title">_</span> <span class="title">sourceType</span>: <span class="title">UIImagePickerControllerSourceType</span>) -&gt; <span class="title">Bool</span></span></div><div class="line"></div><div class="line">// 判断前置或者后置摄像头是否可用</div><div class="line"><span class="title">class</span> <span class="title">func</span> <span class="title">isCameraDeviceAvailable</span>(<span class="title">_</span> <span class="title">cameraDevice</span>: <span class="title">UIImagePickerControllerCameraDevice</span>) -&gt; <span class="title">Bool</span></div><div class="line"></div><div class="line">// 摄像头闪光灯是否可用</div><div class="line"><span class="title">class</span> <span class="title">func</span> <span class="title">isFlashAvailable</span>(<span class="title">for</span> <span class="title">cameraDevice</span>: <span class="title">UIImagePickerControllerCameraDevice</span>) -&gt; <span class="title">Bool</span></div><div class="line"></div><div class="line">// 返回某个 <span class="title">sourceType</span> 下可用的 <span class="title">MediaType</span> 数组</div><div class="line"><span class="title">class</span> <span class="title">func</span> <span class="title">availableMediaTypes</span>(<span class="title">for</span> <span class="title">sourceType</span>: <span class="title">UIImagePickerControllerSourceType</span>) -&gt; [<span class="title">String</span>]?</div><div class="line"></div><div class="line">// 返回某个 摄像头下可用的 <span class="title">CaptureMode</span> 数组</div><div class="line"><span class="title">class</span> <span class="title">func</span> <span class="title">availableCaptureModes</span>(<span class="title">for</span> <span class="title">cameraDevice</span>: <span class="title">UIImagePickerControllerCameraDevice</span>) -&gt; [<span class="title">NSNumber</span>]?</div></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：使用相机注意要在 <code>Info.plist</code> 中添加以下隐私权限的申明:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>NSCameraUsageDescription<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>App需要您的同意,才能访问相机<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>NSMicrophoneUsageDescription<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>App需要您的同意,才能访问麦克风<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>NSPhotoLibraryUsageDescription<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>App需要您的同意,才能访问相册<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div></pre></td></tr></table></figure>
+</blockquote>
+<p>上面的工作完成之后，用户就可以在 <code>UIImagePickerController</code> 中选择照片或者拍摄的照片和视频了，用户选择的照片或者视频可以在 <code>UIImagePickerController</code> 的代理方法里面获取到，因为 <code>UIImagePickerController</code> 继承自 <code>UINavigationController</code>, 所以要实现代理方法必须遵守 <code>UINavigationControllerDelegate</code> 和 <code>UIImagePickerControllerDelegate</code> 两个代理协议：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 用户选择完照片或者视频之后调用</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">imagePickerController</span><span class="params">(<span class="number">_</span> picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any])</span></span></div><div class="line"></div><div class="line"><span class="comment">// 用户点击 UIImagePickerController 上的取消按钮之后调用</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">imagePickerControllerDidCancel</span><span class="params">(<span class="number">_</span> picker: UIImagePickerController)</span></span></div></pre></td></tr></table></figure>
+<p>看如何从代理方法里面获取用户选择好的照片和视频</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// MARK: - UINavigationControllerDelegate, UIImagePickerControllerDelegate</span></div><div class="line">    </div><div class="line"><span class="comment">// 选择完图片或者视频后调用此代理方法（此方法不管是 sourceType 是什么都会调用）</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">imagePickerController</span><span class="params">(<span class="number">_</span> picker: UIImagePickerController,</span></span></div><div class="line">                               didFinishPickingMediaWithInfo info: [String : Any]) &#123;</div><div class="line">    </div><div class="line">    <span class="comment">//info 里面是选中的图片或者视频的信息的字典，根据不同情况可能包含以下key</span></div><div class="line">    </div><div class="line">    <span class="comment">// UIImagePickerControllerMediaType 用户选择的媒体类型</span></div><div class="line">    <span class="comment">// UIImagePickerControllerOriginalImage 用户选中的图像的原始 UIImage</span></div><div class="line">    <span class="comment">// UIImagePickerControllerEditedImage 用户选中的图像(编辑剪裁之后的 UIImage)</span></div><div class="line">    <span class="comment">// UIImagePickerControllerCropRect 编辑裁剪区域的Frame</span></div><div class="line">    <span class="comment">// UIImagePickerControllerMediaURL 用户选中的媒体文件的临时 URL地址</span></div><div class="line">    <span class="comment">// UIImagePickerControllerReferenceURL 用户选中的媒体文件的AssetsLibrary 地址</span></div><div class="line">    <span class="comment">// UIImagePickerControllerMediaMetadata 用户选中的图片的元数据,sourceType 是相机的时候才可用</span></div><div class="line">    <span class="comment">// UIImagePickerControllerLivePhoto 用户选中的LivePhoto</span></div><div class="line"></div><div class="line">    <span class="comment">//获取媒体的类型</span></div><div class="line">    <span class="keyword">let</span> mediaType = info[<span class="type">UIImagePickerControllerMediaType</span>] <span class="keyword">as</span>! <span class="type">CFString</span></div><div class="line">    </div><div class="line">    <span class="keyword">if</span> mediaType == kUTTypeImage &#123;<span class="comment">//选择的是照片</span></div><div class="line">            </div><div class="line">            <span class="comment">// 如果过 allowsEditing 为 NO，UIImagePickerControllerEditedImage不存在，只有UIImagePickerControllerOriginalImage</span></div><div class="line">            <span class="keyword">if</span> <span class="keyword">let</span> img = info[<span class="type">UIImagePickerControllerEditedImage</span>] &#123;</div><div class="line">                </div><div class="line">                <span class="type">UIImageWriteToSavedPhotosAlbum</span>(img <span class="keyword">as</span>! <span class="type">UIImage</span>, <span class="keyword">self</span>, #selector(image(<span class="number">_</span>:didFinishSavingWithError:contextInfo:)),<span class="literal">nil</span>)</div><div class="line">            &#125;<span class="keyword">else</span> &#123;</div><div class="line">                </div><div class="line">                <span class="keyword">if</span> <span class="keyword">let</span> img = info[<span class="type">UIImagePickerControllerOriginalImage</span>] &#123;</div><div class="line">                    </div><div class="line">                    <span class="type">UIImageWriteToSavedPhotosAlbum</span>(img <span class="keyword">as</span>! <span class="type">UIImage</span>, <span class="keyword">self</span>, #selector(image(<span class="number">_</span>:didFinishSavingWithError:contextInfo:)),<span class="literal">nil</span>)</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> mediaType == kUTTypeMovie &#123;<span class="comment">//选择的是视频</span></div><div class="line">    </div><div class="line">        <span class="comment">//获取到视频的临时路径</span></div><div class="line">        <span class="keyword">if</span> <span class="keyword">let</span> urlStr = info[<span class="type">UIImagePickerControllerMediaURL</span>] <span class="keyword">as</span>? <span class="type">URL</span> &#123;</div><div class="line">            </div><div class="line">            <span class="keyword">if</span> <span class="type">UIVideoAtPathIsCompatibleWithSavedPhotosAlbum</span>(urlStr.path) &#123;<span class="comment">//判断视频路径是否可以被保存的相册</span></div><div class="line">                <span class="comment">//保存视频到图库中</span></div><div class="line">                <span class="type">DispatchQueue</span>.global().async &#123;</div><div class="line">                    </div><div class="line">                    <span class="type">UISaveVideoAtPathToSavedPhotosAlbum</span>(urlStr.path, <span class="keyword">self</span>, #selector(<span class="keyword">self</span>.video(<span class="number">_</span> :didFinishSavingWithError:contextInfo:)), <span class="literal">nil</span>)</div><div class="line">                    </div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">        </div><div class="line">    <span class="keyword">if</span> mediaType == kUTTypeLivePhoto &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">if</span> <span class="keyword">let</span> livePhoto = info[<span class="type">UIImagePickerControllerLivePhoto</span>] <span class="keyword">as</span>? <span class="type">PHLivePhoto</span> &#123;</div><div class="line">            </div><div class="line">            <span class="comment">// 把选中的livephoto显示出来</span></div><div class="line">            <span class="comment">// livephoto 需要在 PHLivePhotoView 上才能显示，需要导入Photos 和 PhotosUI 两个库</span></div><div class="line">            <span class="keyword">self</span>.livePhotoView?.livePhoto = livePhoto</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    picker.dismiss(animated: <span class="literal">true</span>, completion: <span class="literal">nil</span>)</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="comment">// 用户点击取消后的代理方法，默认点击取消会 dissmiss PickerController</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">imagePickerControllerDidCancel</span><span class="params">(<span class="number">_</span> picker: UIImagePickerController)</span></span> &#123;</div><div class="line">    </div><div class="line">    picker.dismiss(animated: <span class="literal">true</span>, completion: <span class="literal">nil</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 保存照片之后的回调，判断照片是否保存成功，方法名必须这样写</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">image</span><span class="params">(<span class="number">_</span> image: UIImage,</span></span></div><div class="line">               didFinishSavingWithError error: NSError?,</div><div class="line">               contextInfo: UnsafeRawPointer) &#123;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> <span class="keyword">let</span> error = error &#123;</div><div class="line">        <span class="comment">// we got back an error!</span></div><div class="line">        <span class="keyword">let</span> ac = <span class="type">UIAlertController</span>(title: <span class="string">"警告"</span>, message: error.localizedDescription, preferredStyle: .alert)</div><div class="line">        ac.addAction(<span class="type">UIAlertAction</span>(title: <span class="string">"确定"</span>, style: .<span class="keyword">default</span>))</div><div class="line">        present(ac, animated: <span class="literal">true</span>)</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">let</span> ac = <span class="type">UIAlertController</span>(title: <span class="string">"提示"</span>, message: <span class="string">"照片成功保存到相册"</span>, preferredStyle: .alert)</div><div class="line">        ac.addAction(<span class="type">UIAlertAction</span>(title: <span class="string">"确定"</span>, style: .<span class="keyword">default</span>))</div><div class="line">        present(ac, animated: <span class="literal">true</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="comment">// 保存视频之后的回调，判断视频是否保存成功，方法名必须这样写</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">video</span><span class="params">(<span class="number">_</span> videoPath: String,</span></span></div><div class="line">               didFinishSavingWithError error: NSError?,</div><div class="line">               contextInfo: UnsafeRawPointer) &#123;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> <span class="keyword">let</span> error = error &#123;</div><div class="line">        <span class="comment">// we got back an error!</span></div><div class="line">        <span class="keyword">let</span> ac = <span class="type">UIAlertController</span>(title: <span class="string">"警告"</span>, message: error.localizedDescription, preferredStyle: .alert)</div><div class="line">        ac.addAction(<span class="type">UIAlertAction</span>(title: <span class="string">"确定"</span>, style: .<span class="keyword">default</span>))</div><div class="line">        present(ac, animated: <span class="literal">true</span>)</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">let</span> ac = <span class="type">UIAlertController</span>(title: <span class="string">"提示"</span>, message: <span class="string">"视频成功保存到相册"</span>, preferredStyle: .alert)</div><div class="line">        ac.addAction(<span class="type">UIAlertAction</span>(title: <span class="string">"确定"</span>, style: .<span class="keyword">default</span>))</div><div class="line">        present(ac, animated: <span class="literal">true</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面把用户选择的照片或者视频保存在相册，实际开发中可能是把照片或者视频上传到服务器，上面就是 <code>UIImagePickerController</code> 中使用相机拍照或者拍摄视频的用法，<code>sourcceType</code> 为 <code>photoLibrary</code> 或者 <code>savedPhotosAlbum</code> 时可以作为系统的相册选择器，从代理方法里获取选择的照片或者视频上面是一样的</p>
+<h3 id="自定义-UIImagePickerController"><a href="#自定义-UIImagePickerController" class="headerlink" title="自定义 UIImagePickerController"></a>自定义 UIImagePickerController</h3><p><code>UIImagePickerController</code> 的 <code>sourcceType</code> 为相机的时候可以简单的自定义UI，自定义UI需要用到下面的属性和方法</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 是否显示自带的UI，自定义UI的时候选择 NO</span></div><div class="line"><span class="keyword">var</span> showsCameraControls: <span class="type">Bool</span></div><div class="line"></div><div class="line"><span class="comment">// 自定义的UI视图，会覆盖在相机预览试图的上面</span></div><div class="line"><span class="keyword">var</span> cameraOverlayView: <span class="type">UIView</span>? </div><div class="line"></div><div class="line"><span class="comment">// 设置相机预览视图 transform 变化，调整预览试图的大小和拉伸</span></div><div class="line"><span class="keyword">var</span> cameraViewTransform: <span class="type">CGAffineTransform</span></div><div class="line"></div><div class="line"><span class="comment">// 调用相机拍照的方法</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">takePicture</span><span class="params">()</span></span></div><div class="line"></div><div class="line"><span class="comment">// 调用相机开始录制视频</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">startVideoCapture</span><span class="params">()</span></span> -&gt; <span class="type">Bool</span></div><div class="line"></div><div class="line"><span class="comment">// 调用相机停止录制视频</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">stopVideoCapture</span><span class="params">()</span></span></div></pre></td></tr></table></figure>
+<p>以下是我简单的自定义UI的 <code>UIImagePickerController</code></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">showCustomPickerController</span><span class="params">()</span></span> &#123;</div><div class="line">        </div><div class="line">    <span class="comment">//判断设备是否支持数据来源</span></div><div class="line">    <span class="keyword">if</span> <span class="type">UIImagePickerController</span>.isSourceTypeAvailable(.camera) &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> picker = <span class="type">UIImagePickerController</span>()</div><div class="line">    </div><div class="line">        picker.sourceType = .camera</div><div class="line">        </div><div class="line">        picker.mediaTypes = [kUTTypeMovie <span class="keyword">as</span> <span class="type">String</span>, kUTTypeImage <span class="keyword">as</span> <span class="type">String</span>];</div><div class="line">        </div><div class="line">        picker.videoMaximumDuration = <span class="number">20.0</span></div><div class="line">        </div><div class="line">        picker.videoQuality = .typeHigh</div><div class="line">        </div><div class="line">        picker.cameraCaptureMode = .photo</div><div class="line">        </div><div class="line">        picker.cameraDevice = .rear</div><div class="line">        </div><div class="line">        picker.cameraFlashMode = .off</div><div class="line">        </div><div class="line">        <span class="comment">// 自定义拍照界面</span></div><div class="line">        <span class="keyword">let</span> customCameraView = <span class="type">UIView</span>(frame: <span class="type">UIScreen</span>.main.bounds)</div><div class="line">        </div><div class="line">        <span class="comment">//拍照按钮</span></div><div class="line">        <span class="keyword">let</span> takePicButton  = <span class="type">UIButton</span>(type: .custom)</div><div class="line">        takePicButton.frame = <span class="type">CGRect</span>(x: (<span class="type">UIScreen</span>.main.bounds.size.width - <span class="number">100</span>) * <span class="number">0.5</span>, y: <span class="number">600</span>, width: <span class="number">100</span>, height: <span class="number">44</span>)</div><div class="line">        takePicButton.setTitle(<span class="string">"拍照"</span>,<span class="keyword">for</span>: .normal)</div><div class="line">        takePicButton.addTarget(<span class="keyword">self</span>, action: #selector(takePic), <span class="keyword">for</span>: .touchUpInside)</div><div class="line">        <span class="keyword">self</span>.takePicButton = takePicButton</div><div class="line">        </div><div class="line">        customCameraView.addSubview(takePicButton)</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> margin = (<span class="type">UIScreen</span>.main.bounds.size.width - <span class="number">2</span> * <span class="number">100</span>) / <span class="number">3</span></div><div class="line">        </div><div class="line">        <span class="comment">// 开始摄像按钮（如果是拍照，则不需要此按钮）</span></div><div class="line">        <span class="keyword">let</span> startButton  = <span class="type">UIButton</span>(type: .custom)</div><div class="line">        startButton.frame = <span class="type">CGRect</span>(x: margin, y: <span class="number">600</span>, width: <span class="number">100</span>, height: <span class="number">44</span>)</div><div class="line">        startButton.setTitle(<span class="string">"开始视频"</span>,<span class="keyword">for</span>: .normal)</div><div class="line">        startButton.addTarget(<span class="keyword">self</span>, action: #selector(startCapture), <span class="keyword">for</span>: .touchUpInside)</div><div class="line">        <span class="keyword">self</span>.startButton = startButton</div><div class="line">        </div><div class="line">        customCameraView.addSubview(startButton)</div><div class="line">        </div><div class="line">        <span class="comment">// 停止摄像按钮（如果是拍照，则不需要此按钮）</span></div><div class="line">        <span class="keyword">let</span> stopButton  = <span class="type">UIButton</span>(type: .custom)</div><div class="line">        stopButton.frame = <span class="type">CGRect</span>(x: <span class="number">2</span> * margin + <span class="number">100</span>, y: <span class="number">600</span>, width: <span class="number">100</span>, height: <span class="number">44</span>)</div><div class="line">        stopButton.setTitle(<span class="string">"停止视频"</span>,<span class="keyword">for</span>: .normal)</div><div class="line">        stopButton.addTarget(<span class="keyword">self</span>, action: #selector(stopCapture), <span class="keyword">for</span>: .touchUpInside)</div><div class="line">        <span class="keyword">self</span>.stopButton = stopButton</div><div class="line">        </div><div class="line">        customCameraView.addSubview(stopButton)</div><div class="line">        </div><div class="line">        <span class="comment">// 切换拍照和视频的按钮</span></div><div class="line">        <span class="keyword">let</span> switchButton = <span class="type">UIButton</span>(type: .custom)</div><div class="line">        </div><div class="line">        switchButton.frame = <span class="type">CGRect</span>(x: <span class="type">UIScreen</span>.main.bounds.size.width - <span class="number">100</span> - <span class="number">20</span>, y: <span class="number">20</span>, width: <span class="number">100</span>, height: <span class="number">44</span>)</div><div class="line">        switchButton.setTitle(<span class="string">"拍照／视频"</span>, <span class="keyword">for</span>: .normal)</div><div class="line">        switchButton.addTarget(<span class="keyword">self</span>, action: #selector(swithCaptureMode), <span class="keyword">for</span>: .touchUpInside)</div><div class="line">        <span class="keyword">self</span>.switchButton = switchButton</div><div class="line">        </div><div class="line">        customCameraView.addSubview(switchButton)</div><div class="line">        </div><div class="line">        <span class="keyword">self</span>.startButton?.isHidden = <span class="literal">true</span></div><div class="line">        <span class="keyword">self</span>.stopButton?.isHidden = <span class="literal">true</span></div><div class="line">        </div><div class="line">        <span class="comment">//取消</span></div><div class="line">        <span class="keyword">let</span> cancelButton = <span class="type">UIButton</span>(type: .custom)</div><div class="line">        cancelButton.frame = <span class="type">CGRect</span>(x: <span class="number">20</span>, y: <span class="number">20</span>, width: <span class="number">50</span>, height: <span class="number">44</span>)</div><div class="line">        cancelButton.setTitle(<span class="string">"取消"</span>, <span class="keyword">for</span>: .normal)</div><div class="line">        cancelButton.addTarget(<span class="keyword">self</span>, action: #selector(dissmisController), <span class="keyword">for</span>: .touchUpInside)</div><div class="line">        </div><div class="line">        customCameraView.addSubview(cancelButton)</div><div class="line">        </div><div class="line">        </div><div class="line">        <span class="comment">//sourceType 必须是 camera</span></div><div class="line">        picker.cameraOverlayView = customCameraView</div><div class="line">        </div><div class="line">        <span class="comment">// 是否显示 UIImagePickerController 底部控制部分的UI，默认true，需要定制底部UI的时候设置为false 隐藏默认UI</span></div><div class="line">        picker.showsCameraControls = <span class="literal">false</span></div><div class="line">        </div><div class="line">        <span class="comment">// 当 showsCameraControls 为 NO 的时候，照片或者视频不可编辑 allowsEditing 设置无效</span></div><div class="line">        picker.allowsEditing = <span class="literal">true</span></div><div class="line">        </div><div class="line">        <span class="comment">//设置拍照时 预览界面大小</span></div><div class="line">        picker.cameraViewTransform = <span class="type">CGAffineTransform</span>(scaleX: <span class="number">1.2</span>, y: <span class="number">1.2</span>)</div><div class="line">        </div><div class="line">        picker.delegate = <span class="keyword">self</span></div><div class="line">        </div><div class="line">        <span class="keyword">self</span>.pickerController = picker</div><div class="line">        </div><div class="line">        <span class="keyword">self</span>.present(picker, animated: <span class="literal">true</span>, completion: <span class="literal">nil</span>)</div><div class="line">        </div><div class="line">    &#125;<span class="keyword">else</span> &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">let</span>  alertVc = <span class="type">UIAlertController</span>(title: <span class="string">"提示"</span>, message: <span class="string">"相机不可用"</span>, preferredStyle: .alert)</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> sureAction = <span class="type">UIAlertAction</span>(title: <span class="string">"确定"</span>, style: .<span class="keyword">default</span>, handler: <span class="literal">nil</span>)</div><div class="line">        </div><div class="line">        alertVc.addAction(sureAction)</div><div class="line">        </div><div class="line">        <span class="keyword">self</span>.present(alertVc, animated: <span class="literal">true</span>, completion: <span class="literal">nil</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="comment">// 开始录制视频</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">startCapture</span><span class="params">()</span></span> &#123;</div><div class="line">    </div><div class="line">    <span class="keyword">self</span>.pickerController?.stopVideoCapture()</div><div class="line">    <span class="keyword">self</span>.pickerController?.startVideoCapture()</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="comment">// 停止录制视频</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">stopCapture</span><span class="params">()</span></span> &#123;</div><div class="line">    </div><div class="line">    <span class="keyword">self</span>.pickerController?.stopVideoCapture()</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">swithCaptureMode</span><span class="params">()</span></span> &#123;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> <span class="keyword">self</span>.pickerController?.cameraCaptureMode == <span class="type">UIImagePickerControllerCameraCaptureMode</span>.video &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">self</span>.pickerController?.cameraCaptureMode = .photo</div><div class="line">        </div><div class="line">        <span class="keyword">self</span>.startButton?.isHidden = <span class="literal">true</span></div><div class="line">        <span class="keyword">self</span>.stopButton?.isHidden = <span class="literal">true</span></div><div class="line">        <span class="keyword">self</span>.takePicButton?.isHidden = <span class="literal">false</span></div><div class="line">        </div><div class="line">    &#125;<span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">self</span>.pickerController?.cameraCaptureMode = .video</div><div class="line">        </div><div class="line">        <span class="keyword">self</span>.startButton?.isHidden = <span class="literal">false</span></div><div class="line">        <span class="keyword">self</span>.stopButton?.isHidden = <span class="literal">false</span></div><div class="line">        <span class="keyword">self</span>.takePicButton?.isHidden = <span class="literal">true</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">takePic</span><span class="params">()</span></span> &#123;</div><div class="line">    </div><div class="line">    <span class="keyword">self</span>.pickerController?.takePicture()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>自定义UI情况下，<code>allowsEditing</code> 不可用，所以拍照完成或者录制视频完成之后不会跳转编辑页面而是直接进入代理方法，在代理方法里获取照片或者视频和正常情况是一样的，就不再赘述，详细请参考 <a href="https://github.com/hsiaovv/iOSUserCameraDemo" target="_blank" rel="external">Demo 代码</a></p>
+<p>上面就是 <code>UIImagePickerController</code> 的使用，可以发现 <code>UIImagePickerController</code> 只能很简单的使用系统的相机进行拍照和视频，下篇文章将介绍如何使用 <code>AVFoundation</code> 自定义相机，使用 <code>AVFoundation</code> 自定义相机可以控制硬件的参数、更加细致进行图像捕捉等</p>
+<p>以上です</p>
+<p><strong>本人刚开始写博客，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能让别人有所启发也是荣幸之至！如有错误，欢迎指正！</strong></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"><i class="fa fa-tag"></i> iOS</a>
+          
+            <a href="/tags/Swift/" rel="tag"><i class="fa fa-tag"></i> Swift</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/12/Basic-usage-of-NSURLSession/" rel="next" title="NSURLSession 的基本用法">
+                <i class="fa fa-chevron-left"></i> NSURLSession 的基本用法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTI5NS81ODYz"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Hsiaovv" />
+          <p class="site-author-name" itemprop="name">Hsiaovv</p>
+           
+              <p class="site-description motion-element" itemprop="description">以绝大多数人的努力程度之低，根本轮不到去拼天赋</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#UIImagePickerController-基本使用"><span class="nav-number">1.</span> <span class="nav-text">UIImagePickerController 基本使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义-UIImagePickerController"><span class="nav-number">2.</span> <span class="nav-text">自定义 UIImagePickerController</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Hsiaovv</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("03EiT54MHYWVD5oet8EvooxX-gzGzoHsz", "pEuU3RFhQtvFv7b7w4xYXtE2");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
