@@ -1,0 +1,883 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="上篇文章介绍了如何使用 UIImagePickerController 调用相机拍照或者录制视频，但是 UIImagePickerController 只提供了一种非常简单的拍照和录制视频的方法，并且只提供了很简单的UI定制，如果你想要更多关于处理相机拍摄照片或者视频的方法、或者需要完整的自定义相机界面等，那就需要使用 AVFoundation 框架 AVFoundation 相关类AVFound">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 使用相机之 AVFoundation">
+<meta property="og:url" content="http://yoursite.com/2017/09/20/Use-Avfoundation-to-Customize-The-Camera/index.html">
+<meta property="og:site_name" content="笑忘书店">
+<meta property="og:description" content="上篇文章介绍了如何使用 UIImagePickerController 调用相机拍照或者录制视频，但是 UIImagePickerController 只提供了一种非常简单的拍照和录制视频的方法，并且只提供了很简单的UI定制，如果你想要更多关于处理相机拍摄照片或者视频的方法、或者需要完整的自定义相机界面等，那就需要使用 AVFoundation 框架 AVFoundation 相关类AVFound">
+<meta property="og:image" content="http://yoursite.com/Users/xaiovv/Downloads/blogpic/captureOverview.png">
+<meta property="og:updated_time" content="2017-09-20T15:25:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS 使用相机之 AVFoundation">
+<meta name="twitter:description" content="上篇文章介绍了如何使用 UIImagePickerController 调用相机拍照或者录制视频，但是 UIImagePickerController 只提供了一种非常简单的拍照和录制视频的方法，并且只提供了很简单的UI定制，如果你想要更多关于处理相机拍摄照片或者视频的方法、或者需要完整的自定义相机界面等，那就需要使用 AVFoundation 框架 AVFoundation 相关类AVFound">
+<meta name="twitter:image" content="http://yoursite.com/Users/xaiovv/Downloads/blogpic/captureOverview.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/09/20/Use-Avfoundation-to-Customize-The-Camera/"/>
+
+
+
+
+
+  <title> iOS 使用相机之 AVFoundation | 笑忘书店 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笑忘书店</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/20/Use-Avfoundation-to-Customize-The-Camera/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Hsiaovv">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笑忘书店">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS 使用相机之 AVFoundation
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-20T23:24:41+08:00">
+                2017-09-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/09/20/Use-Avfoundation-to-Customize-The-Camera/" class="leancloud_visitors" data-flag-title="iOS 使用相机之 AVFoundation">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>上篇文章介绍了如何使用 <code>UIImagePickerController</code> 调用相机拍照或者录制视频，但是 <code>UIImagePickerController</code> 只提供了一种非常简单的拍照和录制视频的方法，并且只提供了很简单的UI定制，如果你想要更多关于处理相机拍摄照片或者视频的方法、或者需要完整的自定义相机界面等，那就需要使用 <code>AVFoundation</code> 框架</p>
+<h2 id="AVFoundation-相关类"><a href="#AVFoundation-相关类" class="headerlink" title="AVFoundation 相关类"></a>AVFoundation 相关类</h2><p>AVFoundation 框架基于以下几个类实现图像捕捉，通过这些类可以访问来自相机设备的原始数据</p>
+<ul>
+<li>AVCaptureDevice 抽象化的硬件（如前置摄像头，后置摄像头等）对象，它用于控制硬件的相关特性（闪光灯,手电筒,聚焦模式等）</li>
+<li>AVCaptureDeviceInput 硬件设备输入流数据的管理对象</li>
+<li>AVCaptureOutput 一个抽象类，是输出流数据的管理对象，通常使用它的具体子类：<ul>
+<li>AVCaptureStillImageOutput 静态图片</li>
+<li>AVCaptureAudioDataOutput 音频数据</li>
+<li>AVCaptureVideoDataOutput 视频数据，实时的为预览图提供原始帧</li>
+<li>AVCaptureMetadataOutput 元数据，可用于检测人脸识别、二维码等</li>
+<li>AVCaptureMovieFileOutput 完整的视频数据地址</li>
+<li>AVCapturePhotoOutput 照片（包括静态的、Live Photo 等），iOS10 新增，用于代替 AVCaptureStillImageOutput</li>
+</ul>
+</li>
+<li>AVCaptureSession 管理输入与输出之间的数据流的会话对象</li>
+<li>AVCaptureVideoPreviewLayer 是 CALayer 的子类，用于显示相机产生的实时图像</li>
+</ul>
+<p>他们之间的关系如图：</p>
+<p><img src="/Users/xaiovv/Downloads/blogpic/captureOverview.png" alt=""></p>
+<h3 id="AVFoundation-的使用"><a href="#AVFoundation-的使用" class="headerlink" title="AVFoundation 的使用"></a>AVFoundation 的使用</h3><p>使用 AVFoundation 自定义相机需要进行如下几个步骤： </p>
+<ul>
+<li>创建捕捉会话（<code>captureSession</code>）</li>
+<li>选择并添加输入（相机、麦克风等）</li>
+<li>创建并设置输出</li>
+<li>通过添加输入、输出配置捕捉会话</li>
+<li>创建和添加预览视图</li>
+<li>启动捕捉会话</li>
+</ul>
+<p>下面看具体步骤介绍</p>
+<h4 id="AVCaptureSession"><a href="#AVCaptureSession" class="headerlink" title="AVCaptureSession"></a>AVCaptureSession</h4><p><code>AVCaptureSession</code> 负责调度影音输入与输出之间的数据流</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">captureSession = <span class="type">AVCaptureSession</span>()</div><div class="line"><span class="comment">// CaptureSession 的会话预设,这个地方设置的模式/分辨率大小将影响你后面拍摄照片/视频的大小</span></div><div class="line">captureSession?.sessionPreset = <span class="type">AVCaptureSessionPresetPhoto</span></div></pre></td></tr></table></figure>
+<p>在创建 AVCaptureSession 的时候，我们一般会设定一个 <code>sessionPreset</code> 预设，设置于是可以让用户获取不同规格的数据，一共有如下12种不同的预设：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> <span class="type">AVCaptureSessionPresetPhoto</span>: <span class="type">String</span></div><div class="line"></div><div class="line"><span class="keyword">let</span> <span class="type">AVCaptureSessionPresetHigh</span>: <span class="type">String</span></div><div class="line"></div><div class="line"><span class="keyword">let</span> <span class="type">AVCaptureSessionPresetMedium</span>: <span class="type">String</span></div><div class="line"></div><div class="line"><span class="keyword">let</span> <span class="type">AVCaptureSessionPresetLow</span>: <span class="type">String</span></div><div class="line"></div><div class="line"><span class="keyword">let</span> <span class="type">AVCaptureSessionPreset352x288</span>: <span class="type">String</span></div><div class="line"></div><div class="line"><span class="keyword">let</span> <span class="type">AVCaptureSessionPreset640x480</span>: <span class="type">String</span></div><div class="line"></div><div class="line"><span class="keyword">let</span> <span class="type">AVCaptureSessionPreset1280x720</span>: <span class="type">String</span></div><div class="line"></div><div class="line"><span class="keyword">let</span> <span class="type">AVCaptureSessionPreset1920x1080</span>: <span class="type">String</span></div><div class="line"></div><div class="line"><span class="keyword">let</span> <span class="type">AVCaptureSessionPreset3840x2160</span>: <span class="type">String</span></div><div class="line"></div><div class="line"><span class="keyword">let</span> <span class="type">AVCaptureSessionPresetiFrame960x540</span>: <span class="type">String</span></div><div class="line"></div><div class="line"><span class="keyword">let</span> <span class="type">AVCaptureSessionPresetiFrame1280x720</span>: <span class="type">String</span></div><div class="line"></div><div class="line"><span class="keyword">let</span> <span class="type">AVCaptureSessionPresetInputPriority</span>: <span class="type">String</span></div></pre></td></tr></table></figure>
+<p><code>AVCaptureSessionPresetPhoto</code> 用于获取静态照片和 LivePhoto，它会为我们选择最合适的照片配置，如果需要设置更多细节（静态图片的分辨率、感光度、曝光时间灯）可以从 <code>AVCaptureDevice.formats</code> 获取到设备设置支持的参数，并且可以自定义参数赋值给 <code>AVCaptureDevice.activeFormat</code> 属性，接下来的10个预设和上一篇博客中 <code>UIImagePickerController</code> 设置的 <code>videoQuality</code> 的 <code>UIImagePickerControllerQualityType</code> 类似，都是设置视频相关的预设，最后一个 <code>AVCaptureSessionPresetInputPriority</code> 表示 <code>captureSession</code> 不去控制音频与视频输出设置，而是通过已连接的捕获设备的 <code>activeFormat</code> 反过来控制 <code>captureSession</code> 的输出质量等级</p>
+<blockquote>
+<p>注意：所有对 <code>AVCaptureSession</code> 的调用都是线程阻塞的，所以我们最好创建一条线程异步调用</p>
+</blockquote>
+<h4 id="AVCaptureDevice-和-AVCaptureDeviceInput"><a href="#AVCaptureDevice-和-AVCaptureDeviceInput" class="headerlink" title="AVCaptureDevice 和 AVCaptureDeviceInput"></a>AVCaptureDevice 和 AVCaptureDeviceInput</h4><p><code>AVCaptureDevice</code> 表示抽象化的 iPhone 输入硬件，包括相机、麦克风等，<code>AVCaptureDeviceInput</code> 是通过 <code>AVCaptureDevice</code> 创建的输入源对象，并且需要添加到 <code>captureSession</code> 中</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">cameraWithPosition</span><span class="params">(<span class="number">_</span> position: AVCaptureDevicePosition)</span></span> -&gt; <span class="type">AVCaptureDevice</span>? &#123;</div><div class="line">        </div><div class="line">    <span class="keyword">if</span> #available(iOS <span class="number">10.0</span>, *) &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> devices = <span class="type">AVCaptureDeviceDiscoverySession</span>(deviceTypes: [<span class="type">AVCaptureDeviceType</span>.builtInWideAngleCamera], mediaType: <span class="type">AVMediaTypeVideo</span>, position: position).devices!</div><div class="line">        </div><div class="line">        <span class="keyword">for</span> device <span class="keyword">in</span> devices &#123;</div><div class="line">            </div><div class="line">            <span class="keyword">if</span> device.position == position &#123;</div><div class="line">            </div><div class="line">                <span class="keyword">return</span> device</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> devices = <span class="type">AVCaptureDevice</span>.devices(withMediaType: <span class="type">AVMediaTypeVideo</span>) <span class="keyword">as</span>! [<span class="type">AVCaptureDevice</span>]</div><div class="line">        </div><div class="line">        <span class="keyword">for</span> device <span class="keyword">in</span> devices &#123;</div><div class="line">            </div><div class="line">            <span class="keyword">if</span> device.position == position &#123;</div><div class="line">                </div><div class="line">                <span class="keyword">return</span> device</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">nil</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面定义的方法是通过传入一个设备的 <code>AVCaptureDevicePosition</code> 以及 <code>mediaType</code> 获取前置或者后置相机的 <code>AVCaptureDevice</code> 对象，如果 <code>mediaType</code> 为 <code>AVMediaTypeAudio</code> 可以获取到麦克风的 <code>AVCaptureDevice</code> 对象（iPhone 内部前后有多个麦克风），iOS 10 之后苹果提供了一个专门的 <code>AVCaptureDeviceDiscoverySession</code> 类来获取 <code>AVCaptureDevice</code> 设备，iPhone 7 的双摄像头设备必须使用这个类才能获取到</p>
+<p>接下来是是把设备添加到 <code>AVCaptureDeviceInput</code> 对象中去，再把输入对象添加到 <code>captureSession</code> 中</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 添加输入</span></div><div class="line"><span class="keyword">do</span> &#123;</div><div class="line">    <span class="comment">// 初始使用后置相机</span></div><div class="line">    <span class="keyword">let</span> cameraDeviceInput = <span class="keyword">try</span> <span class="type">AVCaptureDeviceInput</span>(device: <span class="keyword">self</span>.cameraWithPosition(.back))</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (captureSession?.canAddInput(cameraDeviceInput))! &#123;</div><div class="line">        </div><div class="line">        captureSession?.addInput(cameraDeviceInput)</div><div class="line">        </div><div class="line">        <span class="keyword">self</span>.captureInput = cameraDeviceInput</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125; <span class="keyword">catch</span> <span class="keyword">let</span> error <span class="keyword">as</span> <span class="type">NSError</span> &#123;</div><div class="line">    </div><div class="line">    <span class="built_in">print</span>(error.localizedDescription)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>注意当 App 第一次运行时，第一次调用 <code>AVCaptureDeviceInput.init(device: AVCaptureDevice!)</code> 会触发系统提示向用户请求允许访问设备，所以你的 App需要访问相机、麦克风或者相册等的时候，所以记得在<code>info.plist</code>添加相应配置权限</p>
+<p>如果希望体验更好，我们可以先确认设备当前的授权状态，要是在授权还没有确定的情况下 (也就是说用户还没有看过弹出的授权对话框时)，我们应该明确地发起授权请求，如果用户拒绝过授权请求也可以提示用户</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">checkAuthorization</span><span class="params">()</span></span>  &#123;   </div><div class="line">    <span class="comment">/**</span></div><div class="line">     AVAuthorizationStatusNotDetermined // 未进行授权选择</div><div class="line">     AVAuthorizationStatusRestricted // 未授权，且用户无法更新，如家长控制情况下</div><div class="line">     AVAuthorizationStatusDenied // 用户拒绝App使用</div><div class="line">     AVAuthorizationStatusAuthorized // 已授权，可使用</div><div class="line">     */</div><div class="line">    </div><div class="line">    <span class="comment">// 传AVMediaTypeAudio 可以获取麦克风的授权状态</span></div><div class="line">    <span class="keyword">switch</span> <span class="type">AVCaptureDevice</span>.authorizationStatus(forMediaType: <span class="type">AVMediaTypeVideo</span>) &#123;</div><div class="line">        </div><div class="line">    <span class="keyword">case</span> .authorized: <span class="comment">// 已授权，可使用</span></div><div class="line">        </div><div class="line">        <span class="comment">// ... 开始设置AVCaptureSession</span></div><div class="line">        </div><div class="line">    <span class="keyword">case</span> .notDetermined:<span class="comment">//进行授权选择</span></div><div class="line">        </div><div class="line">        <span class="type">AVCaptureDevice</span>.requestAccess(forMediaType: <span class="type">AVMediaTypeVideo</span>, completionHandler: &#123; (granted) <span class="keyword">in</span></div><div class="line">            </div><div class="line">            <span class="keyword">if</span> granted &#123;<span class="comment">//授权成功</span></div><div class="line">                </div><div class="line">                <span class="comment">// ... 开始设置AVCaptureSession</span></div><div class="line">                </div><div class="line">            &#125;<span class="keyword">else</span> &#123;</div><div class="line">                </div><div class="line">                <span class="keyword">let</span> alert = <span class="type">UIAlertController</span>(title: <span class="string">"提示"</span>, message: <span class="string">"用户拒绝授权使用相机"</span>, preferredStyle: .alert)</div><div class="line">                </div><div class="line">                <span class="keyword">let</span> alertAction = <span class="type">UIAlertAction</span>(title: <span class="string">"确定"</span>, style: .<span class="keyword">default</span>, handler: <span class="literal">nil</span>)</div><div class="line"></div><div class="line">                alert.addAction(alertAction)</div><div class="line">                </div><div class="line">                <span class="keyword">self</span>.present(alert, animated: <span class="literal">true</span>, completion: <span class="literal">nil</span>)</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">        </div><div class="line">    <span class="keyword">default</span>: <span class="comment">//用户拒绝和未授权</span></div><div class="line">        </div><div class="line">        <span class="keyword">let</span> alert = <span class="type">UIAlertController</span>(title: <span class="string">"提示"</span>, message: <span class="string">"用户拒绝授权使用相机"</span>, preferredStyle: .alert)</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> alertAction = <span class="type">UIAlertAction</span>(title: <span class="string">"确定"</span>, style: .<span class="keyword">default</span>, handler: <span class="literal">nil</span>)</div><div class="line">        </div><div class="line">        alert.addAction(alertAction)</div><div class="line">        </div><div class="line">        <span class="keyword">self</span>.present(alert, animated: <span class="literal">true</span>, completion: <span class="literal">nil</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="AVCaptureOutput"><a href="#AVCaptureOutput" class="headerlink" title="AVCaptureOutput"></a>AVCaptureOutput</h4><p>输出对象我们一般使用 <code>AVCaptureOutput</code> 的子类：<code>AVCaptureVideoDataOutput</code>, <code>AVCaptureAudioDataOutput</code>,<br><code>AVCaptureMovieFileOutput</code>, <code>AVCaptureStillImageOutput(AVCapturePhotoOutput)</code>, <code>AVCaptureMetadataOutput</code>, 他们都有相对应的代理方法，也就是说数据输出都是通过代理来获取的</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 添加输出</span></div><div class="line"><span class="comment">// 本文 iOS 10 以后 相机的照片输出使用 AVCapturePhotoOutput</span></div><div class="line"><span class="keyword">if</span> #available(iOS <span class="number">10.0</span>, *) &#123;</div><div class="line">    </div><div class="line">    <span class="comment">// 添加 AVCapturePhotoOutput 用于输出照片</span></div><div class="line">    <span class="keyword">let</span> capturePhotoOutput = <span class="type">AVCapturePhotoOutput</span>()</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (captureSession?.canAddOutput(capturePhotoOutput))! &#123;</div><div class="line">        </div><div class="line">        captureSession?.addOutput(capturePhotoOutput)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">self</span>.capturePhotoOutput = capturePhotoOutput</div><div class="line">    </div><div class="line">&#125; <span class="keyword">else</span> &#123; <span class="comment">// iOS 10 之前 相机的照片输出使用 AVCaptureStillImageOutput</span></div><div class="line">    </div><div class="line">    captureStillImageOutput = <span class="type">AVCaptureStillImageOutput</span>()</div><div class="line">    captureStillImageOutput?.outputSettings = [<span class="type">AVVideoCodecKey</span>: <span class="type">AVVideoCodecJPEG</span>]</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (captureSession?.canAddOutput(captureStillImageOutput))! &#123;</div><div class="line">        </div><div class="line">        captureSession?.addOutput(captureStillImageOutput)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>iOS10 之前输出照片这里使用 <code>AVCaptureStillImageOutput</code> ，iOS 10 之后苹果推出一个替代它的类：<code>AVCapturePhotoOutput</code>，它不仅支持简单的静态图片拍摄，还支持LivePhoto照片和RAW格式的照片拍摄，<code>AVCapturePhotoOutput</code> 还可以通过代理协议通知拍照进度（照片即将被捕获，照片已被捕获但尚未处理，LivePhoto 已准备就绪等），当输出 LivePhoto 的时候不能和 <code>AVCaptureMovieFileOutput</code> 一起使用，如果把 <code>AVCaptureMovieFileOutput</code> 和 <code>AVCapturePhotoOutput</code> 添加到会话中，<code>AVCapturePhotoOutput</code> 的<code>livePhotoCaptureSupported</code> 属性将返回 <code>NO</code>，<code>AVCapturePhotoOutput</code> 支持和 <code>AVCaptureVideoDataOutput</code> 一起添加到会话中使用，这样就可以同时支持 LivePhoto 和 视频拍摄</p>
+<p>本文的 Demo 代码 iOS 10 之前相机的照片输出和视频输出使用 <code>AVCaptureStillImageOutput</code> 和<code>AVCaptureMovieFileOutput</code>，iOS 10 以后，相机的照片输出和视频输出使用 <code>AVCapturePhotoOutput</code> 和  <code>AVCaptureVideoDataOutput</code></p>
+<h4 id="AVCaptureVideoPreviewLayer"><a href="#AVCaptureVideoPreviewLayer" class="headerlink" title="AVCaptureVideoPreviewLayer"></a>AVCaptureVideoPreviewLayer</h4><p><code>AVCaptureVideoPreviewLayer</code> 是 CALayer 的一个子类，用来做为<code>AVCaptureSession</code> 预览视频输出，简单来说就是来把相机捕获的画面实时呈现出来的一个layer</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">previewLayer = <span class="type">AVCaptureVideoPreviewLayer</span>(session: <span class="keyword">self</span>.captureSession)</div><div class="line">previewLayer?.frame = (<span class="keyword">self</span>.preview?.bounds)!</div><div class="line">previewLayer?.videoGravity = <span class="type">AVLayerVideoGravityResizeAspectFill</span></div><div class="line">    </div><div class="line"><span class="comment">//预览图层和视频方向保持一致</span></div><div class="line"><span class="keyword">if</span> #available(iOS <span class="number">10.0</span>, *) &#123;</div><div class="line">    </div><div class="line">    capturePhotoOutput?.connection(withMediaType: <span class="type">AVMediaTypeVideo</span>).videoOrientation = (previewLayer?.connection.videoOrientation)!</div><div class="line">    </div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">    </div><div class="line">    captureStillImageOutput?.connection(withMediaType: <span class="type">AVMediaTypeVideo</span>).videoOrientation = (previewLayer?.connection.videoOrientation)!</div><div class="line">&#125;</div><div class="line">    </div><div class="line">preview?.layer.insertSublayer(<span class="keyword">self</span>.previewLayer!, at: <span class="number">0</span>)</div><div class="line">    </div><div class="line">captureSession?.commitConfiguration()</div><div class="line">    </div><div class="line"><span class="keyword">self</span>.sessionQueue.async &#123;</div><div class="line">    </div><div class="line">    <span class="keyword">self</span>.captureSession?.startRunning()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当上面的 <code>captureSession</code> 全部配置完成之后就可以调用 <code>captureSession</code> 的 <code>startRunning()</code> 方法启动会话了，另外记住退出相机的时候调用<code>stopRunning()</code> 关闭会话</p>
+<p>上面配置的 <code>captureSession</code> 定义的相机是只能拍摄照片，如果需要拍摄视频还需要往输入里添加麦克风设备，并且使用 <code>AVCaptureMovieFileOutput</code> 或者 <code>AVCaptureVideoDataOutput</code> 输出视频，为了让代码更加清晰 Demo 代码里把拍照和录制视频放在了两个控制器里面，实际开发中自定义相机可能既可以拍照又能录制视频</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 配置会话对象</span></div><div class="line">fileprivate <span class="function"><span class="keyword">func</span> <span class="title">configureCaptureSession</span><span class="params">()</span></span> &#123;</div><div class="line">    </div><div class="line">    captureSession = <span class="type">AVCaptureSession</span>()</div><div class="line">    </div><div class="line">    captureSession?.beginConfiguration()</div><div class="line">    </div><div class="line">    <span class="comment">// CaptureSession 的会话预设,这个地方设置的模式/分辨率大小将影响你后面拍摄照片/视频的大小</span></div><div class="line">    captureSession?.sessionPreset = <span class="type">AVCaptureSessionPresetHigh</span></div><div class="line">    </div><div class="line">    <span class="comment">// 添加输入</span></div><div class="line">    <span class="keyword">do</span> &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> cameraDeviceInput = <span class="keyword">try</span> <span class="type">AVCaptureDeviceInput</span>(device: <span class="keyword">self</span>.cameraWithPosition(.back))</div><div class="line">        </div><div class="line">        <span class="keyword">if</span> (captureSession?.canAddInput(cameraDeviceInput))! &#123;</div><div class="line">            </div><div class="line">            captureSession?.addInput(cameraDeviceInput)</div><div class="line">            </div><div class="line">            captureInput = cameraDeviceInput</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> audioDevice = <span class="type">AVCaptureDevice</span>.defaultDevice(withMediaType: <span class="type">AVMediaTypeAudio</span>)</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> audioDeviceInput = <span class="keyword">try</span> <span class="type">AVCaptureDeviceInput</span>(device: audioDevice)</div><div class="line">        </div><div class="line">        <span class="keyword">if</span> (captureSession?.canAddInput(audioDeviceInput))! &#123;</div><div class="line">            </div><div class="line">            captureSession?.addInput(audioDeviceInput)</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">    &#125; <span class="keyword">catch</span> <span class="keyword">let</span> error <span class="keyword">as</span> <span class="type">NSError</span> &#123;</div><div class="line">        </div><div class="line">        <span class="built_in">print</span>(error.localizedDescription)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 添加输出</span></div><div class="line">    <span class="comment">// 本文 iOS 10 以后 相机的照片输出和视频输出使用 AVCaptureVideoDataOutput</span></div><div class="line">    <span class="keyword">if</span> #available(iOS <span class="number">10.0</span>, *) &#123;</div><div class="line">        </div><div class="line">        <span class="comment">// 添加 AVCaptureVideoDataOutput 用于输出视频</span></div><div class="line">        <span class="keyword">let</span> captureVideoDataOutput = <span class="type">AVCaptureVideoDataOutput</span>()</div><div class="line">        </div><div class="line">        <span class="keyword">if</span> (captureSession?.canAddOutput(captureVideoDataOutput))! &#123;</div><div class="line">            </div><div class="line">            captureSession?.addOutput(captureVideoDataOutput)</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="keyword">self</span>.captureVideoDataOutput = captureVideoDataOutput</div><div class="line">        </div><div class="line">        <span class="comment">// 添加 AVCaptureAudioDataOutput 用于输出音频</span></div><div class="line">        <span class="keyword">let</span> captureAudioDataOutput = <span class="type">AVCaptureAudioDataOutput</span>()</div><div class="line">        </div><div class="line">        <span class="keyword">if</span> (captureSession?.canAddOutput(captureAudioDataOutput))! &#123;</div><div class="line">            </div><div class="line">            captureSession?.addOutput(captureAudioDataOutput)</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="keyword">self</span>.captureAudioDataOutput = captureAudioDataOutput</div><div class="line">        </div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        </div><div class="line">        <span class="comment">// iOS 10 以后 相机视频输出使用 AVCaptureMovieFileOutput</span></div><div class="line">        captureMovieFileOutput = <span class="type">AVCaptureMovieFileOutput</span>()</div><div class="line">        </div><div class="line">        <span class="keyword">if</span> (captureSession?.canAddOutput(captureMovieFileOutput))! &#123;</div><div class="line">            </div><div class="line">            captureSession?.addOutput(captureMovieFileOutput)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    previewLayer = <span class="type">AVCaptureVideoPreviewLayer</span>(session: <span class="keyword">self</span>.captureSession)</div><div class="line">    previewLayer?.frame = (<span class="keyword">self</span>.preview?.bounds)!</div><div class="line">    previewLayer?.videoGravity = <span class="type">AVLayerVideoGravityResizeAspectFill</span></div><div class="line">    </div><div class="line">    <span class="comment">//预览图层和视频方向保持一致</span></div><div class="line">    <span class="keyword">if</span> #available(iOS <span class="number">10.0</span>, *) &#123;</div><div class="line">        </div><div class="line">        captureVideoDataOutput?.connection(withMediaType: <span class="type">AVMediaTypeVideo</span>).videoOrientation = (previewLayer?.connection.videoOrientation)!</div><div class="line">        </div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        </div><div class="line">        captureMovieFileOutput?.connection(withMediaType: <span class="type">AVMediaTypeVideo</span>).videoOrientation = (previewLayer?.connection.videoOrientation)!</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    preview?.layer.insertSublayer(<span class="keyword">self</span>.previewLayer!, at: <span class="number">0</span>)</div><div class="line">    </div><div class="line">    captureSession?.commitConfiguration()</div><div class="line">    </div><div class="line">    <span class="keyword">self</span>.sessionQueue.async &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">self</span>.captureSession?.startRunning()</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：配置或者更新（添加或删除输出，更改sessionPreset，或配置各个AVCaptureInput或Output属性）<code>captureSession</code>之前需要先调用 <code>beginConfiguration()</code>，完成之后再调用<code>commitConfiguration()</code></p>
+</blockquote>
+<h3 id="操作相机"><a href="#操作相机" class="headerlink" title="操作相机"></a>操作相机</h3><p>上面的工作完成之后就可以对自己定义的相机进行操作了，下面看一下如何在自定义相机下进行拍照、录制视频、保存等操作，首先是拍照，先看代码</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">takePhoto</span><span class="params">()</span></span>&#123;</div><div class="line">        </div><div class="line">    <span class="keyword">if</span> #available(iOS <span class="number">10.0</span>, *) &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">guard</span> <span class="keyword">let</span> capturePhotoOutput = <span class="keyword">self</span>.capturePhotoOutput <span class="keyword">else</span> &#123; <span class="keyword">return</span> &#125;</div><div class="line">        </div><div class="line">        sessionQueue.async &#123;</div><div class="line">            </div><div class="line">            <span class="keyword">let</span> photoSettings = <span class="type">AVCapturePhotoSettings</span>()</div><div class="line">            </div><div class="line">            photoSettings.isAutoStillImageStabilizationEnabled = <span class="literal">true</span></div><div class="line">            photoSettings.isHighResolutionPhotoEnabled = <span class="literal">true</span></div><div class="line">            photoSettings.flashMode = <span class="keyword">self</span>.currentFlashMode</div><div class="line">            </div><div class="line">            <span class="keyword">if</span> (capturePhotoOutput.isLivePhotoCaptureSupported) &#123;</div><div class="line">                </div><div class="line">                <span class="comment">// 设置 livePhotoMovieFileURL 必须保证 isLivePhotoCaptureEnabled 为 true</span></div><div class="line">                <span class="comment">// 设置了 livePhotoMovieFileURL 必须实现 livePhoto 相关的协议方法</span></div><div class="line">                photoSettings.livePhotoMovieFileURL = <span class="type">URL</span>(fileURLWithPath: <span class="type">NSTemporaryDirectory</span>() + <span class="string">"tempLivePhoto.mov"</span>)</div><div class="line">                </div><div class="line">                capturePhotoOutput.isLivePhotoCaptureEnabled = <span class="literal">true</span></div><div class="line">                capturePhotoOutput.isLivePhotoCaptureSuspended = <span class="literal">false</span></div><div class="line">                capturePhotoOutput.isHighResolutionCaptureEnabled = <span class="literal">true</span></div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="comment">//设置代理方法</span></div><div class="line">            capturePhotoOutput.capturePhoto(with: photoSettings, delegate: <span class="keyword">self</span>)</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> connection = captureStillImageOutput?.connection(withMediaType: <span class="type">AVMediaTypeVideo</span>)</div><div class="line">        </div><div class="line">        captureStillImageOutput?.captureStillImageAsynchronously(from: connection, completionHandler: &#123; (buffer, error) <span class="keyword">in</span></div><div class="line">            </div><div class="line">            <span class="keyword">guard</span> error == <span class="literal">nil</span> <span class="keyword">else</span> &#123;</div><div class="line">                </div><div class="line">                <span class="keyword">return</span></div><div class="line">            &#125;</div><div class="line">            </div><div class="line">            <span class="keyword">if</span> <span class="keyword">let</span> imageData = <span class="type">AVCaptureStillImageOutput</span>.jpegStillImageNSDataRepresentation(buffer),</div><div class="line">                <span class="keyword">let</span> image = <span class="type">UIImage</span>(data: imageData)&#123;</div><div class="line">                </div><div class="line">                <span class="type">UIImageWriteToSavedPhotosAlbum</span>(image, <span class="keyword">self</span>, #selector(<span class="keyword">self</span>.image(<span class="number">_</span>:didFinishSavingWithError:contextInfo:)),<span class="literal">nil</span>)</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// MARK: - AVCapturePhotoCaptureDelegate</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">capture</span><span class="params">(<span class="number">_</span> captureOutput: AVCapturePhotoOutput, didCapturePhotoForResolvedSettings resolvedSettings: AVCaptureResolvedPhotoSettings)</span></span> &#123;</div><div class="line">    </div><div class="line">    <span class="built_in">print</span>(#function)</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">capture</span><span class="params">(<span class="number">_</span> captureOutput: AVCapturePhotoOutput, didFinishProcessingPhotoSampleBuffer photoSampleBuffer: CMSampleBuffer?, previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?)</span></span> &#123;</div><div class="line">    </div><div class="line">    <span class="built_in">print</span>(#function)</div><div class="line">    <span class="keyword">guard</span> error == <span class="literal">nil</span>, <span class="keyword">let</span> photoSampleBuffer = photoSampleBuffer <span class="keyword">else</span> &#123;</div><div class="line">        </div><div class="line">        <span class="built_in">print</span>(<span class="string">"Error capturing photo: <span class="subst">\(String(describing: error)</span>)"</span>)</div><div class="line">        <span class="keyword">return</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">self</span>.photoSampleBuffer = photoSampleBuffer</div><div class="line">    <span class="keyword">self</span>.previewPhotoSampleBuffer = previewPhotoSampleBuffer</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">capture</span><span class="params">(<span class="number">_</span> captureOutput: AVCapturePhotoOutput, didFinishProcessingLivePhotoToMovieFileAt outputFileURL: URL, duration: CMTime, photoDisplay photoDisplayTime: CMTime, resolvedSettings: AVCaptureResolvedPhotoSettings, error: Error?)</span></span> &#123;</div><div class="line">    </div><div class="line">    <span class="built_in">print</span>(#function)</div><div class="line">    </div><div class="line">    <span class="keyword">guard</span> error == <span class="literal">nil</span> <span class="keyword">else</span> &#123;</div><div class="line">        </div><div class="line">        <span class="built_in">print</span>(<span class="string">"Error capturing Live Photo: <span class="subst">\(String(describing: error)</span>)"</span>)</div><div class="line">        <span class="keyword">return</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">self</span>.livePhotoMovieURL = outputFileURL</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="comment">// 在这个方法里面保存正常照片或者LivePhoto</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">capture</span><span class="params">(<span class="number">_</span> captureOutput: AVCapturePhotoOutput, didFinishCaptureForResolvedSettings resolvedSettings: AVCaptureResolvedPhotoSettings, error: Error?)</span></span> &#123;</div><div class="line">    </div><div class="line">    <span class="built_in">print</span>(#function)</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> <span class="keyword">let</span> photoSampleBuffer = <span class="keyword">self</span>.photoSampleBuffer&#123;</div><div class="line">        </div><div class="line">        <span class="keyword">guard</span> <span class="keyword">let</span> jpgData = <span class="type">AVCapturePhotoOutput</span>.jpegPhotoDataRepresentation(forJPEGSampleBuffer: photoSampleBuffer, previewPhotoSampleBuffer: <span class="keyword">self</span>.previewPhotoSampleBuffer) <span class="keyword">else</span> &#123;</div><div class="line">            </div><div class="line">            <span class="built_in">print</span>(<span class="string">"Unable to create JPEG data."</span>)</div><div class="line">            <span class="keyword">return</span></div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">//保存LivePhoto到相册中（livePhotoMovieURL 存在，判断为LivePhoto）</span></div><div class="line">        <span class="keyword">if</span> <span class="keyword">let</span> livePhotoMovieURL = <span class="keyword">self</span>.livePhotoMovieURL &#123;</div><div class="line">            </div><div class="line">            <span class="type">PHPhotoLibrary</span>.shared().performChanges(&#123;</div><div class="line">                </div><div class="line">                <span class="keyword">let</span> creationRequest = <span class="type">PHAssetCreationRequest</span>.forAsset()</div><div class="line">                <span class="keyword">let</span> creationOptions = <span class="type">PHAssetResourceCreationOptions</span>()</div><div class="line">                creationOptions.shouldMoveFile = <span class="literal">true</span></div><div class="line">                </div><div class="line">                creationRequest.addResource(with: <span class="type">PHAssetResourceType</span>.photo, data: jpgData, options: <span class="literal">nil</span>)</div><div class="line">                creationRequest.addResource(with: <span class="type">PHAssetResourceType</span>.pairedVideo, fileURL: livePhotoMovieURL, options: creationOptions)</div><div class="line">                </div><div class="line">            &#125;) &#123; (success, error) <span class="keyword">in</span></div><div class="line">                </div><div class="line">                <span class="keyword">if</span> success &#123;</div><div class="line">                    </div><div class="line">                    <span class="built_in">print</span>(<span class="string">"Added Live Photo to library."</span>)</div><div class="line">                &#125; <span class="keyword">else</span> &#123;</div><div class="line">                    </div><div class="line">                    <span class="built_in">print</span>(<span class="string">"Error adding Live Photo to library: <span class="subst">\(String(describing: error)</span>)"</span>)</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;<span class="keyword">else</span> &#123;<span class="comment">// 保存普通照片到相册（判断为非LivePhoto）</span></div><div class="line">            </div><div class="line">            <span class="type">DispatchQueue</span>.global().async &#123;</div><div class="line">                </div><div class="line">                <span class="type">UIImageWriteToSavedPhotosAlbum</span>(<span class="type">UIImage</span>(data: jpgData)!, <span class="keyword">self</span>, #selector(<span class="keyword">self</span>.image(<span class="number">_</span>:didFinishSavingWithError:contextInfo:)),<span class="literal">nil</span>)</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果使用 <code>AVCaptureStillImageOutput</code> 输出照片可以直接使用 <code>captureStillImageAsynchronously</code> 方法在闭包中异步获取到当前照片，<code>AVCapturePhotoOutput</code> 则需要实现 <code>AVCapturePhotoCaptureDelegate</code>的协议方法，在协议方法里面获取拍摄的照片数据，LivePhoto（仅支持iPhone6s及以上）本质就是一张照片和拍摄这张照片前后1.5秒的视频组成的“照片”，所以要在相册里面保存一张 LivePhoto，必须包含两部分：LivePhoto 的图片Data数据和 LivePhoto 视频临时地址，使用<code>PHPhotoLibrary</code> 把这个两部分保存到相册就生成了一张 LivePhoto</p>
+<blockquote>
+<p>注意：实际上只有 <code>AVCaptureSession</code> 的预设只有 <code>AVCaptureSessionPresetPhoto</code> 才支持 LivePhoto，其他视频相关的预设都不支持</p>
+</blockquote>
+<p>使用 <code>AVCaptureDevice</code> 设置硬件属性（FocusMode、TorchMode、FlashMode、ExposureMode等）需要先锁定设备，设置完成之后再解锁</p>
+<p>设置闪关灯</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">changeflash</span><span class="params">(button: UIButton)</span></span> &#123;</div><div class="line">        </div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.captureInput?.device.hasFlash)! &#123;<span class="comment">// 判读是否有闪关灯</span></div><div class="line">        </div><div class="line">        <span class="keyword">do</span> &#123;</div><div class="line">            </div><div class="line">            <span class="comment">// 先锁定设备</span></div><div class="line">            <span class="keyword">try</span> <span class="keyword">self</span>.captureInput?.device.lockForConfiguration()</div><div class="line">            </div><div class="line">            <span class="keyword">if</span> <span class="keyword">let</span> flashMode = <span class="keyword">self</span>.captureInput?.device.flashMode &#123;</div><div class="line">                </div><div class="line">                <span class="keyword">if</span> flashMode == <span class="type">AVCaptureFlashMode</span>.off &#123;</div><div class="line">                    </div><div class="line">                    <span class="keyword">self</span>.captureInput?.device.flashMode = .on</div><div class="line">                    </div><div class="line">                    button.setTitle(<span class="string">"闪光灯：开启"</span>, <span class="keyword">for</span>: .normal)</div><div class="line">                    </div><div class="line">                &#125;<span class="keyword">else</span> <span class="keyword">if</span> flashMode == <span class="type">AVCaptureFlashMode</span>.on &#123;</div><div class="line">                    </div><div class="line">                    <span class="keyword">self</span>.captureInput?.device.flashMode = .auto</div><div class="line">                    </div><div class="line">                    button.setTitle(<span class="string">"闪光灯：自动"</span>, <span class="keyword">for</span>: .normal)</div><div class="line">                &#125;<span class="keyword">else</span> &#123;</div><div class="line">                    </div><div class="line">                    <span class="keyword">self</span>.captureInput?.device.flashMode = .off</div><div class="line">                    </div><div class="line">                    button.setTitle(<span class="string">"闪光灯：关闭"</span>, <span class="keyword">for</span>: .normal)</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">        &#125; <span class="keyword">catch</span> <span class="keyword">let</span> error <span class="keyword">as</span> <span class="type">NSError</span> &#123;</div><div class="line">            </div><div class="line">            <span class="built_in">print</span>(error.localizedDescription)</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">// 设置完成之后解锁设备</span></div><div class="line">        <span class="keyword">self</span>.captureInput?.device.unlockForConfiguration()</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>设置手电筒</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">changeTorch</span><span class="params">(button: UIButton)</span></span> &#123;</div><div class="line">        </div><div class="line">    button.isSelected = !button.isSelected</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.captureInput?.device.hasTorch)! &#123;<span class="comment">//打开手电筒</span></div><div class="line">        </div><div class="line">        <span class="keyword">do</span> &#123;</div><div class="line">            </div><div class="line">            <span class="keyword">try</span> <span class="keyword">self</span>.captureInput?.device.lockForConfiguration()</div><div class="line">            </div><div class="line">            <span class="keyword">if</span> button.isSelected &#123;</div><div class="line">                <span class="keyword">self</span>.captureInput?.device.torchMode = <span class="type">AVCaptureTorchMode</span>.on</div><div class="line">            &#125;<span class="keyword">else</span> &#123;</div><div class="line">                <span class="keyword">self</span>.captureInput?.device.torchMode = <span class="type">AVCaptureTorchMode</span>.off</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">        &#125; <span class="keyword">catch</span> <span class="keyword">let</span> error <span class="keyword">as</span> <span class="type">NSError</span> &#123;</div><div class="line">            </div><div class="line">            <span class="built_in">print</span>(error.localizedDescription)</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="keyword">self</span>.captureInput?.device.unlockForConfiguration()</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>另外需要注意 TorchMode 和 FlashMode 的区别：前者表示手电筒模式，它的使用效果就和 iPhone 控制中心里手电筒开关效果一致，并且可以对手电筒的亮度进行设置（iOS 11 已经可以在控制中心之间调节亮度了），后者表示摄像头的闪光灯模式，用于拍照时候补光，这两者的使用之前都需要判断当前设备是否支持，<a href="(https://objccn.io/issue-23-1/">这篇博客</a>)可以参考更多的操作相机的功能</p>
+<blockquote>
+<p>注意：使用 <code>AVCapturePhotoOutput</code> 之后，必须通过 <code>AVCapturePhotoSettings</code> 去设置相机的闪光灯模式，之前使用 <code>AVCaptureDevice</code> 的属性设置闪关灯模式会被忽略</p>
+</blockquote>
+<p>接下来看如何用自定义的相机拍摄视频</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">recordVideo</span><span class="params">(button: UIButton)</span></span> &#123;</div><div class="line">        </div><div class="line">    button.isSelected = !button.isSelected</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> #available(iOS <span class="number">10.0</span>, *) &#123; <span class="comment">// iOS 10 这里 使用 AVAssetWriter 保存视频</span></div><div class="line">        </div><div class="line">        <span class="keyword">if</span> <span class="keyword">let</span> assetWriter = <span class="keyword">self</span>.assetWriter,assetWriter.status == .writing &#123;<span class="comment">// 正在录制，保存</span></div><div class="line">            </div><div class="line">            <span class="keyword">if</span> <span class="keyword">let</span> videoWriterInput = <span class="keyword">self</span>.assetWriterVideoInput &#123;</div><div class="line">                </div><div class="line">                videoWriterInput.markAsFinished()</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">            <span class="keyword">if</span> <span class="keyword">let</span> audioWriterInput = <span class="keyword">self</span>.assetWriterAudioInput &#123;</div><div class="line">                </div><div class="line">                audioWriterInput.markAsFinished()</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">            assetWriter.finishWriting(completionHandler: &#123;</div><div class="line">                </div><div class="line">                <span class="comment">// 视频已经完成写入到指定的路径</span></div><div class="line">                <span class="comment">// 可以把视频保存到相册或者保存到APP的沙盒</span></div><div class="line">                <span class="keyword">if</span> <span class="type">UIVideoAtPathIsCompatibleWithSavedPhotosAlbum</span>(assetWriter.outputURL.path) &#123;</div><div class="line">                    </div><div class="line">                    <span class="type">DispatchQueue</span>.global().async &#123;</div><div class="line">                    </div><div class="line">                    <span class="type">UISaveVideoAtPathToSavedPhotosAlbum</span>(assetWriter.outputURL.path, <span class="keyword">self</span>, #selector(<span class="keyword">self</span>.video(<span class="number">_</span> :didFinishSavingWithError:contextInfo:)), <span class="literal">nil</span>)</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;)</div><div class="line">        &#125;<span class="keyword">else</span> &#123;<span class="comment">// 开始录制视频</span></div><div class="line">            </div><div class="line">            configureAssetWriter()</div><div class="line">            </div><div class="line">            captureVideoDataOutput?.setSampleBufferDelegate(<span class="keyword">self</span>, queue: sessionQueue)</div><div class="line">            </div><div class="line">            captureAudioDataOutput?.setSampleBufferDelegate(<span class="keyword">self</span>, queue: sessionQueue)</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">    &#125; <span class="keyword">else</span> &#123; <span class="comment">// iOS 10 之前 这里 使用 AVCaptureMovieFileOutput 输出视频</span></div><div class="line">        </div><div class="line">        <span class="keyword">if</span> (captureMovieFileOutput?.isRecording)! &#123;<span class="comment">//判断当前是否已经在录制视频</span></div><div class="line">            </div><div class="line">            captureMovieFileOutput?.stopRecording()</div><div class="line">            </div><div class="line">        &#125;<span class="keyword">else</span> &#123;</div><div class="line">            </div><div class="line">            <span class="keyword">let</span> url = <span class="type">URL</span>(fileURLWithPath: <span class="type">NSTemporaryDirectory</span>() + <span class="string">"outPut.mov"</span>)</div><div class="line">            </div><div class="line">            captureMovieFileOutput?.startRecording(toOutputFileURL: url, recordingDelegate: <span class="keyword">self</span>)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用 <code>AVCaptureMovieFileOutput</code> 输出视频需要<code>AVCaptureFileOutputRecordingDelegate</code> 的相关协议方法</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// MARK: - AVCaptureFileOutputRecordingDelegate</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">capture</span><span class="params">(<span class="number">_</span> captureOutput: AVCaptureFileOutput!, didStartRecordingToOutputFileAt fileURL: URL!, fromConnections connections: [Any]!)</span></span> &#123;</div><div class="line">    </div><div class="line">    <span class="built_in">print</span>(<span class="string">"开始录制"</span>)</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">capture</span><span class="params">(<span class="number">_</span> captureOutput: AVCaptureFileOutput!, didFinishRecordingToOutputFileAt outputFileURL: URL!, fromConnections connections: [Any]!, error: Error!)</span></span> &#123;</div><div class="line">    </div><div class="line">    <span class="built_in">print</span>(<span class="string">"停止录制"</span>)</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> <span class="type">UIVideoAtPathIsCompatibleWithSavedPhotosAlbum</span>(outputFileURL.path) &#123;<span class="comment">//判断视频路径是否可以被保存的相册</span></div><div class="line">        </div><div class="line">        <span class="comment">//保存视频到图库中</span></div><div class="line">        <span class="type">DispatchQueue</span>.global().async &#123;</div><div class="line">            </div><div class="line">            <span class="type">UISaveVideoAtPathToSavedPhotosAlbum</span>(outputFileURL.path, <span class="keyword">self</span>, #selector(<span class="keyword">self</span>.video(<span class="number">_</span> :didFinishSavingWithError:contextInfo:)), <span class="literal">nil</span>)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="built_in">print</span>(outputFileURL)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// MARK: - UISaveVideoAtPathToSavedPhotosAlbum </span></div><div class="line"><span class="comment">//UISaveVideoAtPathToSavedPhotosAlbum 保存视频之后的回调，判断视频是否保存成功，方法名必须这样写</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">video</span><span class="params">(<span class="number">_</span> videoPath: String,</span></span></div><div class="line">           didFinishSavingWithError error: NSError?,</div><div class="line">           contextInfo: UnsafeRawPointer) &#123;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> <span class="keyword">let</span> error = error &#123;</div><div class="line">        <span class="comment">// we got back an error!</span></div><div class="line">        <span class="keyword">let</span> ac = <span class="type">UIAlertController</span>(title: <span class="string">"警告"</span>, message: error.localizedDescription, preferredStyle: .alert)</div><div class="line">        ac.addAction(<span class="type">UIAlertAction</span>(title: <span class="string">"确定"</span>, style: .<span class="keyword">default</span>))</div><div class="line">        present(ac, animated: <span class="literal">true</span>)</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">let</span> ac = <span class="type">UIAlertController</span>(title: <span class="string">"提示"</span>, message: <span class="string">"视频成功保存到相册"</span>, preferredStyle: .alert)</div><div class="line">        ac.addAction(<span class="type">UIAlertAction</span>(title: <span class="string">"确定"</span>, style: .<span class="keyword">default</span>))</div><div class="line">        present(ac, animated: <span class="literal">true</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>AVCaptureMovieFileOutput</code> 只能用来写入 QuickTime 视频类型(.mov)的媒体文件，而且也不能实现暂停录制、不能定义视频文件的类型，不过<code>AVCaptureMovieFileOutput</code> 还有一些其他的配置选项，比如在某段时间后，在达到某个指定的文件尺寸时，或者当设备的最小磁盘剩余空间达到某个阈值时停止录制等</p>
+<p>很多时候我们都是使用灵活性更强的 <code>AVCaptureVideoDataOutput</code> 和<code>AVCaptureAudioDataOutput</code> 来实现视频的录制，使用 <code>AVCaptureVideoDataOutput</code> 输出视频需要实现<code>AVCaptureVideoDataOutputSampleBufferDelegate</code> 的相关协议方法，并且在协议方法里面使用 <code>AVAssetWriter</code> 合成视频</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 设置 AVAssetWriter</span></div><div class="line">fileprivate <span class="function"><span class="keyword">func</span> <span class="title">configureAssetWriter</span><span class="params">()</span></span> &#123;</div><div class="line">        </div><div class="line">    <span class="comment">// 设置 AVAssetWriter 的视频输入设置</span></div><div class="line">    <span class="keyword">let</span> videoSettings = [<span class="type">AVVideoCodecKey</span>: <span class="type">AVVideoCodecH264</span>,</div><div class="line">                         <span class="type">AVVideoWidthKey</span>: <span class="number">720</span>,</div><div class="line">                         <span class="type">AVVideoHeightKey</span>: <span class="number">1280</span>] <span class="keyword">as</span> [<span class="type">String</span> : <span class="type">Any</span>];</div><div class="line">    </div><div class="line">    <span class="keyword">let</span> assetWriterVideoInput = <span class="type">AVAssetWriterInput</span>(mediaType: <span class="type">AVMediaTypeVideo</span>, outputSettings: videoSettings)</div><div class="line">    assetWriterVideoInput.expectsMediaDataInRealTime = <span class="literal">true</span></div><div class="line">    </div><div class="line">    <span class="keyword">self</span>.assetWriterVideoInput = assetWriterVideoInput</div><div class="line">    </div><div class="line">    <span class="comment">// 设置 AVAssetWriter 的音频输入设置</span></div><div class="line">    <span class="keyword">let</span> audioSettings = [<span class="type">AVFormatIDKey</span>: kAudioFormatMPEG4AAC,</div><div class="line">                         <span class="type">AVSampleRateKey</span>: <span class="type">NSNumber</span>(value: <span class="number">44100.0</span>),</div><div class="line">                         <span class="type">AVNumberOfChannelsKey</span>: <span class="type">NSNumber</span>(value: <span class="number">2</span>)] <span class="keyword">as</span> [<span class="type">String</span> : <span class="type">Any</span>]</div><div class="line">    </div><div class="line">    <span class="keyword">let</span> assetWriterAudioInput = <span class="type">AVAssetWriterInput</span>(mediaType: <span class="type">AVMediaTypeAudio</span>, outputSettings: audioSettings)</div><div class="line">    assetWriterAudioInput.expectsMediaDataInRealTime = <span class="literal">true</span></div><div class="line">    </div><div class="line">    <span class="keyword">self</span>.assetWriterAudioInput = assetWriterAudioInput</div><div class="line">    </div><div class="line">    <span class="keyword">let</span> videoUrlStr = <span class="type">NSTemporaryDirectory</span>() + <span class="string">"tempVideo.mp4"</span></div><div class="line">    </div><div class="line">    <span class="keyword">let</span> videoUrl = <span class="type">URL</span>(fileURLWithPath: videoUrlStr)</div><div class="line">    </div><div class="line">    <span class="keyword">self</span>.videoUrl = videoUrl</div><div class="line">    </div><div class="line">    <span class="keyword">do</span> &#123;</div><div class="line">        <span class="keyword">try</span> <span class="type">FileManager</span>.<span class="keyword">default</span>.removeItem(at: videoUrl)</div><div class="line">        </div><div class="line">    &#125; <span class="keyword">catch</span> &#123;</div><div class="line">        </div><div class="line">        <span class="built_in">print</span>(error)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">do</span> &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> assetWriter = <span class="keyword">try</span> <span class="type">AVAssetWriter</span>(url: videoUrl, fileType: <span class="type">AVFileTypeMPEG4</span>)</div><div class="line">        </div><div class="line">        <span class="keyword">if</span> assetWriter.canAdd(assetWriterVideoInput) &#123;</div><div class="line">            </div><div class="line">            assetWriter.add(assetWriterVideoInput)</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="keyword">if</span> assetWriter.canAdd(assetWriterAudioInput) &#123;</div><div class="line">            </div><div class="line">            assetWriter.add(assetWriterAudioInput)</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="keyword">self</span>.assetWriter = assetWriter</div><div class="line">    &#125; <span class="keyword">catch</span> &#123;</div><div class="line">        <span class="built_in">print</span>(error)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// MARK: - AVCaptureVideoDataOutputSampleBufferDelegate,AVCaptureAudioDataOutputSampleBufferDelegate</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">captureOutput</span><span class="params">(<span class="number">_</span> captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!)</span></span> &#123;</div><div class="line">    </div><div class="line">    objc_sync_enter(<span class="keyword">self</span>)</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> <span class="keyword">let</span> assetWriter = assetWriter &#123;</div><div class="line">        <span class="keyword">if</span> assetWriter.status != .writing &amp;&amp; assetWriter.status != .unknown &#123;</div><div class="line">            <span class="keyword">return</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> <span class="keyword">let</span> assetWriter = <span class="keyword">self</span>.assetWriter, assetWriter.status == <span class="type">AVAssetWriterStatus</span>.unknown &#123;</div><div class="line">        assetWriter.startWriting()</div><div class="line">        assetWriter.startSession(atSourceTime: <span class="type">CMSampleBufferGetPresentationTimeStamp</span>(sampleBuffer))</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 视频数据</span></div><div class="line">    <span class="keyword">if</span> connection == captureVideoDataOutput?.connection(withMediaType: <span class="type">AVMediaTypeVideo</span>) &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> videoDataOutputQueue = <span class="type">DispatchQueue</span>(label: <span class="string">"com.xiaovv.videoDataOutputQueue"</span>)</div><div class="line">        </div><div class="line">        videoDataOutputQueue.async &#123;</div><div class="line">            </div><div class="line">            <span class="keyword">if</span> <span class="keyword">let</span> videoWriterInput = <span class="keyword">self</span>.assetWriterVideoInput, videoWriterInput.isReadyForMoreMediaData &#123;</div><div class="line">                </div><div class="line">                videoWriterInput.append(sampleBuffer)</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 音频数据</span></div><div class="line">    <span class="keyword">if</span> connection == captureVideoDataOutput?.connection(withMediaType: <span class="type">AVMediaTypeAudio</span>) &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> audioDataOutputQueue = <span class="type">DispatchQueue</span>(label: <span class="string">"com.xiaovv.audioDataOutputQueue"</span>)</div><div class="line">        </div><div class="line">        audioDataOutputQueue.async &#123;</div><div class="line">            </div><div class="line">            <span class="keyword">if</span> <span class="keyword">let</span> audioWriterInput = <span class="keyword">self</span>.assetWriterAudioInput, audioWriterInput.isReadyForMoreMediaData &#123;</div><div class="line">                </div><div class="line">                audioWriterInput.append(sampleBuffer)</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    objc_sync_exit(<span class="keyword">self</span>)</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">captureOutput</span><span class="params">(<span class="number">_</span> captureOutput: AVCaptureOutput!, didDrop sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!)</span></span> &#123;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>从上面的流程可以看出 <code>AVCaptureMovieFileOutput</code> 与 <code>AVCaptureVideoDataOutput</code> 和 <code>AVCaptureAudioDataOutput</code> 的区别，前者只需要一个输出即可，指定一个文件路径后，视频和音频会写入到指定路径，不需要其他复杂的操作；后者则需要使用 <code>AVAssetWriter</code> 把 <code>AVCaptureVideoDataOutput</code> 和 <code>AVCaptureAudioDataOutput</code> 的输出数据通过 <code>AVAssetWriterInput</code> 写入视频文件，详细请参考 <a href="">Demo 代码</a></p>
+<p>上面就是 <code>AVFoundation</code> 自定义相机的基本使用，当然 <code>AVFoundation</code>的作用不仅仅是自定义相机，<code>AVFoundation</code> 是一个多媒体框架，可以使用它来播放和创建基于时间的音视频资源，<code>AVFoundation</code> 提供的接口可以精确地处理基于时间的音视频媒体数据，比如媒体文件的查找、创建、编辑甚至二次编码操作都可以使用 <code>AVFoundation</code>框架完成，一本书都可能讲解不完里面的全部知识，本人才疏学浅，也只是略知皮毛而已，还学习多多的学习</p>
+<p>以上です</p>
+<h3 id="相关参考"><a href="#相关参考" class="headerlink" title="相关参考"></a>相关参考</h3><p><a href="https://developer.apple.com/library/content/documentation/AudioVideo/Conceptual/PhotoCaptureGuide/index.html" target="_blank" rel="external">Photo Capture Programming Guide</a></p>
+<p><a href="https://objccn.io/issue-21-3/" target="_blank" rel="external">iOS 上的相机捕捉</a></p>
+<p><a href="https://objccn.io/issue-23-1/" target="_blank" rel="external">在 iOS 上捕获视频</a></p>
+<p><a href="https://chengwey.com/ios-10-by-tutorials-bi-ji-shi-er/" target="_blank" rel="external">iOS 10 by Tutorials 笔记（十二）</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"><i class="fa fa-tag"></i> iOS</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/20/Use-UIImagePickerController-in-iOS/" rel="next" title="iOS 使用相机之 UIImagePickerController">
+                <i class="fa fa-chevron-left"></i> iOS 使用相机之 UIImagePickerController
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTI5NS81ODYz"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Hsiaovv" />
+          <p class="site-author-name" itemprop="name">Hsiaovv</p>
+           
+              <p class="site-description motion-element" itemprop="description">以绝大多数人的努力程度之低，根本轮不到去拼天赋</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#AVFoundation-相关类"><span class="nav-number">1.</span> <span class="nav-text">AVFoundation 相关类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AVFoundation-的使用"><span class="nav-number">1.1.</span> <span class="nav-text">AVFoundation 的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#AVCaptureSession"><span class="nav-number">1.1.1.</span> <span class="nav-text">AVCaptureSession</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AVCaptureDevice-和-AVCaptureDeviceInput"><span class="nav-number">1.1.2.</span> <span class="nav-text">AVCaptureDevice 和 AVCaptureDeviceInput</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AVCaptureOutput"><span class="nav-number">1.1.3.</span> <span class="nav-text">AVCaptureOutput</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AVCaptureVideoPreviewLayer"><span class="nav-number">1.1.4.</span> <span class="nav-text">AVCaptureVideoPreviewLayer</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#操作相机"><span class="nav-number">1.2.</span> <span class="nav-text">操作相机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#相关参考"><span class="nav-number">1.3.</span> <span class="nav-text">相关参考</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Hsiaovv</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("03EiT54MHYWVD5oet8EvooxX-gzGzoHsz", "pEuU3RFhQtvFv7b7w4xYXtE2");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
