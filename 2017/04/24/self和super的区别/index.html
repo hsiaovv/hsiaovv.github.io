@@ -94,6 +94,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/04/24/self和super的区别/index.html">
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="iOS 开发中经常用到或者看到 [self class] 和 [super class] ，很多人都会用但是没有研究过这两者究竟有什么区别，今天就本文就讲解一下 self 和 super 两者的区别 self 和 super 的区别self 是一个隐藏参数变量，指向当前调用方法的对象，还有一个隐藏参数是 _cmd,代表当前方法 selector，在 runtime 时会调用 objc_msgSen">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2017-06-03T07:15:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="self 和 super的区别">
@@ -374,7 +375,7 @@
 <p>当调用 <code>[self class]</code> 时，这时的 <code>self</code> 是 <code>Children</code>，在使用<code>objc_msgSend()</code> 时，第一个参数是 <code>self</code>，也是 <code>Children *child</code> 这个实例，第二个参数，要先找到 <code>class</code> 这个方法的selector，先从 <code>Children</code> 这个类开始找，没有找到，然后到<code>Children</code> 的父类 <code>Parents</code> 中去找，也没有，再去 <code>Parents</code> 的父类 <code>NSObject</code> 去找，一层一层向上找之后，在 <code>NSObject</code> 的类中发现这个 <code>class</code>方法，而 <code>NSObject</code> 的这个 <code>class</code> 方法的返回值就是 <code>self</code> 的类别，所以这里打印 <code>Children</code></p>
 <p>当使用 <code>[super class]</code>时，这时要转换成<code>objc_msgSendSuper()</code>的方法，先构造 <code>objc_super</code>的结构体，第一个成员变量就是 <code>self</code>, 第二个成员变量是 <code>Parents</code>，然后要找 <code>class</code> 这个 selector，先去 <code>super_Class</code> 也就是 <code>Parents</code> 中去找，没有，然后去 <code>Parents</code> 的父类中去找，结果还是在 <code>NSObject</code> 中找到了,然后内部使用函数 <code>objc_msgSend(objc_super-&gt;receiver, @selector(class))</code> 去调用，此时已经和我们用 <code>[self class]</code> 调用时相同了，此时的 <code>receiver</code> 就是 <code>Children *child</code> 这个实例，所以这里返回的也是 <code>Children</code></p>
 <p>以上就是在 OC 中的类实现中经常看到这两个关键字 <code>self</code> 和 <code>super</code> 的区别</p>
-<p>参考文章：<br><a href="http://blog.csdn.net/loving_ios/article/details/49884599" target="_blank" rel="external">iOS经典讲解之[self class]和[super class]的区别</a></p>
+<p>参考文章：<br><a href="http://blog.csdn.net/loving_ios/article/details/49884599" target="_blank" rel="noopener">iOS经典讲解之[self class]和[super class]的区别</a></p>
 <p><strong>本人刚开始写博客，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能让别人有所启发也是荣幸之至！如有错误，欢迎指正！</strong></p>
 
       
@@ -506,7 +507,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -576,8 +577,8 @@
       <div class="footer-inner">
         <div class="copyright" >
   
-  &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

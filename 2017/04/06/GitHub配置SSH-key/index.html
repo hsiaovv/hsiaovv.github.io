@@ -94,6 +94,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/04/06/GitHub配置SSH-key/index.html">
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="Mac重装了系统，本地没有SSHKey了，所以把配置SSHKey的步骤记录下来，方便以后查看，以下内容适用于Mac用户  打开终端  粘贴以下命令，替换邮箱地址为你的GitHub注册的的邮箱地址  1$ ssh-keygen -t rsa -b 4096 -C &quot;your_email@example.com&quot;    然后就会在本机生产一对密钥对  1$ Generating public/priv">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/addSHHKey.png">
 <meta property="og:updated_time" content="2017-07-03T14:52:11.000Z">
 <meta name="twitter:card" content="summary">
@@ -339,7 +340,7 @@
 <ul>
 <li><p>打开终端</p>
 </li>
-<li><p>粘贴以下命令，替换邮箱地址为你的<a href="https://github.com/" target="_blank" rel="external">GitHub</a>注册的的邮箱地址</p>
+<li><p>粘贴以下命令，替换邮箱地址为你的<a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>注册的的邮箱地址</p>
  <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ssh-keygen -t rsa -b 4096 -C <span class="string">"your_email@example.com"</span></div></pre></td></tr></table></figure>
 </li>
 </ul>
@@ -360,18 +361,18 @@
 </li>
 <li><p>用vim 打开目录里面的公钥：id_rsa.pub，并把里面的内容复制出来</p>
 </li>
-<li><p>登陆<a href="https://github.com/" target="_blank" rel="external">GitHub</a>进入设置，右边选择 <em>SSH and GPG keys</em> 选择New SSH Key，设置一个title，把上面公钥复制的内容粘贴到Key</p>
+<li><p>登陆<a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>进入设置，右边选择 <em>SSH and GPG keys</em> 选择New SSH Key，设置一个title，把上面公钥复制的内容粘贴到Key</p>
 <p><img src="http://onzskckoz.bkt.clouddn.com/addSHHKey.png" alt=""></p>
 </li>
 <li><p>使用以下命令测试SSH密钥是否添加成功，我的Mac是 macOS 10.12.4，可能会出现以下提示，并且需要输入上面加密私钥的密码</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">$ ssh -T git@github.com</div><div class="line"></div><div class="line">The authenticity of host <span class="string">'github.com (192.30.252.1)'</span> can<span class="string">'t be established.</span></div><div class="line">RSA key fingerprint is 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48.</div><div class="line">Are you sure you want to continue connecting (yes/no)?</div><div class="line"></div><div class="line">The authenticity of host 'github.com (192.30.252.1)<span class="string">' can'</span>t be established.</div><div class="line">RSA key fingerprint is SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8.</div><div class="line">Are you sure you want to <span class="built_in">continue</span> connecting (yes/no)?</div><div class="line"></div><div class="line">Enter passphrase <span class="keyword">for</span> key <span class="string">'/User/yourmacusername/.ssh/id_rsa'</span>:</div><div class="line"></div><div class="line">Hi username! You<span class="string">'ve successfully authenticated, but GitHub does not</span></div><div class="line">provide shell access.</div></pre></td></tr></table></figure>
 </li>
-<li><p>看到上面的提示内容就可以在<a href="https://github.com/" target="_blank" rel="external">GitHub</a>上提交代码了</p>
+<li><p>看到上面的提示内容就可以在<a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>上提交代码了</p>
 </li>
 </ul>
 <p>提示：如果终端每次 Git 提交，都要输入密码使用私钥，可以在终端输入以下命令</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">echo</span> <span class="_">-e</span> <span class="string">"AddKeysToAgent yes\nUseKeychain yes"</span> &gt;&gt; ~/.ssh/config</div></pre></td></tr></table></figure>
-<p>参考文章：<a href="https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/" target="_blank" rel="external">Generating a new SSH key and adding it to the ssh-agent</a></p>
+<p>参考文章：<a href="https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/" target="_blank" rel="noopener">Generating a new SSH key and adding it to the ssh-agent</a></p>
 <p><strong>本人刚开始写博客，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能让别人有所启发也是荣幸之至！如有错误，欢迎指正！</strong></p>
 
       
@@ -490,7 +491,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -544,8 +545,8 @@
       <div class="footer-inner">
         <div class="copyright" >
   
-  &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

@@ -94,6 +94,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/06/12/The-basic-use-of-NSThread-for-iOS-multithreading/index.html">
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="多线程在需要执行耗时任务的时候非常用，大多时候我们不希望耗时任务阻塞主线程，因为处理用户界面的事件的相关操作都是放在主线程当中处理的，多线程也可以用来把复杂的任务分成多个比较小的任务，这样可以充分利用多核处理器的性能 基本概念进程进程（Process）是指正在执行的应用程序，具体来说进程是一个具有独立功能的程序关于某个数据集合进行的运行活动，包括申请和拥有系统资源，是一个活动的实体，每个进程之间是">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/nsthread1.png">
 <meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/nsthread3.png">
 <meta property="og:updated_time" content="2017-07-08T00:39:24.000Z">
@@ -382,8 +383,8 @@
 <p>同步锁除了使用上述关键字，还可以使用 <code>NSLock</code>，这里就不举例了</p>
 <p>NSThread 需要自己管理线程的生命周期，线程同步，而且线程同步对数据的加锁会有一定的系统开销，实际开发中用的也比较少，苹果官方也更加推荐开发者使用 GCD 和 NSOperation</p>
 <p>其他相关文章：</p>
-<p><a href="http://www.hsiaovv.com/2017/06/15/The-basic-use-of-GCD-for-iOS-multithreading/" target="_blank" rel="external">iOS多线程之GCD的基本使用</a></p>
-<p><a href="http://www.hsiaovv.com/2017/06/17/The-basic-use-of-NSOperation-for-iOS-multithreading/" target="_blank" rel="external">iOS多线程之 NSOperation 的基本使用</a></p>
+<p><a href="http://www.hsiaovv.com/2017/06/15/The-basic-use-of-GCD-for-iOS-multithreading/" target="_blank" rel="noopener">iOS多线程之GCD的基本使用</a></p>
+<p><a href="http://www.hsiaovv.com/2017/06/17/The-basic-use-of-NSOperation-for-iOS-multithreading/" target="_blank" rel="noopener">iOS多线程之 NSOperation 的基本使用</a></p>
 <p><strong>本人刚开始写博客，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能让别人有所启发也是荣幸之至！如有错误，欢迎指正！</strong></p>
 
       
@@ -515,7 +516,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -585,8 +586,8 @@
       <div class="footer-inner">
         <div class="copyright" >
   
-  &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

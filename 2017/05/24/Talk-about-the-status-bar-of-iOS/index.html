@@ -94,6 +94,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/05/24/Talk-about-the-status-bar-of-iOS/index.html">
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="现在很多 APP 为了保持界面的统一，会让 iOS 状态栏的背景颜色和导航栏的颜色一致，有的时候还会隐藏状态栏，开发中修改状态栏往往一次弄好之后就不会再改变了，下面就记录一下各种调整状态栏颜色以及隐藏状态栏的设置（本文的内容只适用于 iOS7 及以上） 了解一下状态栏（UIStatusBar）所谓状态栏就是我们的 iPhone 手机屏幕最顶端的20个像素高的那一部分，状态栏左边一般会有手机信号强度">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/statusbar_compare.png">
 <meta property="og:updated_time" content="2017-06-03T07:13:23.000Z">
 <meta name="twitter:card" content="summary">
@@ -369,7 +370,7 @@
 <p>但是实际使用中我们一般不会单独使用 <code>ViewController</code> 而是把 <code>ViewController</code> 加在 <code>UINavigationController</code> 里面使用，这个时候 <code>ViewController</code> 里面的 <code>- preferredStatusBarStyle</code> 方法并不会被调用，这个时候就需要用到 <code>ViewController</code> 的另一个方法 <code>- childViewControllerForStatusBarStyle</code></p>
 <p>如果是 <code>ViewController</code> 配合 <code>UINavigationController</code> 使用但是又希望状态栏的样式由当前的控制器决定，可以这样做：自定义一个继承自 <code>UINavigationController</code> 的子类，并且重写这个子类的 <code>- childViewControllerForStatusBarStyle</code> 方法：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">UIViewController</span> *)childViewControllerForStatusBarStyle&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> <span class="keyword">self</span>.topViewController;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>重写这个方法的意思就是，不调用当前 <code>UINavigationController</code> 的<code>- preferredStatusBarStyle</code> 方法，而是去调用<code>navigationController.topViewController</code> 的<code>preferredStatusBarStyle</code> 方法，这样就能保证当前显示的<code>UIViewController</code> 的 <code>preferredStatusBarStyle</code> 可以决定状态栏的样式，除了重写子类的方法也可以使用分类的方法可以 <a href="http://cocoa.venj.me/blog/view-controller-based-status-bar-style-and-uinavigationcontroller/" target="_blank" rel="external">参考这里</a></p>
+<p>重写这个方法的意思就是，不调用当前 <code>UINavigationController</code> 的<code>- preferredStatusBarStyle</code> 方法，而是去调用<code>navigationController.topViewController</code> 的<code>preferredStatusBarStyle</code> 方法，这样就能保证当前显示的<code>UIViewController</code> 的 <code>preferredStatusBarStyle</code> 可以决定状态栏的样式，除了重写子类的方法也可以使用分类的方法可以 <a href="http://cocoa.venj.me/blog/view-controller-based-status-bar-style-and-uinavigationcontroller/" target="_blank" rel="noopener">参考这里</a></p>
 <p>另外，有时我们当前显示的 <code>UIViewController</code> 可能添加了多个 <code>childViewController</code>，重写当前 <code>UIViewController</code> 的<code>childViewControllerForStatusBarStyle</code> 方法，也可以使 <code>childViewController</code> 的 <code>preferredStatusBarStyle</code> 生效(当前 <code>UIViewController</code> 的 <code>preferredStatusBarStyle</code> 就不会被调用了)</p>
 <p>总结起来就是：只要重写 <code>UIViewController</code> 的<code>childViewControllerForStatusBarStyle</code> 方法返回值不是<code>nil</code>，那么这个 <code>UIViewController</code> 的 <code>preferredStatusBarStyle</code> 方法就不会被调用，而是会调用 <code>childViewControllerForStatusBarStyle</code> 这个方法返回的那个<code>UIViewController</code> 的 <code>preferredStatusBarStyle</code> 方法</p>
 <h3 id="设置-UIStatusBar-的背景部分"><a href="#设置-UIStatusBar-的背景部分" class="headerlink" title="设置 UIStatusBar 的背景部分"></a>设置 UIStatusBar 的背景部分</h3><p>iOS7 以后默认情况下状态栏的背景为透明的，设置它的背景色有两种方法：</p>
@@ -518,7 +519,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -588,8 +589,8 @@
       <div class="footer-inner">
         <div class="copyright" >
   
-  &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

@@ -94,6 +94,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/05/02/iOS-App-签名的原理/index.html">
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="本文章转载自 iOS App 签名的原理，iOS 开发肯定避免不了要接触到 iOS 的各种证书、配置文件等，总是让人搞得很晕，还容易出错，这篇文章从原理上解释了 iOS 的签名机制，最重要的是作者由浅入深的讲解，通俗易懂！ 下面开始文章的正文： iOS 签名机制挺复杂，各种证书，Provisioning Profile，entitlements，CertificateSigningRequest，">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/ios_sign1.png">
 <meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/ios_sign2.png">
 <meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/ios_sign3.png">
@@ -338,7 +339,7 @@
       
 
       
-        <p>本文章转载自 <a href="http://blog.cnbang.net/tech/3386/" target="_blank" rel="external">iOS App 签名的原理</a>，iOS 开发肯定避免不了要接触到 iOS 的各种证书、配置文件等，总是让人搞得很晕，还容易出错，这篇文章从原理上解释了 iOS 的签名机制，最重要的是作者由浅入深的讲解，通俗易懂！</p>
+        <p>本文章转载自 <a href="http://blog.cnbang.net/tech/3386/" target="_blank" rel="noopener">iOS App 签名的原理</a>，iOS 开发肯定避免不了要接触到 iOS 的各种证书、配置文件等，总是让人搞得很晕，还容易出错，这篇文章从原理上解释了 iOS 的签名机制，最重要的是作者由浅入深的讲解，通俗易懂！</p>
 <p>下面开始文章的正文：</p>
 <p>iOS 签名机制挺复杂，各种证书，Provisioning Profile，entitlements，CertificateSigningRequest，p12，AppID，概念一堆，也很容易出错，本文尝试从原理出发，一步步推出为什么会有这么多概念，希望能有助于理解 iOS App 签名的原理和流程。</p>
 <h3 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h3><p>先来看看苹果的签名机制是为了做什么。在 iOS 出来之前，在主流操作系统(Mac/Windows/Linux)上开发和运行软件是不需要签名的，软件随便从哪里下载都能运行，导致平台对第三方软件难以控制，盗版流行。苹果希望解决这样的问题，在 iOS 平台对第三方 APP 有绝对的控制权，一定要保证每一个安装到 iOS 上的 APP 都是经过苹果官方允许的，怎样保证呢？就是通过签名机制</p>
@@ -359,7 +360,7 @@
 </li>
 </ul>
 <p>上述的 (n,e) 这两个数据在一起就是公钥，(n,d) 这两个数据就是私钥，满足用私钥加密，公钥解密，或反过来公钥加密，私钥解密，也满足在只暴露公钥 (只知道 n 和 e)的情况下，要推导出私钥 (n,d)，需要把大整数 n 因数分解。目前因数分解只能靠暴力穷举，而 n 数字越大，越难以用穷举计算出因数 p 和 q，也就越安全，当 n 大到二进制 1024 位或 2048 位时，以目前技术要破解几乎不可能，所以非常安全。</p>
-<p>若对数字 d 是怎样计算出来的感兴趣，可以详读这两篇文章：RSA 算法原理<a href="http://www.ruanyifeng.com/blog/2013/06/rsa_algorithm_part_one.html" target="_blank" rel="external">（一）</a><a href="http://www.ruanyifeng.com/blog/2013/07/rsa_algorithm_part_two.html" target="_blank" rel="external">（二）</a></p>
+<p>若对数字 d 是怎样计算出来的感兴趣，可以详读这两篇文章：RSA 算法原理<a href="http://www.ruanyifeng.com/blog/2013/06/rsa_algorithm_part_one.html" target="_blank" rel="noopener">（一）</a><a href="http://www.ruanyifeng.com/blog/2013/07/rsa_algorithm_part_two.html" target="_blank" rel="noopener">（二）</a></p>
 <h3 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h3><p>现在知道了有非对称加密这东西，那数字签名是怎么回事呢？</p>
 <p>数字签名的作用是我对某一份数据打个标记，表示我认可了这份数据（签了个名），然后我发送给其他人，其他人可以知道这份数据是经过我认证的，数据没有被篡改过。</p>
 <p>有了上述非对称加密算法，就可以实现这个需求：</p>
@@ -611,7 +612,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -681,8 +682,8 @@
       <div class="footer-inner">
         <div class="copyright" >
   
-  &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

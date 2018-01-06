@@ -94,6 +94,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/04/29/Objective-C-Runtime-运行时之三：方法与消息/index.html">
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="本系列文章转载自南峰子的技术博客 本文原地址：Objective-C Runtime 运行时之三：方法与消息 前面我们讨论了 Runtime 中对类和对象的处理，及对成员变量与属性的处理。这一章，我们就要开始讨论 Runtime 中最有意思的一部分：消息处理机制，我们将详细讨论消息的发送及消息的转发，不过在讨论消息之前，我们先来了解一下与方法相关的一些内容 基础数据类型SELSEL 又叫选择器，是">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/objcmsgSendF.png">
 <meta property="og:updated_time" content="2017-06-03T07:12:37.000Z">
 <meta name="twitter:card" content="summary">
@@ -335,8 +336,8 @@
       
 
       
-        <p>本系列文章转载自<a href="http://southpeak.github.io/" target="_blank" rel="external">南峰子的技术博客</a></p>
-<p>本文原地址：<a href="http://southpeak.github.io/2014/11/03/objective-c-runtime-3/" target="_blank" rel="external">Objective-C Runtime 运行时之三：方法与消息</a></p>
+        <p>本系列文章转载自<a href="http://southpeak.github.io/" target="_blank" rel="noopener">南峰子的技术博客</a></p>
+<p>本文原地址：<a href="http://southpeak.github.io/2014/11/03/objective-c-runtime-3/" target="_blank" rel="noopener">Objective-C Runtime 运行时之三：方法与消息</a></p>
 <p>前面我们讨论了 Runtime 中对类和对象的处理，及对成员变量与属性的处理。这一章，我们就要开始讨论 Runtime 中最有意思的一部分：消息处理机制，我们将详细讨论消息的发送及消息的转发，不过在讨论消息之前，我们先来了解一下与方法相关的一些内容</p>
 <h3 id="基础数据类型"><a href="#基础数据类型" class="headerlink" title="基础数据类型"></a>基础数据类型</h3><h4 id="SEL"><a href="#SEL" class="headerlink" title="SEL"></a>SEL</h4><p>SEL 又叫选择器，是表示一个方法的 <code>selector</code> 的指针，其定义如下：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> objc_selector *SEL;</div></pre></td></tr></table></figure>
@@ -463,10 +464,10 @@
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">BOOL</span>)respondsToSelector:(SEL)aSelector</div><div class="line">&#123;</div><div class="line">	<span class="keyword">if</span> ( [<span class="keyword">super</span> respondsToSelector:aSelector])</div><div class="line">		<span class="keyword">return</span> <span class="literal">YES</span>;</div><div class="line">	<span class="keyword">else</span> &#123;</div><div class="line">		<span class="comment">/* Here, test whether the aSelector message can     *</span></div><div class="line">		 * be forwarded to another object and whether that  *</div><div class="line">		 * object can respond to it. Return YES if it can.  */</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> <span class="literal">NO</span>; 	</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>在此，我们已经了解了 Runtime 中消息发送和转发的基本机制。这也是 Runtime 的强大之处，通过它，我们可以为程序增加很多动态的行为，虽然我们在实际开发中很少直接使用这些机制(如直接调用 <code>objc_msgSend</code>)，但了解它们有助于我们更多地去了解底层的实现。其实在实际的编码过程中，我们也可以灵活地使用这些机制，去实现一些特殊的功能，如hook操作等。</p>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ol>
-<li><a href="https://developer.apple.com/reference/objectivec/objective_c_runtime" target="_blank" rel="external">Objective-C Runtime Reference</a></li>
-<li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html" target="_blank" rel="external">Objective-C Runtime Programming Guide</a></li>
-<li><a href="http://www.xcoder.cn/html/2013/objc_0304/1373.html" target="_blank" rel="external">Objective-C runtime之消息（二）</a></li>
-<li><a href="http://www.cnblogs.com/kesalin/archive/2011/08/15/objc_method_base.html" target="_blank" rel="external">深入浅出Cocoa之消息</a></li>
+<li><a href="https://developer.apple.com/reference/objectivec/objective_c_runtime" target="_blank" rel="noopener">Objective-C Runtime Reference</a></li>
+<li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html" target="_blank" rel="noopener">Objective-C Runtime Programming Guide</a></li>
+<li><a href="http://www.xcoder.cn/html/2013/objc_0304/1373.html" target="_blank" rel="noopener">Objective-C runtime之消息（二）</a></li>
+<li><a href="http://www.cnblogs.com/kesalin/archive/2011/08/15/objc_method_base.html" target="_blank" rel="noopener">深入浅出Cocoa之消息</a></li>
 </ol>
 <p><strong>本人刚开始写博客，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能让别人有所启发也是荣幸之至！如有错误，欢迎指正！</strong></p>
 
@@ -601,7 +602,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -671,8 +672,8 @@
       <div class="footer-inner">
         <div class="copyright" >
   
-  &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

@@ -94,6 +94,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/04/13/iOS下JS与Swift互相调用（二）WKWebView拦截URL/index.html">
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="在上篇文章中介绍了UIWebView拦截URL的方式来处理JS与Swift交互: iOS下JS与Swift互相调用（一）UIWebView拦截URL 由于UIWebView比较耗内存，性能上不太好，而苹果在iOS 8中推出了WKWebView，用WKWebView也可以拦截URL，做 JS 与 Swift 交互。关于WKWebView与UIWebView的性能对比，大家可以自行百度或者 Googl">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2017-07-05T15:59:40.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS下JS与Swift互相调用（二）WKWebView拦截URL">
@@ -334,7 +335,7 @@
 
       
         <p>在上篇文章中介绍了UIWebView拦截URL的方式来处理JS与Swift交互:</p>
-<p><a href="http://hsiaovv.com/2017/04/12/iOS%E4%B8%8BJS%E4%B8%8ESwift%E4%BA%92%E7%9B%B8%E8%B0%83%E7%94%A8%EF%BC%88%E4%B8%80%EF%BC%89UIWebView%E6%8B%A6%E6%88%AAURL/" target="_blank" rel="external">iOS下JS与Swift互相调用（一）UIWebView拦截URL</a></p>
+<p><a href="http://hsiaovv.com/2017/04/12/iOS%E4%B8%8BJS%E4%B8%8ESwift%E4%BA%92%E7%9B%B8%E8%B0%83%E7%94%A8%EF%BC%88%E4%B8%80%EF%BC%89UIWebView%E6%8B%A6%E6%88%AAURL/" target="_blank" rel="noopener">iOS下JS与Swift互相调用（一）UIWebView拦截URL</a></p>
 <p>由于UIWebView比较耗内存，性能上不太好，而苹果在iOS 8中推出了WKWebView，用WKWebView也可以拦截URL，做 JS 与 Swift 交互。关于WKWebView与UIWebView的性能对比，大家可以自行百度或者 Google</p>
 <p>WKWebView 与 UIWebView 拦截URL 的处理方式基本一样， 除了代理方法和WKWebView的使用不太一样，关于 WKWebView 更详尽的讲解和用法，还是自行搜索学习，本文重点还是讲解如何实现 Swift 与 JS 互相调用</p>
 <blockquote>
@@ -351,7 +352,7 @@
 </ul>
 <p>创建WKWebView的代码：</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">setupWKWebView</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">let</span> configuration = <span class="type">WKWebViewConfiguration</span>()</div><div class="line">    configuration.userContentController = <span class="type">WKUserContentController</span>()</div><div class="line">    <span class="keyword">let</span> preferences = <span class="type">WKPreferences</span>()</div><div class="line">    preferences.javaScriptCanOpenWindowsAutomatically = <span class="literal">true</span></div><div class="line">    preferences.minimumFontSize = <span class="number">30.0</span></div><div class="line">    configuration.preferences = preferences</div><div class="line">    <span class="keyword">self</span>.wkWebView = <span class="type">WKWebView</span>(frame: <span class="keyword">self</span>.view.frame, configuration: configuration)</div><div class="line">    <span class="keyword">let</span> urlStr = <span class="type">Bundle</span>.main.path(forResource: <span class="string">"index.html"</span>, ofType: <span class="literal">nil</span>)</div><div class="line">    <span class="keyword">let</span> url = <span class="type">URL</span>(fileURLWithPath: urlStr!)</div><div class="line">    <span class="keyword">self</span>.wkWebView?.loadFileURL(url, allowingReadAccessTo: url)</div><div class="line">    <span class="keyword">self</span>.wkWebView?.navigationDelegate = <span class="keyword">self</span></div><div class="line">    <span class="keyword">self</span>.wkWebView?.uiDelegate = <span class="keyword">self</span></div><div class="line">    <span class="keyword">self</span>.view.addSubview(<span class="keyword">self</span>.wkWebView!)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>因为加载的本地HTML内容，跟上一篇<a href="http://hsiaovv.com/2017/04/12/iOS%E4%B8%8BJS%E4%B8%8ESwift%E4%BA%92%E7%9B%B8%E8%B0%83%E7%94%A8%EF%BC%88%E4%B8%80%EF%BC%89UIWebView%E6%8B%A6%E6%88%AAURL/" target="_blank" rel="external">iOS下JS与Swift互相调用（一）UIWebView拦截URL</a>中介绍的HTML内容一样，所以关于HTML中的内容就不再讲解了</p>
+<p>因为加载的本地HTML内容，跟上一篇<a href="http://hsiaovv.com/2017/04/12/iOS%E4%B8%8BJS%E4%B8%8ESwift%E4%BA%92%E7%9B%B8%E8%B0%83%E7%94%A8%EF%BC%88%E4%B8%80%EF%BC%89UIWebView%E6%8B%A6%E6%88%AAURL/" target="_blank" rel="noopener">iOS下JS与Swift互相调用（一）UIWebView拦截URL</a>中介绍的HTML内容一样，所以关于HTML中的内容就不再讲解了</p>
 <h3 id="2-拦截URL"><a href="#2-拦截URL" class="headerlink" title="2. 拦截URL"></a>2. 拦截URL</h3><p>使用WKNavigationDelegate中的代理方法，拦截自定义的URL来实现 JS 调用 Swift 方法, 这里和UIWebView拦截 URL 一样</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">webView</span><span class="params">(<span class="number">_</span> webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping <span class="params">(WKNavigationActionPolicy)</span></span></span> -&gt; <span class="type">Void</span>) &#123;</div><div class="line">    <span class="keyword">if</span> navigationAction.request.url?.scheme == <span class="string">"haleyaction"</span> &#123;</div><div class="line">        <span class="keyword">let</span> url = navigationAction.request.url</div><div class="line">        handleCustomAction(url: url!)</div><div class="line">        decisionHandler(<span class="type">WKNavigationActionPolicy</span>.cancel)</div><div class="line">        <span class="keyword">return</span></div><div class="line">    &#125;</div><div class="line">    decisionHandler(<span class="type">WKNavigationActionPolicy</span>.allow)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <blockquote>
@@ -366,8 +367,8 @@
 <h3 id="4-WKWebView中使用弹窗注意"><a href="#4-WKWebView中使用弹窗注意" class="headerlink" title="4.WKWebView中使用弹窗注意"></a>4.WKWebView中使用弹窗注意</h3><p>在上面提到，如果在 WKWebView 中使用alert、confirm 等弹窗，就得实现WKWebView的WKUIDelegate中相应的代理方法，如果我们在JS中要显示 alert 弹窗，就必须实现如下代理方法，否则 alert 并不会弹出</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//MARK: -  WKUIDelegate</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">webView</span><span class="params">(<span class="number">_</span> webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping <span class="params">()</span></span></span> -&gt; <span class="type">Void</span>) &#123;</div><div class="line">                </div><div class="line">    <span class="keyword">let</span> alert = <span class="type">UIAlertController</span>(title: <span class="string">"提醒"</span>, message: message, preferredStyle: .alert)</div><div class="line">    <span class="keyword">let</span> action = <span class="type">UIAlertAction</span>(title: <span class="string">"知道了"</span>, style:</div><div class="line">        .cancel) &#123; (action) <span class="keyword">in</span></div><div class="line">            completionHandler()</div><div class="line">    &#125;</div><div class="line">    alert.addAction(action)</div><div class="line">    present(alert, animated: <span class="literal">true</span>, completion: <span class="literal">nil</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>其中<code>completionHandler</code>这个block 一定得调用，至于在哪里调用，倒是无所谓，我们也可以写在方法实现的第一行，或者最后一行.</p>
-<p>原文地址： <a href="http://www.jianshu.com/p/99c3af6894f4" target="_blank" rel="external">iOS下 JS 与 OC 互相调用（二）–WKWebView 拦截URL</a> </p>
-<p>原文是讨论 OC 与 JS 的交互，我按照作者的思路，用 Swift 实现 Native 与 JS 的交互，这是 <a href="https://github.com/hsiaovv/JavaScript_Swift" target="_blank" rel="external">代码地址</a></p>
+<p>原文地址： <a href="http://www.jianshu.com/p/99c3af6894f4" target="_blank" rel="noopener">iOS下 JS 与 OC 互相调用（二）–WKWebView 拦截URL</a> </p>
+<p>原文是讨论 OC 与 JS 的交互，我按照作者的思路，用 Swift 实现 Native 与 JS 的交互，这是 <a href="https://github.com/hsiaovv/JavaScript_Swift" target="_blank" rel="noopener">代码地址</a></p>
 <p><strong>本人刚开始写博客，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能让别人有所启发也是荣幸之至！如有错误，欢迎指正！</strong></p>
 
       
@@ -501,7 +502,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -571,8 +572,8 @@
       <div class="footer-inner">
         <div class="copyright" >
   
-  &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

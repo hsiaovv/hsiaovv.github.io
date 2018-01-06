@@ -94,6 +94,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/04/29/Objective-C-Runtime-运行时之四：Method-Swizzling/index.html">
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="本系列文章转载自南峰子的技术博客 本文原地址：Objective-C Runtime 运行时之四：Method Swizzling 理解 Method Swizzling 是学习 runtime 机制的一个很好的机会，在此不多做整理，仅翻译由 Mattt Thompson 发表于 nshipster 的 Method Swizzling一文。 Method Swizzling 是改变一个 sele">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2017-06-03T07:12:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Objective-C Runtime 运行时之四：Method Swizzling">
@@ -333,9 +334,9 @@
       
 
       
-        <p>本系列文章转载自<a href="http://southpeak.github.io/" target="_blank" rel="external">南峰子的技术博客</a></p>
-<p>本文原地址：<a href="http://southpeak.github.io/2014/11/06/objective-c-runtime-4/" target="_blank" rel="external">Objective-C Runtime 运行时之四：Method Swizzling</a></p>
-<p>理解 <code>Method Swizzling</code> 是学习 runtime 机制的一个很好的机会，在此不多做整理，仅翻译由 <code>Mattt Thompson</code> 发表于 nshipster 的 <a href="http://nshipster.com/method-swizzling/" target="_blank" rel="external">Method Swizzling</a>一文。</p>
+        <p>本系列文章转载自<a href="http://southpeak.github.io/" target="_blank" rel="noopener">南峰子的技术博客</a></p>
+<p>本文原地址：<a href="http://southpeak.github.io/2014/11/06/objective-c-runtime-4/" target="_blank" rel="noopener">Objective-C Runtime 运行时之四：Method Swizzling</a></p>
+<p>理解 <code>Method Swizzling</code> 是学习 runtime 机制的一个很好的机会，在此不多做整理，仅翻译由 <code>Mattt Thompson</code> 发表于 nshipster 的 <a href="http://nshipster.com/method-swizzling/" target="_blank" rel="noopener">Method Swizzling</a>一文。</p>
 <p><code>Method Swizzling</code> 是改变一个 <code>selector</code> 的实际实现的技术。通过这一技术，我们可以在运行时通过修改类的分发表中 <code>selector</code> 对应的函数，来修改方法的实现。</p>
 <p>例如，我们想跟踪在程序中每一个 <code>view controller</code> 展示给用户的次数：当然，我们可以在每个 <code>view controller</code> 的 <code>viewDidAppear</code> 中添加跟踪代码；但是这太过麻烦，需要在每个 <code>view controller</code> 中写重复的代码。创建一个子类可能是一种实现方式，但需要同时创建 <code>UIViewController</code>, <code>UITableViewControlle</code>r, <code>UINavigationController</code> 及其它<code>UIKit</code> 中 <code>view controller</code>的子类，这同样会产生许多重复的代码。</p>
 <p>这种情况下，我们就可以使用 <code>Method Swizzling</code>，如在代码所示：</p>
@@ -363,7 +364,7 @@
 <li>明白是怎么回事：简单地拷贝粘贴 <code>swizzle</code> 代码而不理解它是如何工作的，不仅危险，而且会浪费学习 Objective-C 运行时的机会。阅读<code>Objective-C Runtime Reference</code> 和查看 <code>&lt;objc/runtime.h&gt;</code> 头文件以了解事件是如何发生的。</li>
 <li>小心操作：无论我们对 <code>Foundation</code>, <code>UIKit</code> 或其它内建框架执行 <code>Swizzle</code> 操作抱有多大信心，需要知道在下一版本中许多事可能会不一样</li>
 </ul>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="http://nshipster.com/method-swizzling/" target="_blank" rel="external">Method Swizzling Written by Mattt Thompson </a></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="http://nshipster.com/method-swizzling/" target="_blank" rel="noopener">Method Swizzling Written by Mattt Thompson </a></p>
 <p><strong>本人刚开始写博客，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能让别人有所启发也是荣幸之至！如有错误，欢迎指正！</strong></p>
 
       
@@ -497,7 +498,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -567,8 +568,8 @@
       <div class="footer-inner">
         <div class="copyright" >
   
-  &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

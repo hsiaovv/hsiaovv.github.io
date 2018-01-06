@@ -94,6 +94,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/04/26/Objective-C-Runtime-运行时之一：类与对象/index.html">
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="本系列文章转载自南峰子的技术博客 本文原地址：Objective-C Runtime 运行时之一：类与对象 Objective-C 语言是一门动态语言，它将很多静态语言在编译和链接时期做的事放到了运行时来处理。这种动态语言的优势在于：我们写代码时更具灵活性，如我们可以把消息转发给我们想要的对象，或者随意交换一个方法的实现等。 这种特性意味着 Objective-C 不仅需要一个编译器，还需要一个运">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/meta-class.png">
 <meta property="og:updated_time" content="2017-06-03T07:13:05.000Z">
 <meta name="twitter:card" content="summary">
@@ -335,8 +336,8 @@
       
 
       
-        <p>本系列文章转载自<a href="http://southpeak.github.io/" target="_blank" rel="external">南峰子的技术博客</a></p>
-<p>本文原地址：<a href="http://southpeak.github.io/2014/10/25/objective-c-runtime-1/" target="_blank" rel="external">Objective-C Runtime 运行时之一：类与对象</a></p>
+        <p>本系列文章转载自<a href="http://southpeak.github.io/" target="_blank" rel="noopener">南峰子的技术博客</a></p>
+<p>本文原地址：<a href="http://southpeak.github.io/2014/10/25/objective-c-runtime-1/" target="_blank" rel="noopener">Objective-C Runtime 运行时之一：类与对象</a></p>
 <p>Objective-C 语言是一门动态语言，它将很多静态语言在编译和链接时期做的事放到了运行时来处理。这种动态语言的优势在于：我们写代码时更具灵活性，如我们可以把消息转发给我们想要的对象，或者随意交换一个方法的实现等。</p>
 <p>这种特性意味着 Objective-C 不仅需要一个编译器，还需要一个运行时系统来执行编译的代码。对于 Objective-C 来说，这个运行时系统就像一个操作系统一样：它让所有的工作可以正常的运行。这个运行时系统即 <code>Objc Runtime</code>。<code>Objc Runtime</code> 其实是一个 <code>Runtime</code> 库，它基本上是用 C 和汇编写的，这个库使得 C 语言有了面向对象的能力。</p>
 <p>Runtime库主要做下面几件事：</p>
@@ -519,11 +520,11 @@
 </blockquote>
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>在这一章中我们介绍了 Runtime 运行时中与类和对象相关的数据结构，通过这些数据函数，我们可以管窥 Objective-C 底层面向对象实现的一些信息。另外，通过丰富的操作函数，可以灵活地对这些数据进行操作</p>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ol>
-<li><a href="https://developer.apple.com/reference/objectivec/objective_c_runtime" target="_blank" rel="external">Objective-C Runtime Reference</a></li>
-<li><a href="http://www.cnblogs.com/whyandinside/archive/2013/02/26/2933552.html" target="_blank" rel="external">Objective-C Runtime的数据类型</a></li>
-<li><a href="http://blog.csdn.net/windyitian/article/details/19810875" target="_blank" rel="external">详解Objective-C的meta-class</a></li>
-<li><a href="http://stackoverflow.com/questions/16131172/what-are-class-setivarlayout-and-class-getivarlayout" target="_blank" rel="external">what are class_setIvarLayout and class_getIvarLayout?</a></li>
-<li><a href="http://stackoverflow.com/questions/3805499/whats-the-difference-between-doing-alloc-and-class-createinstance" target="_blank" rel="external">What’s the difference between doing alloc and class_createInstance</a></li>
+<li><a href="https://developer.apple.com/reference/objectivec/objective_c_runtime" target="_blank" rel="noopener">Objective-C Runtime Reference</a></li>
+<li><a href="http://www.cnblogs.com/whyandinside/archive/2013/02/26/2933552.html" target="_blank" rel="noopener">Objective-C Runtime的数据类型</a></li>
+<li><a href="http://blog.csdn.net/windyitian/article/details/19810875" target="_blank" rel="noopener">详解Objective-C的meta-class</a></li>
+<li><a href="http://stackoverflow.com/questions/16131172/what-are-class-setivarlayout-and-class-getivarlayout" target="_blank" rel="noopener">what are class_setIvarLayout and class_getIvarLayout?</a></li>
+<li><a href="http://stackoverflow.com/questions/3805499/whats-the-difference-between-doing-alloc-and-class-createinstance" target="_blank" rel="noopener">What’s the difference between doing alloc and class_createInstance</a></li>
 </ol>
 <p><strong>本人刚开始写博客，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能让别人有所启发也是荣幸之至！如有错误，欢迎指正！</strong></p>
 
@@ -658,7 +659,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -728,8 +729,8 @@
       <div class="footer-inner">
         <div class="copyright" >
   
-  &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

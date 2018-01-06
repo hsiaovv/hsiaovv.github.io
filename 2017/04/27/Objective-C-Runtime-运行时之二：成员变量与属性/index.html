@@ -94,6 +94,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/04/27/Objective-C-Runtime-运行时之二：成员变量与属性/index.html">
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="本系列文章转载自南峰子的技术博客 本文原地址：Objective-C Runtime 运行时之二：成员变量与属性 在前面一篇文章中，我们介绍了Runtime中与类和对象相关的内容，从这章开始，我们将讨论类实现细节相关的内容，主要包括类中成员变量，属性，方法，协议与分类的实现。 本章的主要内容将聚集在Runtime对成员变量与属性的处理。在讨论之前，我们先介绍一个重要的概念： 类型编码(Type E">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2017-06-03T07:12:15.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Objective-C Runtime 运行时之二：成员变量与属性">
@@ -333,12 +334,12 @@
       
 
       
-        <p>本系列文章转载自<a href="http://southpeak.github.io/" target="_blank" rel="external">南峰子的技术博客</a></p>
-<p>本文原地址：<a href="http://southpeak.github.io/2014/10/30/objective-c-runtime-2/" target="_blank" rel="external">Objective-C Runtime 运行时之二：成员变量与属性</a></p>
+        <p>本系列文章转载自<a href="http://southpeak.github.io/" target="_blank" rel="noopener">南峰子的技术博客</a></p>
+<p>本文原地址：<a href="http://southpeak.github.io/2014/10/30/objective-c-runtime-2/" target="_blank" rel="noopener">Objective-C Runtime 运行时之二：成员变量与属性</a></p>
 <p>在前面一篇文章中，我们介绍了Runtime中与类和对象相关的内容，从这章开始，我们将讨论类实现细节相关的内容，主要包括类中成员变量，属性，方法，协议与分类的实现。</p>
 <p>本章的主要内容将聚集在Runtime对成员变量与属性的处理。在讨论之前，我们先介绍一个重要的概念：</p>
 <h3 id="类型编码-Type-Encoding"><a href="#类型编码-Type-Encoding" class="headerlink" title="类型编码(Type Encoding)"></a>类型编码(Type Encoding)</h3><p>作为对 Runtime 的补充，编译器将每个方法的返回值和参数类型编码为一个字符串，并将其与方法的 <code>selector</code> 关联在一起。这种编码方案在其它情况下也是非常有用的，因此我们可以使用 <code>@encode</code> 编译器指令来获取它。当给定一个类型时，<code>@encode</code> 返回这个类型的字符串编码。这些类型可以是诸如 int、指针这样的基本类型，也可以是结构体、类等类型。事实上，任何可以作为 <code>sizeof()</code> 操作参数的类型都可以用于<code>@encode()</code></p>
-<p>在 Objective-C Runtime Programming Guide 中的 <em><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html#//apple_ref/doc/uid/TP40008048-CH100-SW1" target="_blank" rel="external">Type Encoding</a></em> 一节中，列出了 Objective-C 中所有的类型编码。需要注意的是这些类型很多是与我们用于存档和分发的编码类型是相同的，但有一些不能在存档时使用。</p>
+<p>在 Objective-C Runtime Programming Guide 中的 <em><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html#//apple_ref/doc/uid/TP40008048-CH100-SW1" target="_blank" rel="noopener">Type Encoding</a></em> 一节中，列出了 Objective-C 中所有的类型编码。需要注意的是这些类型很多是与我们用于存档和分发的编码类型是相同的，但有一些不能在存档时使用。</p>
 <blockquote>
 <p>注：Objective-C不支持long double类型。@encode(long double)返回d，与double是一样的。</p>
 </blockquote>
@@ -346,9 +347,9 @@
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">float</span> a[] = &#123;<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>&#125;;</div><div class="line"><span class="built_in">NSLog</span>(<span class="string">@"array encoding type: %s"</span>, <span class="keyword">@encode</span>(<span class="keyword">typeof</span>(a)));</div></pre></td></tr></table></figure>
 <p>输出是：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">2017-04-26 23:28:48.702 RuntimeDemo[3392:389101] array encoding <span class="built_in">type</span>: [3f]</div></pre></td></tr></table></figure>
-<p>其它类型可参考 <a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html#//apple_ref/doc/uid/TP40008048-CH100-SW1" target="_blank" rel="external">Type Encoding</a>，在此不细说。</p>
-<p>另外，还有些编码类型，<code>@encode</code> 虽然不会直接返回它们，但它们可以作为协议中声明的方法的类型限定符。可以参考 <a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html#//apple_ref/doc/uid/TP40008048-CH100-SW1" target="_blank" rel="external">Type Encoding</a></p>
-<p>对于属性而言，还会有一些特殊的类型编码，以表明属性是只读、拷贝、<code>retain</code>等等，详情可以参考 <a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html#//apple_ref/doc/uid/TP40008048-CH101-SW6" target="_blank" rel="external">Property Type String</a></p>
+<p>其它类型可参考 <a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html#//apple_ref/doc/uid/TP40008048-CH100-SW1" target="_blank" rel="noopener">Type Encoding</a>，在此不细说。</p>
+<p>另外，还有些编码类型，<code>@encode</code> 虽然不会直接返回它们，但它们可以作为协议中声明的方法的类型限定符。可以参考 <a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html#//apple_ref/doc/uid/TP40008048-CH100-SW1" target="_blank" rel="noopener">Type Encoding</a></p>
+<p>对于属性而言，还会有一些特殊的类型编码，以表明属性是只读、拷贝、<code>retain</code>等等，详情可以参考 <a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html#//apple_ref/doc/uid/TP40008048-CH101-SW6" target="_blank" rel="noopener">Property Type String</a></p>
 <h3 id="成员变量、属性"><a href="#成员变量、属性" class="headerlink" title="成员变量、属性"></a>成员变量、属性</h3><p>Runtime中关于成员变量和属性的相关数据结构并不多，只有三个，并且都很简单。不过还有个非常实用但可能经常被忽视的特性，即关联对象，我们将在这小节中详细讨论</p>
 <h4 id="基础数据类型"><a href="#基础数据类型" class="headerlink" title="基础数据类型"></a>基础数据类型</h4><h5 id="Ivar"><a href="#Ivar" class="headerlink" title="Ivar"></a>Ivar</h5><p><code>Ivar</code> 是表示实例变量的类型，其实际是一个指向 <code>objc_ivar</code> 结构体的指针，其定义如下:</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/// An opaque type that represents an instance variable.</span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> objc_ivar *Ivar;</div><div class="line"></div><div class="line"><span class="keyword">struct</span> objc_ivar &#123;</div><div class="line">    <span class="keyword">char</span> *ivar_name                                          OBJC2_UNAVAILABLE;</div><div class="line">    <span class="keyword">char</span> *ivar_type                                          OBJC2_UNAVAILABLE;</div><div class="line">    <span class="keyword">int</span> ivar_offset                                          OBJC2_UNAVAILABLE;</div><div class="line">    </div><div class="line"><span class="meta">#ifdef __LP64__</span></div><div class="line">    <span class="keyword">int</span> space                                                OBJC2_UNAVAILABLE;</div><div class="line"><span class="meta">#endif</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -400,8 +401,8 @@
 <p>当然，一个属性能否通过上面这种方式来处理的前提是其支持KVC</p>
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>本章中我们讨论了 Runtime 中与成员变量和属性相关的内容。成员变量与属性是类的数据基础，合理地使用 Runtime 中的相关操作能让我们更加灵活地来处理与类数据相关的工作</p>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ol>
-<li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html" target="_blank" rel="external">Objective-C Runtime Programming Guide</a></li>
-<li><a href="https://www.cocoanetics.com/2012/06/associated-objects/" target="_blank" rel="external">Associated Objects</a></li>
+<li><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html" target="_blank" rel="noopener">Objective-C Runtime Programming Guide</a></li>
+<li><a href="https://www.cocoanetics.com/2012/06/associated-objects/" target="_blank" rel="noopener">Associated Objects</a></li>
 </ol>
 <p><strong>本人刚开始写博客，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能让别人有所启发也是荣幸之至！如有错误，欢迎指正！</strong></p>
 
@@ -536,7 +537,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -606,8 +607,8 @@
       <div class="footer-inner">
         <div class="copyright" >
   
-  &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

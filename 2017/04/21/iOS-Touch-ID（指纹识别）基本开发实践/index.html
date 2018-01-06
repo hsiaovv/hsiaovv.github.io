@@ -94,6 +94,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/04/21/iOS-Touch-ID（指纹识别）基本开发实践/index.html">
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="自 iPhone 5S 开始始，苹果公司推出了全新生物安全识别技术 — 指纹识别验证（Touch ID），苹果把用户的指纹数据存放在处理器的安全区域（Secure Enclave）中，并且提供 Touch ID 给第三方应用程序使用，程序只会收到认证是否成功的通知，而无法访问 Touch ID 或与已注册指纹相关的数据，所以很多银行类、支付类 APP 都集成了指纹、手势等二次验证功能，今天这篇文章">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/touchid.jpg">
 <meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/setContext.jpg">
 <meta property="og:updated_time" content="2017-06-03T07:14:04.000Z">
@@ -362,9 +363,9 @@
 <p><code>localizedFallbackTitle</code>、<code>localizedCancelTitle</code> 和<code>localizedReason</code> 的设置分别对应下面图示，需要注意他们对应使用 iOS 版本</p>
 <p><img src="http://onzskckoz.bkt.clouddn.com/setContext.jpg" alt=""></p>
 <h3 id="3-指纹识别两种模式注意"><a href="#3-指纹识别两种模式注意" class="headerlink" title="3.指纹识别两种模式注意"></a>3.指纹识别两种模式注意</h3><p>从上面的学习内容可以看出使用指纹识别有一点需要特别注意：那就是要区分 iOS 系统的版本然后选用不同的 API，因为现在的公司项目至少要从 iOS 8 兼容起，而指纹识别里面的 API 正好全部分散在 iOS 8、9、10 三个系统版本里面，而 <code>deviceOwnerAuthenticationWithBiometrics</code> 和 <code>deviceOwnerAuthentication</code> 这两个验证模式在不同 iOS 版本中的响应方式也有所不同，因为我没有iOS 8、9 的iPhone 测试这两种方式的不同，推荐看下面这篇文章，文章详细的说明了这两种模式在 iOS 不同版本的系统里表现的不同之处，有条件可以自己按照文章测试一下:</p>
-<p><a href="http://www.jianshu.com/p/3ff9d8edae8e" target="_blank" rel="external">iOS 指纹识别在不同的 iOS 版本中响应方式</a></p>
-<p>其他相关文章：<br><a href="http://www.jianshu.com/p/d44b7d85e0a6" target="_blank" rel="external">iOS 指纹识别常见问题汇总</a></p>
-<p><a href="http://www.jianshu.com/p/67fd93408517" target="_blank" rel="external">iOS指纹识别登录流程及实现</a></p>
+<p><a href="http://www.jianshu.com/p/3ff9d8edae8e" target="_blank" rel="noopener">iOS 指纹识别在不同的 iOS 版本中响应方式</a></p>
+<p>其他相关文章：<br><a href="http://www.jianshu.com/p/d44b7d85e0a6" target="_blank" rel="noopener">iOS 指纹识别常见问题汇总</a></p>
+<p><a href="http://www.jianshu.com/p/67fd93408517" target="_blank" rel="noopener">iOS指纹识别登录流程及实现</a></p>
 <p><strong>本人刚开始写博客，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能让别人有所启发也是荣幸之至！如有错误，欢迎指正！</strong></p>
 
       
@@ -496,7 +497,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -566,8 +567,8 @@
       <div class="footer-inner">
         <div class="copyright" >
   
-  &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

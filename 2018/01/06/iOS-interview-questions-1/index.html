@@ -1,0 +1,898 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="本文内容整理自唐巧的微信公众号文章，因为篇幅的原因故将多篇公众号的文章合并 看面试题前可以先看看这篇 如何面试 iOS 工程师 题目 1：找出两个 UIView 的最近的公共 View，如果不存在，则输出 nil分析：这其实是数据结构里面的找最近公共祖先的问题 一个 UIViewController 中的所有 view 之间的关系其实可以看成一棵树，UIViewController 的 view">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 面试题（一）">
+<meta property="og:url" content="http://yoursite.com/2018/01/06/iOS-interview-questions-1/index.html">
+<meta property="og:site_name" content="笑忘书店">
+<meta property="og:description" content="本文内容整理自唐巧的微信公众号文章，因为篇幅的原因故将多篇公众号的文章合并 看面试题前可以先看看这篇 如何面试 iOS 工程师 题目 1：找出两个 UIView 的最近的公共 View，如果不存在，则输出 nil分析：这其实是数据结构里面的找最近公共祖先的问题 一个 UIViewController 中的所有 view 之间的关系其实可以看成一棵树，UIViewController 的 view">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-01-06T08:25:24.590Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS 面试题（一）">
+<meta name="twitter:description" content="本文内容整理自唐巧的微信公众号文章，因为篇幅的原因故将多篇公众号的文章合并 看面试题前可以先看看这篇 如何面试 iOS 工程师 题目 1：找出两个 UIView 的最近的公共 View，如果不存在，则输出 nil分析：这其实是数据结构里面的找最近公共祖先的问题 一个 UIViewController 中的所有 view 之间的关系其实可以看成一棵树，UIViewController 的 view">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/06/iOS-interview-questions-1/"/>
+
+
+
+
+
+  <title> iOS 面试题（一） | 笑忘书店 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笑忘书店</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/06/iOS-interview-questions-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Hsiaovv">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笑忘书店">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS 面试题（一）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-06T16:14:51+08:00">
+                2018-01-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/01/06/iOS-interview-questions-1/" class="leancloud_visitors" data-flag-title="iOS 面试题（一）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文内容整理自<a href="https://weibo.com/p/1005051708947107/home" target="_blank" rel="noopener">唐巧</a>的微信公众号<a href="https://mp.weixin.qq.com/mp/homepage?__biz=MjM5NTIyNTUyMQ==&amp;hid=2&amp;sn=0d3779f30b14b0347cff08679888a9f1&amp;scene=1&amp;devicetype=iOS11.1.2&amp;version=16051620&amp;lang=zh_CN&amp;nettype=WIFI&amp;ascene=7&amp;session_us=gh_84d4b11cf2c6&amp;fontScale=100&amp;wx_header=1" target="_blank" rel="noopener">文章</a>，因为篇幅的原因故将多篇公众号的文章合并</p>
+<p>看面试题前可以先看看这篇 <a href="https://mp.weixin.qq.com/s?__biz=MjM5NTIyNTUyMQ==&amp;mid=562061530&amp;idx=1&amp;sn=6d074c5c8e8b5a17625331cd81ad7f65&amp;scene=19#wechat_redirect" target="_blank" rel="noopener">如何面试 iOS 工程师</a></p>
+<h4 id="题目-1：找出两个-UIView-的最近的公共-View，如果不存在，则输出-nil"><a href="#题目-1：找出两个-UIView-的最近的公共-View，如果不存在，则输出-nil" class="headerlink" title="题目 1：找出两个 UIView 的最近的公共 View，如果不存在，则输出 nil"></a>题目 1：找出两个 UIView 的最近的公共 View，如果不存在，则输出 nil</h4><p>分析：这其实是数据结构里面的找最近公共祖先的问题</p>
+<p>一个 UIViewController 中的所有 view 之间的关系其实可以看成一棵树，UIViewController 的 view 变量是这棵树的根节点，其它的 view 都是根节点的直接或间接子节点</p>
+<p>所以我们可以通过 view 的 superview 属性，一直找到根节点。需要注意的是，在代码中，我们还需要考虑各种非法输入，如果输入了 nil，则也需要处理，避免异常。以下是找到指定 view 到根 view 的路径代码：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">+ (<span class="built_in">NSArray</span> *)superViews:(<span class="built_in">UIView</span> *)view &#123;</div><div class="line">    <span class="keyword">if</span> (view == <span class="literal">nil</span>) &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">return</span> @[];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="built_in">NSMutableArray</span> *result = [<span class="built_in">NSMutableArray</span> array];</div><div class="line">    </div><div class="line">    <span class="keyword">while</span> (view != <span class="literal">nil</span>) &#123;</div><div class="line">        </div><div class="line">        [result addObject:view];</div><div class="line">        </div><div class="line">        view = view.superview;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> [result <span class="keyword">copy</span>];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>然后对于两个 view A 和 view B，我们可以得到两个路径，而本题中我们要找的是这里面最近的一个公共节点</p>
+<p>一个简单直接的办法：拿第一个路径中的所有节点，去第二个节点中查找。假设路径的平均长度是 N，因为每个节点都要找 N 次，一共有 N 个节点，所以这个办法的时间复杂度是 O（N^2）</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">+ (<span class="built_in">UIView</span> *)commonView_1:(<span class="built_in">UIView</span> *)viewA andView:(<span class="built_in">UIView</span> *)viewB &#123;</div><div class="line">    </div><div class="line">    <span class="built_in">NSArray</span> *arr1 = [<span class="keyword">self</span> superViews:viewA];</div><div class="line">    <span class="built_in">NSArray</span> *arr2 = [<span class="keyword">self</span> superViews:viewB];</div><div class="line">    </div><div class="line">    <span class="keyword">for</span> (<span class="built_in">NSUInteger</span> i = <span class="number">0</span>; i &lt; arr1.count; ++i) &#123;</div><div class="line">        </div><div class="line">        <span class="built_in">UIView</span> *targetView = arr1[i];</div><div class="line">        </div><div class="line">        <span class="keyword">for</span> (<span class="built_in">NSUInteger</span> j = <span class="number">0</span>; j &lt; arr1.count; ++j) &#123;</div><div class="line">            </div><div class="line">            <span class="keyword">if</span> (targetView == arr2[j]) &#123;</div><div class="line">                </div><div class="line">                <span class="keyword">return</span> targetView;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>一个改进的办法：我们将一个路径中的所有点先放进 NSSet 中。因为 NSSet 的内部实现是一个 hash 表，所以查找元素的时间复杂度变成了 O（1），我们一共有 N 个节点，所以总时间复杂度优化到了 O（N）</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">UIView</span> *)commonView_2:(<span class="built_in">UIView</span> *)viewA andView:(<span class="built_in">UIView</span> *)viewB &#123;</div><div class="line">    </div><div class="line">    <span class="built_in">NSArray</span> *arr1 = [<span class="keyword">self</span> superViews:viewA];</div><div class="line">    <span class="built_in">NSArray</span> *arr2 = [<span class="keyword">self</span> superViews:viewB];</div><div class="line">    <span class="built_in">NSSet</span> *set = [<span class="built_in">NSSet</span> setWithArray:arr2];</div><div class="line">    </div><div class="line">    <span class="keyword">for</span> (<span class="built_in">NSUInteger</span> i = <span class="number">0</span>; i &lt; arr1.count; ++i) &#123;</div><div class="line">        </div><div class="line">        <span class="built_in">UIView</span> *targetView = arr1[i];</div><div class="line">        </div><div class="line">        <span class="keyword">if</span> ([set containsObject:targetView]) &#123;</div><div class="line">            </div><div class="line">            <span class="keyword">return</span> targetView;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>除了使用 NSSet 外，我们还可以使用类似归并排序的思想，用两个「指针」，分别指向两个路径的根节点，然后从根节点开始，找第一个不同的节点，第一个不同节点的上一个公共节点，就是我们的答案。代码如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* O(N) Solution */</span></div><div class="line">+ (<span class="built_in">UIView</span> *)commonView_3:(<span class="built_in">UIView</span> *)viewA andView:(<span class="built_in">UIView</span> *)viewB &#123;</div><div class="line">    </div><div class="line">    <span class="built_in">NSArray</span> *arr1 = [<span class="keyword">self</span> superViews:viewA];</div><div class="line">    <span class="built_in">NSArray</span> *arr2 = [<span class="keyword">self</span> superViews:viewB];</div><div class="line">    </div><div class="line">    <span class="built_in">NSInteger</span> p1 = arr1.count - <span class="number">1</span>;</div><div class="line">    <span class="built_in">NSInteger</span> p2 = arr2.count - <span class="number">1</span>;</div><div class="line">    </div><div class="line">    <span class="built_in">UIView</span> *answer = <span class="literal">nil</span>;</div><div class="line">    <span class="keyword">while</span> (p1 &gt;= <span class="number">0</span> &amp;&amp; p2 &gt;= <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">if</span> (arr1[p1] == arr2[p2]) &#123;</div><div class="line">            answer = arr1[p1];</div><div class="line">        &#125;</div><div class="line">        p1--;</div><div class="line">        p2--;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> answer;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们还可以使用 UIView 的 isDescendant 方法来简化我们的代码，不过这样写的话，时间复杂度应该也是 O(N^2) 的。lexrus 提供了如下的 Swift 版本的代码：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/// without flatMap</span></div><div class="line"><span class="class"><span class="keyword">extension</span> <span class="title">UIView</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">commonSuperview</span><span class="params">(of view: UIView)</span></span> -&gt; <span class="type">UIView</span>? &#123;</div><div class="line">        <span class="keyword">if</span> <span class="keyword">let</span> s = superview &#123;</div><div class="line">            <span class="keyword">if</span> view.isDescendant(of: s) &#123;</div><div class="line">                <span class="keyword">return</span> s</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="keyword">return</span> s.commonSuperview(of: view)</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="literal">nil</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>特别地，如果我们利用 Optinal 的 flatMap 方法，可以将上面的代码简化得更短，基本上算是一行代码搞定:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">extension</span> <span class="title">UIView</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">commonSuperview</span><span class="params">(of view: UIView)</span></span> -&gt; <span class="type">UIView</span>? &#123;</div><div class="line">        <span class="keyword">return</span> superview.flatMap &#123;</div><div class="line">            view.isDescendant(of: $<span class="number">0</span>) ?</div><div class="line">                $<span class="number">0</span> : $<span class="number">0</span>.commonSuperview(of: view)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="题目-2：什么时候在-block-中不需要使用-weakSelf"><a href="#题目-2：什么时候在-block-中不需要使用-weakSelf" class="headerlink" title="题目 2：什么时候在 block 中不需要使用 weakSelf"></a>题目 2：什么时候在 block 中不需要使用 weakSelf</h4><p>我们知道，在使用 block 的时候，为了避免产生循环引用，通常需要使用 weakSelf 与 strongSelf，写下面这样的代码：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">__<span class="keyword">weak</span> <span class="keyword">typeof</span>(<span class="keyword">self</span>) weakSelf = <span class="keyword">self</span>;</div><div class="line">[<span class="keyword">self</span> doSomeBlockJob:^&#123;</div><div class="line">    __<span class="keyword">strong</span> <span class="keyword">typeof</span>(weakSelf) strongSelf = weakSelf;</div><div class="line">    <span class="keyword">if</span> (strongSelf) &#123;</div><div class="line">        ...</div><div class="line">    &#125;</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<p>当 block 本身不被 self 持有，而被别的对象持有，同时不产生循环引用的时候，就不需要使用 weak self 了。最常见的代码就是 UIView 的动画代码，我们在使用 UIView 的 animateWithDuration:animations 方法 做动画的时候，并不需要使用 weak self，因为引用持有关系是：</p>
+<ul>
+<li>UIView 的某个负责动画的对象持有了 block</li>
+<li>block 持有了 self </li>
+</ul>
+<p>因为 self 并不持有 block，所以就没有循环引用产生，因为就不需要使用 weak self 了</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[<span class="built_in">UIView</span> animateWithDuration:<span class="number">0.2</span> animations:^&#123;</div><div class="line">    <span class="keyword">self</span>.alpha = <span class="number">1</span>;</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<p>当动画结束时，UIView 会结束持有这个 block，如果没有别的对象持有 block 的话，block 对象就会释放掉，从而 block 会释放掉对于 self 的持有。整个内存引用关系被解除。</p>
+<h4 id="题目-3：为什么-block-里面还需要写一个-strong-self，如果不写会怎么样？"><a href="#题目-3：为什么-block-里面还需要写一个-strong-self，如果不写会怎么样？" class="headerlink" title="题目 3：为什么 block 里面还需要写一个 strong self，如果不写会怎么样？"></a>题目 3：为什么 block 里面还需要写一个 strong self，如果不写会怎么样？</h4><p>在 block 中先写一个 strong self，其实是为了避免在 block 的执行过程中，突然出现 self 被释放的尴尬情况。通常情况下，如果不这么做的话，还是很容易出现一些奇怪的逻辑，甚至闪退。</p>
+<p>们以 AFNetworking 中 AFNetworkReachabilityManager.m 的一段代码举例：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">__<span class="keyword">weak</span> __<span class="keyword">typeof</span>(<span class="keyword">self</span>)weakSelf = <span class="keyword">self</span>;</div><div class="line">AFNetworkReachabilityStatusBlock callback = ^(AFNetworkReachabilityStatus status) &#123;</div><div class="line">    __<span class="keyword">strong</span> __<span class="keyword">typeof</span>(weakSelf)strongSelf = weakSelf;</div><div class="line">    </div><div class="line">    strongSelf.networkReachabilityStatus = status;</div><div class="line">    <span class="keyword">if</span> (strongSelf.networkReachabilityStatusBlock) &#123;</div><div class="line">        strongSelf.networkReachabilityStatusBlock(status);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>如果没有 strongSelf 的那行代码，那么后面的每一行代码执行时，self 都可能被释放掉了，这样很可能造成逻辑异常。</p>
+<p>特别是当我们正在执行 strongSelf.networkReachabilityStatusBlock(status); 这个 block 闭包时，如果这个 block 执行到一半时 self 释放，那么多半情况下会 Crash。</p>
+<h4 id="题目-4：有没有这样一个需求场景，block会产生循环引用，但是业务又需要你不能使用-weak-self-如果有，请举一个例子并且解释这种情况下如何解决循环引用问题。"><a href="#题目-4：有没有这样一个需求场景，block会产生循环引用，但是业务又需要你不能使用-weak-self-如果有，请举一个例子并且解释这种情况下如何解决循环引用问题。" class="headerlink" title="题目 4：有没有这样一个需求场景，block会产生循环引用，但是业务又需要你不能使用 weak self? 如果有，请举一个例子并且解释这种情况下如何解决循环引用问题。"></a>题目 4：有没有这样一个需求场景，block会产生循环引用，但是业务又需要你不能使用 weak self? 如果有，请举一个例子并且解释这种情况下如何解决循环引用问题。</h4><p>需要不使用 weak self 的场景是：你需要构造一个循环引用，以便保证引用双方都存在。比如你有一个后台的任务，希望任务执行完后，通知另外一个实例。在我们开源的 YTKNetwork 网络库的源码中，就有这样的场景。</p>
+<p>在 YTKNetwork 库中，我们的每一个网络请求 API 会持有回调的 block，回调的 block 会持有 self，而如果 self 也持有网络请求 API 的话，我们就构造了一个循环引用。虽然我们构造出了循环引用，但是因为在网络请求结束时，网络请求 API 会主动释放对 block 的持有，因此，整个循环链条被解开，循环引用就被打破了，所以不会有内存泄漏问题。代码其实很简单，如下所示：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//  YTKBaseRequest.m</span></div><div class="line">- (<span class="keyword">void</span>)clearCompletionBlock &#123;</div><div class="line">    <span class="comment">// nil out to break the retain cycle.</span></div><div class="line">    <span class="keyword">self</span>.successCompletionBlock = <span class="literal">nil</span>;</div><div class="line">    <span class="keyword">self</span>.failureCompletionBlock = <span class="literal">nil</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>总结来说，解决循环引用问题主要有两个办法：</p>
+<ul>
+<li>第一个办法是「事前避免」，我们在会产生循环引用的地方使用 weak 弱引用，以避免产生循环引用。</li>
+<li>第二个办法是「事后补救」，我们明确知道会存在循环引用，但是我们在合理的位置主动断开环中的一个引用，使得对象得以回收。</li>
+</ul>
+<h4 id="题目-5：weak-的内部实现原理，weak-变量在引用计数为0时，会被自动设置成-nil，这个特性是如何实现的？"><a href="#题目-5：weak-的内部实现原理，weak-变量在引用计数为0时，会被自动设置成-nil，这个特性是如何实现的？" class="headerlink" title="题目 5：weak 的内部实现原理，weak 变量在引用计数为0时，会被自动设置成 nil，这个特性是如何实现的？"></a>题目 5：weak 的内部实现原理，weak 变量在引用计数为0时，会被自动设置成 nil，这个特性是如何实现的？</h4><p>在 Friday QA 上，有一期专门介绍 weak 的实现原理。<a href="https://mikeash.com/pyblog/friday-qa-2010-07-16-zeroing-weak-references-in-objective-c.html" target="_blank" rel="noopener">Zeroing Weak References in Objective-C</a></p>
+<p>《Objective-C高级编程》一书中也介绍了相关的内容</p>
+<p>简单来说，系统有一个全局的 CFMutableDictionary 实例，来保存每个对象的 weak 指针列表，因为每个对象可能有多个 weak 指针，所以这个实例的值是 CFMutableSet 类型。</p>
+<p>剩下我们要做的，就是在引用计数变成 0 的时候，去这个全局的字典里面，找到所有的 weak 指针，将其值设置成 nil。如何做到这一点呢？Friday QA 上介绍了一种类似 KVO 实现的方式。当对象存在 weak 指针时，我们可以将这个实例指向一个新创建的子类，然后修改这个子类的 release 方法，在 release 方法中，去从全局的 CFMutableDictionary 字典中找到所有的 weak 对象，并且设置成 nil。我摘抄了 Friday QA 上的实现的核心代码，如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Class subclass = objc_allocateClassPair(<span class="keyword">class</span>, newNameC, <span class="number">0</span>);</div><div class="line">Method release = class_getInstanceMethod(<span class="keyword">class</span>, <span class="keyword">@selector</span>(release));</div><div class="line">Method dealloc = class_getInstanceMethod(<span class="keyword">class</span>, <span class="keyword">@selector</span>(dealloc));</div><div class="line">class_addMethod(subclass, <span class="keyword">@selector</span>(release), (IMP)CustomSubclassRelease, method_getTypeEncoding(release));</div><div class="line">class_addMethod(subclass, <span class="keyword">@selector</span>(dealloc), (IMP)CustomSubclassDealloc, method_getTypeEncoding(dealloc));</div><div class="line">objc_registerClassPair(subclass);</div></pre></td></tr></table></figure>
+<p>当然，这并不代表苹果官方是这么实现的，因为苹果的这部分代码并没有开源。《Objective-C高级编程》一书中介绍了 GNUStep 项目中的开源代码，思想也是类似的。所以我认为虽然实现细节会有差异，但是大致的实现思路应该差别不大。</p>
+<h4 id="题目-6：如果有一些-UI-控件我们要用代码的方式来创建，那么它应该用-weak-还是-strong-呢？为什么？"><a href="#题目-6：如果有一些-UI-控件我们要用代码的方式来创建，那么它应该用-weak-还是-strong-呢？为什么？" class="headerlink" title="题目 6：如果有一些 UI 控件我们要用代码的方式来创建，那么它应该用 weak 还是 strong 呢？为什么？"></a>题目 6：如果有一些 UI 控件我们要用代码的方式来创建，那么它应该用 weak 还是 strong 呢？为什么？</h4><p>我们知道，从 Storyboard 往编译器拖出来的 UI 控件的属性是 weak 的，如下所示</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">weak</span>, <span class="keyword">nonatomic</span>) <span class="keyword">IBOutlet</span> <span class="built_in">UIButton</span> *myButton;</div></pre></td></tr></table></figure>
+<p>这是一道有意思的问题，这个问题是我当时和 Lancy 一起写猿题库 App 时产生的一次小争论。简单来说，这道题并没有标准答案，但是答案背后的解释却非常有价值，能够看出一个人对于引用计数，对于 view 的生命周期的理解是否到位。</p>
+<p>从昨天的评论上，我们就能看到一些理解非常不到位的解释，例如：</p>
+<blockquote>
+<p>@spume 说：Storyboard 拖线使用 weak 是为了规避出现循环引用的问题。</p>
+</blockquote>
+<p>这个理解是错误的，Storyboard 拖出来的控件即使是 strong 的，也不会有循环引用问题。</p>
+<p>我认为 UI 控件用默认用 weak，根源还是苹果希望只有这些 UI 控件的父 View 来强引用它们，而 ViewController 只需要强引用 ViewController.view 成员，则可以间接持有所有的 UI 控件。这样有一个好处是：在以前，当系统收到 Memory Warning 时，会触发 ViewController 的 viewDidUnload 方法，这样的弱引用方式，可以让整个 view 整体都得到释放，也更方便重建时整体重新构造。</p>
+<p>但是首先 viewDidUnload 方法在 iOS 6 开始就被废弃掉了，苹果用了更简单有效地方式来解决内存警告时的视图资源释放，具体如何做的呢？嗯，这个可以当作某一期的面试题展开介绍。总之就是，除非你特殊地操作 view 成员，ViewController.view 的生命期和 ViewController 是一样的了。</p>
+<p>所以在这种情况下，其实 UI 控件是不是 weak 其实关系并不大。当 UI 控件是 weak 时，它的引用计数是 1，持有它的是它的 superview，当 UI 控件是 strong 时，它的引用计数是 2，持有它的有两个地方，一个是它的 superview，另一个是这个 strong 的指针。UI 控件并不会持有别的对象，所以，不管是手写代码还是 Storyboard，UI 控件是 strong 都不会有循环引用的。</p>
+<p>那么回到我们的最初的问题，自己写的 view 成员，应该用 weak 还是 strong？我个人觉得应该用 strong，因为用 weak 并没有什么特别的优势，加上上一篇面试题文章中，我们还看到，其实 weak 变量会有额外的系统维护开销的，如果你没有使用它的特别的理由，那么用 strong 的话应该更好。</p>
+<p>另外有读者也提到，如果你要做 Lazy 加载，那么你也只能选择用 strong。当然，如果你非要用 weak，其实也没什么问题，只需要注意在赋值前，先把这个对象用 addSubView 加到父 view 上，否则可能刚刚创建完，它就被释放了。</p>
+<p>在我心目中，这才是我喜欢的面试题，没有标准答案，每种方案各有各的特点，面试者能够足够分清楚每种方案的优缺点，结合具体的场景做选择，这才是优秀的面试者。</p>
+<h4 id="题目-7：为什么-Objective-C-的方法调用要用方括号-obj-foo-，而不是别的语言常常使用的点-obj-foo"><a href="#题目-7：为什么-Objective-C-的方法调用要用方括号-obj-foo-，而不是别的语言常常使用的点-obj-foo" class="headerlink" title="题目 7：为什么 Objective-C 的方法调用要用方括号 [obj foo]，而不是别的语言常常使用的点 obj.foo ?"></a>题目 7：为什么 Objective-C 的方法调用要用方括号 [obj foo]，而不是别的语言常常使用的点 obj.foo ?</h4><p>首先要说的是，Objective-C 的历史相当久远，如果你查 wiki 的话，你会发现：Objective-C 和 C++ 这两种语言的发行年份都是 1983 年。在设计之初，二者都是作为 C 语言的面向对象的接班人，希望成为事实上的标准。最后结果大家都知道了，C++ 最终胜利了，而 Objective-C 在之后的几十年中，基本上变成了苹果自己家玩的玩具。不过最终，由于 iPhone 的出现，Objective-C 迎来了第二春，在 TOBIE 语言排行榜上，从 20 名开外一路上升，排名曾经超越过 C++，达到了第三名（下图），但是随着 Swift 的出现，Objective-C 的排名则一路下滑。</p>
+<p>Objective-C 在设计之初参考了不少 Smalltalk 的设计，而消息发送则是向 Smalltalk 学来的。Objective-C 当时采用了方括号的形式来表示发送消息，为什么没有选择用点呢？我个人觉得是，当时市面上并没有别的面向对象语言的设计参考，而 Objective-C 「发明」了方括号的形式来给对象发消息，而 C++ 则「发明」了用点的方式来 “发消息”。有人可能会争论说 C++ 的「点」并不是真正的发消息，但是其实二者都是表示「调用对象所属的成员函数」。</p>
+<p>另外，有读者评论说使用方括号的形式是为了向下兼容 C 语言，我并不觉得中括号是唯一选择，C++ 不也兼容了 C 语言么？Swift 不也可以调用 C 函数么？</p>
+<p>最终，其实是 C++ 的「发明」显得更舒服一些，所以后来的各种语言都借鉴了 C++ 的这种设计，也包括 Objective-C 在内。Objective-C 2.0 版本中，引入了 dot syntax，即：</p>
+<ul>
+<li>a = obj.foo 等价于 a = [obj foo]</li>
+<li>obj.foo = 1 则等价于 [obj setFoo:1]</li>
+</ul>
+<p>Objective-C 其实在设计之中确实是比较特立独行的，除了方括号的函数调用方式外，还包括比较长的，可读性很强的函数命名风格。</p>
+<p>我个人并不讨厌 Objective-C 的这种设计，但是从 Swift 语言的设计来看，苹果也开始放弃一些 Objective-C 的特点了，比如就去掉了方括号这种函数调用方式。所以，回到我们的问题，我个人认为，答案就是：Objective-C 在 1983 年设计的时候，并没有什么有效的效仿对象，于是就发明了一种有特点的函数调用方式，现在看起来，这种方式比点操作符还是略逊一筹。</p>
+<p>大多数语言一旦被设计好，就很难被再次修改，应该说 Objective-C 发明在 30 年前，还是非常优秀的，它的面向对象化设计得非常纯粹，比 C++ 要全面得多，也比 C++ 要简单得多。</p>
+<h4 id="题目-8：给你一个嵌套的-NSArray-数据，实现一个迭代器类，该类提供一个-next-方法，可以依次的取出这个-NSArray-中的数据。比如-NSArray-如果是-1-4-3-6-5-1-0-，-则最终应该输出：1-4-3-6-5-1-0-。另外，实现一个-allObjects-方法，可以一次性取出所有元素"><a href="#题目-8：给你一个嵌套的-NSArray-数据，实现一个迭代器类，该类提供一个-next-方法，可以依次的取出这个-NSArray-中的数据。比如-NSArray-如果是-1-4-3-6-5-1-0-，-则最终应该输出：1-4-3-6-5-1-0-。另外，实现一个-allObjects-方法，可以一次性取出所有元素" class="headerlink" title="题目 8：给你一个嵌套的 NSArray 数据，实现一个迭代器类，该类提供一个 next() 方法，可以依次的取出这个 NSArray 中的数据。比如 NSArray 如果是 [1, [4, 3],6,[5,[1, 0]]]， 则最终应该输出：1, 4, 3, 6, 5, 1, 0 。另外，实现一个 allObjects 方法，可以一次性取出所有元素"></a>题目 8：给你一个嵌套的 NSArray 数据，实现一个迭代器类，该类提供一个 next() 方法，可以依次的取出这个 NSArray 中的数据。比如 NSArray 如果是 [1, [4, 3],6,[5,[1, 0]]]， 则最终应该输出：1, 4, 3, 6, 5, 1, 0 。另外，实现一个 allObjects 方法，可以一次性取出所有元素</h4><p>本题的代码稍长，完整的代码我放在 gist 上了：<a href="https://gist.github.com/tangqiaoboy/452e106e0472b9e90cf17de180b6d211" target="_blank" rel="noopener">https://gist.github.com/tangqiaoboy/452e106e0472b9e90cf17de180b6d211 </a>，以下是讲解。</p>
+<p>先说第二问吧，第二问比较简单：实现一个 allObjects 方法，可以一次性取出所有元素。</p>
+<p>对于此问，我们可以实现一个递归函数，在函数中判断数组中的元素是否又是数组，如果是的话，就递归调用自己，如果不是数组，则加入到一个 NSMutableArray 中即可。下面是示例代码：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">NSArray</span> *)allObjects &#123;</div><div class="line">    <span class="built_in">NSMutableArray</span> *result = [<span class="built_in">NSMutableArray</span> array];</div><div class="line">    [<span class="keyword">self</span> fillArray:_originArray into:result];</div><div class="line">    <span class="keyword">return</span> result;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)fillArray:(<span class="built_in">NSArray</span> *)array into:(<span class="built_in">NSMutableArray</span> *)result &#123;</div><div class="line">    <span class="keyword">for</span> (<span class="built_in">NSUInteger</span> i = <span class="number">0</span>; i &lt; array.count; ++i) &#123;</div><div class="line">        <span class="keyword">if</span> ([array[i] isKindOfClass:[<span class="built_in">NSArray</span> <span class="keyword">class</span>]]) &#123;</div><div class="line">            [<span class="keyword">self</span> fillArray:array[i] into:result];</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            [result addObject:array[i]];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>应该说，掌握递归应该是一个程序员最最基本的要求，如果你不会写的话，那么就应该好好学习一下了。</p>
+<p>如果你还在纠结掌握递归有什么意义的话，欢迎翻翻我半年前写的另一篇文章：<a href="https://mp.weixin.qq.com/s?__biz=MjM5NTIyNTUyMQ==&amp;mid=421159372&amp;idx=1&amp;sn=0d9e1cd278917334a261b09d1b2fc995&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">递归的故事（上）</a>，<a href="https://mp.weixin.qq.com/s?__biz=MjM5NTIyNTUyMQ==&amp;mid=425829999&amp;idx=1&amp;sn=f7e06bf52bddf9d8c332ea4f21d02ddb&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">递归的故事（下）</a>。</p>
+<p>接下来让我们来看第一问，在同学的回复中，我看到很多人用第二问的办法，把数组整个另外保存一份，然后再记录一个下标，每次返回其中一个。这个方法当然是可行的，但是大部分的迭代器通常都不会这么实现。因为这么实现的话，数组需要整个复制一遍，空间复杂度是 O(N)。</p>
+<p>所以，我个人认为本题第一问更好的解法是：记录下遍历的位置，然后每次遍历时更新位置。由于本题中元素是一个嵌套数组，所以我们为了记录下位置，就需要两个变量：一个是当前正在遍历的子数组，另一个是这个数组遍历到的位置。</p>
+<p>我在实现的时候，定义了一个名为 NSArrayIteratorCursor 的类来记录这些内容，NSArrayIteratorCursor 的定义和实现如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">NSArrayIteratorCursor</span> : <span class="title">NSObject</span></span></div><div class="line"></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>) <span class="built_in">NSArray</span> *array;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>) <span class="built_in">NSUInteger</span> index;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">NSArrayIteratorCursor</span></span></div><div class="line"></div><div class="line">- (<span class="keyword">id</span>)initWithArray:(<span class="built_in">NSArray</span> *)array &#123;</div><div class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</div><div class="line">        _array = array;</div><div class="line">        _index = <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>由于数组在遍历的时候可能产生递归，就像我们实现 allObjects 方法那样。所以我们需要处理递归时的 NSArrayIteratorCursor 的保存，我在实现的时候，拿数组当作栈，来实现保存遍历时的状态。</p>
+<p>最终，我实现了一个迭代器类，名字叫 NSArrayIterator，用于最终提供 next 方法的实现。这个类有两个私有变量，一个是刚刚说的那个栈，另一个是原数组的引用。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">NSArrayIterator</span> : <span class="title">NSObject</span></span></div><div class="line"></div><div class="line">- (<span class="keyword">id</span>)initWithArray:(<span class="built_in">NSArray</span> *)array;</div><div class="line">- (<span class="keyword">id</span>)next;</div><div class="line">- (<span class="built_in">NSArray</span> *)allObjects;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">NSArrayIterator</span> </span>&#123;</div><div class="line">    <span class="built_in">NSMutableArray</span> *_stack;</div><div class="line">    <span class="built_in">NSArray</span> *_originArray;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在初使化的时候，我们初始化遍历位置的代码如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">id</span>)initWithArray:(<span class="built_in">NSArray</span> *)array &#123;</div><div class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</div><div class="line">        _originArray = array;</div><div class="line">        _stack = [<span class="built_in">NSMutableArray</span> array];</div><div class="line">        [<span class="keyword">self</span> setupStackWithArray:array];</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)setupStackWithArray:(<span class="built_in">NSArray</span> *)array &#123;</div><div class="line">    <span class="built_in">NSArrayIteratorCursor</span> *c = [[<span class="built_in">NSArrayIteratorCursor</span> alloc] initWithArray:array];</div><div class="line">    [_stack addObject:c];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>接下来就是最关键的代码了，即实现 next 方法，在 next 方法的实现逻辑中，我们需要：</p>
+<ol>
+<li>判断栈是否为空，如果为空则返回 nil。</li>
+<li>从栈中取出元素，看是否遍历到了结尾，如果是的话，则出栈。</li>
+<li>判断第 2 步是否使栈为空，如果为空，则返回 nil。</li>
+<li>终于拿到元素了，这一步判断拿到的元素是否是数组。<ol>
+<li>如果是数组，则重新生成一个遍历的 NSArrayIteratorCursor 对象，放到栈中，并且递归调用自己。</li>
+<li>如果不是数组，就把元素返回，同时更新索引到下一个位置。</li>
+</ol>
+</li>
+</ol>
+<p>以下是相关的代码，对于没有算法基础的同学，可能读起来还是比较累，其实我写起来也不快，所以希望你能多理解一下，其实核心思想就是手工操作栈的入栈和出栈：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">id</span>)next &#123;</div><div class="line">    <span class="comment">//  1. 判断栈是否为空，如果为空则返回 nil。</span></div><div class="line">    <span class="keyword">if</span> (_stack.count == <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="literal">nil</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 2. 从栈中取出元素，看是否遍历到了结尾，如果是的话，则出栈。</span></div><div class="line">    <span class="built_in">NSArrayIteratorCursor</span> *c;</div><div class="line">    c = [_stack lastObject];</div><div class="line">    <span class="keyword">while</span> (c.index == c.array.count &amp;&amp; _stack.count &gt; <span class="number">0</span>) &#123;</div><div class="line">        [_stack removeLastObject];</div><div class="line">        c = [_stack lastObject];</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 3. 判断第2步是否使栈为空，如果为空，则返回 nil。</span></div><div class="line">    <span class="keyword">if</span> (_stack.count == <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="literal">nil</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 4. 终于拿到元素了，这一步判断拿到的元素是否是数组。</span></div><div class="line">    <span class="keyword">id</span> item = c.array[c.index];</div><div class="line">    <span class="keyword">if</span> ([item isKindOfClass:[<span class="built_in">NSArray</span> <span class="keyword">class</span>]]) &#123;</div><div class="line">        c.index++;</div><div class="line">        <span class="comment">// 5. 如果是数组，则重新生成一个遍历的</span></div><div class="line">        <span class="comment">//    NSArrayIteratorCursor 对象，放到栈中, 然后递归调用 next 方法</span></div><div class="line">        [<span class="keyword">self</span> setupStackWithArray:item];</div><div class="line">        <span class="keyword">return</span> [<span class="keyword">self</span> next];</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 6. 如果到了这一步，说明拿到了一个非数组的元素，这样就可以把元素返回，</span></div><div class="line">    <span class="comment">//    同时更新索引到下一个位置。</span></div><div class="line">    c.index++;</div><div class="line">    <span class="keyword">return</span> item;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在读者回复中，听榆大叔 和 yiplee 同学用了类似的做法，他们的代码在：</p>
+<p><a href="https://gist.github.com/NathanLi/bb8e5240ffc3eab1f97b38726549efc2" target="_blank" rel="noopener">https://gist.github.com/NathanLi/bb8e5240ffc3eab1f97b38726549efc2</a></p>
+<p><a href="https://gist.github.com/yiplee/a20f0b9ca6e09dcdfe26b129afb7bec8" target="_blank" rel="noopener">https://gist.github.com/yiplee/a20f0b9ca6e09dcdfe26b129afb7bec8</a></p>
+<p>最终，我想说这个只是我个人想出来的解法，很可能不是最优的，甚至可能也有很多问题，比如，这个代码有很多可以进一步 challenge 的地方：</p>
+<ul>
+<li>这个代码是线程安全的吗？如果我们要实现一个线程安全的迭代器，应该怎么做？</li>
+<li>如果在使用迭代器的时候，数组被修改了，会怎么样？</li>
+<li>如何检测在遍历元素的时候，数组被修改了？</li>
+<li>如何避免在遍历元素的时候，数组被修改？</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/23/What-is-the-real-idealist/" rel="next" title="什么是现实理想主义者">
+                <i class="fa fa-chevron-left"></i> 什么是现实理想主义者
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTI5NS81ODYz"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Hsiaovv" />
+          <p class="site-author-name" itemprop="name">Hsiaovv</p>
+           
+              <p class="site-description motion-element" itemprop="description">以绝大多数人的努力程度之低，根本轮不到去拼天赋</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#题目-1：找出两个-UIView-的最近的公共-View，如果不存在，则输出-nil"><span class="nav-number">1.</span> <span class="nav-text">题目 1：找出两个 UIView 的最近的公共 View，如果不存在，则输出 nil</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#题目-2：什么时候在-block-中不需要使用-weakSelf"><span class="nav-number">2.</span> <span class="nav-text">题目 2：什么时候在 block 中不需要使用 weakSelf</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#题目-3：为什么-block-里面还需要写一个-strong-self，如果不写会怎么样？"><span class="nav-number">3.</span> <span class="nav-text">题目 3：为什么 block 里面还需要写一个 strong self，如果不写会怎么样？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#题目-4：有没有这样一个需求场景，block会产生循环引用，但是业务又需要你不能使用-weak-self-如果有，请举一个例子并且解释这种情况下如何解决循环引用问题。"><span class="nav-number">4.</span> <span class="nav-text">题目 4：有没有这样一个需求场景，block会产生循环引用，但是业务又需要你不能使用 weak self? 如果有，请举一个例子并且解释这种情况下如何解决循环引用问题。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#题目-5：weak-的内部实现原理，weak-变量在引用计数为0时，会被自动设置成-nil，这个特性是如何实现的？"><span class="nav-number">5.</span> <span class="nav-text">题目 5：weak 的内部实现原理，weak 变量在引用计数为0时，会被自动设置成 nil，这个特性是如何实现的？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#题目-6：如果有一些-UI-控件我们要用代码的方式来创建，那么它应该用-weak-还是-strong-呢？为什么？"><span class="nav-number">6.</span> <span class="nav-text">题目 6：如果有一些 UI 控件我们要用代码的方式来创建，那么它应该用 weak 还是 strong 呢？为什么？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#题目-7：为什么-Objective-C-的方法调用要用方括号-obj-foo-，而不是别的语言常常使用的点-obj-foo"><span class="nav-number">7.</span> <span class="nav-text">题目 7：为什么 Objective-C 的方法调用要用方括号 [obj foo]，而不是别的语言常常使用的点 obj.foo ?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#题目-8：给你一个嵌套的-NSArray-数据，实现一个迭代器类，该类提供一个-next-方法，可以依次的取出这个-NSArray-中的数据。比如-NSArray-如果是-1-4-3-6-5-1-0-，-则最终应该输出：1-4-3-6-5-1-0-。另外，实现一个-allObjects-方法，可以一次性取出所有元素"><span class="nav-number">8.</span> <span class="nav-text">题目 8：给你一个嵌套的 NSArray 数据，实现一个迭代器类，该类提供一个 next() 方法，可以依次的取出这个 NSArray 中的数据。比如 NSArray 如果是 [1, [4, 3],6,[5,[1, 0]]]， 则最终应该输出：1, 4, 3, 6, 5, 1, 0 。另外，实现一个 allObjects 方法，可以一次性取出所有元素</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Hsiaovv</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("03EiT54MHYWVD5oet8EvooxX-gzGzoHsz", "pEuU3RFhQtvFv7b7w4xYXtE2");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

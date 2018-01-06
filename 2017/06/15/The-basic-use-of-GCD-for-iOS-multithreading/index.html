@@ -94,6 +94,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/06/15/The-basic-use-of-GCD-for-iOS-multithreading/index.html">
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="上篇文章讲了 NSThread 的基本使用，本文讨论一下 GCD 的基本使用 GCD 简介GCD（全称 Grand Central Dispatch），苹果在 iOS 4中首次推出，为多核的并行运算提出的解决方案，GCD 会自动管理线程的生命周期、创建线程、调度任务、销毁线程，开发者只需要关心要执行的任务而不用考虑任何线程管理的相关代码。由于 GCD 是基于 C 的 API，在 OC 和 Swif">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2017-07-08T00:39:07.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS多线程之 GCD 的基本使用">
@@ -333,7 +334,7 @@
       
 
       
-        <p><a href="http://www.hsiaovv.com/2017/06/12/The-basic-use-of-NSThread-for-iOS-multithreading/" target="_blank" rel="external">上篇文章</a>讲了 NSThread 的基本使用，本文讨论一下 GCD 的基本使用</p>
+        <p><a href="http://www.hsiaovv.com/2017/06/12/The-basic-use-of-NSThread-for-iOS-multithreading/" target="_blank" rel="noopener">上篇文章</a>讲了 NSThread 的基本使用，本文讨论一下 GCD 的基本使用</p>
 <h3 id="GCD-简介"><a href="#GCD-简介" class="headerlink" title="GCD 简介"></a>GCD 简介</h3><p>GCD（全称 Grand Central Dispatch），苹果在 iOS 4中首次推出，为多核的并行运算提出的解决方案，GCD 会自动管理线程的生命周期、创建线程、调度任务、销毁线程，开发者只需要关心要执行的任务而不用考虑任何线程管理的相关代码。由于 GCD 是基于 C 的 API，在 OC 和 Swift 2 都是 C 语言风格，在 Swift 3 中苹果使用了全新的 Swift 语法风格改写了 GCD，本文会展示 OC 和 Swift 3 两种语言的写法使用 GCD</p>
 <h3 id="任务和队列"><a href="#任务和队列" class="headerlink" title="任务和队列"></a>任务和队列</h3><p>使用 GCD 之前先了解一些基本概念</p>
 <h4 id="任务"><a href="#任务" class="headerlink" title="任务"></a>任务</h4><p>任务就是执行操作的意思，就是你在线程中执行的操作，GCD 中任务的代码放在 Block（DispatchWorkItem）中，执行任务有两种方式：<strong>同步执行（sync）</strong> 和 <strong>异步执行（async）</strong>，他们的区别就是 <strong>是否会开启新的线程</strong></p>
@@ -361,7 +362,7 @@
 <p>分析一下几个参数的作用：</p>
 <ul>
 <li>label：队列的标识符，方便调试</li>
-<li>qos：队列的 <a href="https://developer.apple.com/documentation/dispatch/dispatchqos" target="_blank" rel="external">quality of service</a>，用来指明队列的优先级，后文会讲到</li>
+<li>qos：队列的 <a href="https://developer.apple.com/documentation/dispatch/dispatchqos" target="_blank" rel="noopener">quality of service</a>，用来指明队列的优先级，后文会讲到</li>
 <li>attributes：队列的属性,是一个结构体，包括两个值：initiallyInactive（表示队列需要手动触发） 和 concurrent（表示并发队列）</li>
 <li>autoreleaseFrequency：自动释放频率，有些队列是会在执行完任务后自动释放的，有些比如Timer等是不会自动释放的，需要手动释放</li>
 </ul>
@@ -476,8 +477,8 @@
 <p>OC</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;</div><div class="line">    <span class="built_in">dispatch_once</span>(&amp;onceToken, ^&#123;</div><div class="line">    <span class="comment">//执行一次的代码</span></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
 <p><code>dispatch_once</code> 在 Swift 3 中已经被废弃了，实际上 Swift 内部已经在使用 <code>dispatch_once</code> 机制支持线程安全的懒加载初始化和静态变量了，Swift 的语言特性决定了我们不需要在 Swift 里面使用 <code>dispatch_once</code> 所以苹果就显式的取消了，如果需要在 Swfit3 中实现原来 <code>dispatch_once</code> 机制可以参考下面两篇文章</p>
-<p><a href="http://blog.csdn.net/mydo/article/details/52635754" target="_blank" rel="external">Swift 3 中dispatch_once废弃的解决办法</a></p>
-<p><a href="http://www.jianshu.com/p/640b64faea9a" target="_blank" rel="external">Swift 3 中实现Dispatch once扩展</a></p>
+<p><a href="http://blog.csdn.net/mydo/article/details/52635754" target="_blank" rel="noopener">Swift 3 中dispatch_once废弃的解决办法</a></p>
+<p><a href="http://www.jianshu.com/p/640b64faea9a" target="_blank" rel="noopener">Swift 3 中实现Dispatch once扩展</a></p>
 <h4 id="GCD-快速迭代"><a href="#GCD-快速迭代" class="headerlink" title="GCD 快速迭代"></a>GCD 快速迭代</h4><p>通常我们使用 For 或者 While 循环遍历，但是普通的循环是在主线程中执行，如果循环多次过多可能会影响主线程执行，导致 UI 界面卡顿，影响用户体验，GCD 提供了一个快速循环遍历的方法，会开启新线程执行任务，但是迭代执行的顺序是不固定的，比如：从目录里遍历文件就可以使用这个方法</p>
 <p>OC</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//第一个参数表示遍历次数，第二个参数表示遍历的队列</span></div><div class="line">dispatch_apply(<span class="number">6</span>, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^(size_t index) &#123;</div><div class="line">      <span class="comment">//遍历</span></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
@@ -516,12 +517,12 @@
 </ul>
 <p>GCD 还有很多高级用法需要深入的学习，本文仅仅列举了 GCD 的一些基本用法，不过已经可以满足日常的大部分多线程的开发工作了</p>
 <p>其他相关文章：</p>
-<p><a href="http://www.hsiaovv.com/2017/06/12/The-basic-use-of-NSThread-for-iOS-multithreading/" target="_blank" rel="external">iOS 多线程之 NSThread 的基本使用</a></p>
-<p><a href="http://www.hsiaovv.com/2017/06/17/The-basic-use-of-NSOperation-for-iOS-multithreading/" target="_blank" rel="external">iOS多线程之 NSOperation 的基本使用</a></p>
+<p><a href="http://www.hsiaovv.com/2017/06/12/The-basic-use-of-NSThread-for-iOS-multithreading/" target="_blank" rel="noopener">iOS 多线程之 NSThread 的基本使用</a></p>
+<p><a href="http://www.hsiaovv.com/2017/06/17/The-basic-use-of-NSOperation-for-iOS-multithreading/" target="_blank" rel="noopener">iOS多线程之 NSOperation 的基本使用</a></p>
 <p>本文参考：</p>
-<p><a href="http://www.swift.gg/2016/11/30/grand-central-dispatch/" target="_blank" rel="external">Grand Central Dispatch (GCD) and Dispatch Queues in Swift 3</a></p>
-<p><a href="http://blog.csdn.net/Hello_Hwc/article/details/54293280?winzoom=1&amp;utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">GCD精讲（Swift 3）</a></p>
-<p><a href="http://www.jianshu.com/p/2d57c72016c6" target="_blank" rel="external">iOS多线程–彻底学会多线程之『GCD』</a></p>
+<p><a href="http://www.swift.gg/2016/11/30/grand-central-dispatch/" target="_blank" rel="noopener">Grand Central Dispatch (GCD) and Dispatch Queues in Swift 3</a></p>
+<p><a href="http://blog.csdn.net/Hello_Hwc/article/details/54293280?winzoom=1&amp;utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="noopener">GCD精讲（Swift 3）</a></p>
+<p><a href="http://www.jianshu.com/p/2d57c72016c6" target="_blank" rel="noopener">iOS多线程–彻底学会多线程之『GCD』</a></p>
 <p><strong>本人刚开始写博客，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能让别人有所启发也是荣幸之至！如有错误，欢迎指正！</strong></p>
 
       
@@ -653,7 +654,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -723,8 +724,8 @@
       <div class="footer-inner">
         <div class="copyright" >
   
-  &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
