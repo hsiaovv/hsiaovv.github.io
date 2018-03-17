@@ -1,0 +1,882 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS,Xcode," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="作为一名 iOS 开发，我们日常开发都会使用 Xcode 新建工程、创建文件等（包括 iOS、watchOS、tvOS、macOS四种平台），一般情况下我们默认使用的是系统提供的文件模版和工程模版，但是多人合作的时候，公司或者团队对代码有自己的一套规范，那我们就需要创建一套自己或者团队的专用模版，比如类似下面这样 123456789101112131415161718192021222324252">
+<meta name="keywords" content="iOS,Xcode">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Xcode 自定义模板">
+<meta property="og:url" content="http://yoursite.com/2018/03/16/Custom-xcode-templates/index.html">
+<meta property="og:site_name" content="笑忘书店">
+<meta property="og:description" content="作为一名 iOS 开发，我们日常开发都会使用 Xcode 新建工程、创建文件等（包括 iOS、watchOS、tvOS、macOS四种平台），一般情况下我们默认使用的是系统提供的文件模版和工程模版，但是多人合作的时候，公司或者团队对代码有自己的一套规范，那我们就需要创建一套自己或者团队的专用模版，比如类似下面这样 123456789101112131415161718192021222324252">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/xcodetemplates1.png">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/xcodetemplates2.png">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/xcodetemplates3.png">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/xcodetemplates4.png">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/xcodetemplates5.gif">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/xcodetemplates6.gif">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/xcodetemplates7.png">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/xcodetemplates8.png">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/xcodetemplates9.png">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/xcodetemplates10.png">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/xcodetemplates11.png">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/xcodetemplates12.png">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/xcodetemplates13.png">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/xcodetemplates14.png">
+<meta property="og:updated_time" content="2018-03-17T03:12:59.091Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Xcode 自定义模板">
+<meta name="twitter:description" content="作为一名 iOS 开发，我们日常开发都会使用 Xcode 新建工程、创建文件等（包括 iOS、watchOS、tvOS、macOS四种平台），一般情况下我们默认使用的是系统提供的文件模版和工程模版，但是多人合作的时候，公司或者团队对代码有自己的一套规范，那我们就需要创建一套自己或者团队的专用模版，比如类似下面这样 123456789101112131415161718192021222324252">
+<meta name="twitter:image" content="http://onzskckoz.bkt.clouddn.com/xcodetemplates1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/03/16/Custom-xcode-templates/"/>
+
+
+
+
+
+  <title> Xcode 自定义模板 | 笑忘书店 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笑忘书店</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/16/Custom-xcode-templates/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Hsiaovv">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笑忘书店">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Xcode 自定义模板
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-16T22:10:38+08:00">
+                2018-03-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/03/16/Custom-xcode-templates/" class="leancloud_visitors" data-flag-title="Xcode 自定义模板">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>作为一名 iOS 开发，我们日常开发都会使用 Xcode 新建工程、创建文件等（包括 iOS、watchOS、tvOS、macOS四种平台），一般情况下我们默认使用的是系统提供的文件模版和工程模版，但是多人合作的时候，公司或者团队对代码有自己的一套规范，那我们就需要创建一套自己或者团队的专用模版，比如类似下面这样</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//</span></div><div class="line"><span class="comment">//  TemplatesController.m</span></div><div class="line"><span class="comment">//  XcodeTemplates</span></div><div class="line"><span class="comment">//</span></div><div class="line"><span class="comment">//  Created by xiaovv on 2018/3/15.</span></div><div class="line"><span class="comment">//  Copyright © 2018年 xiaovv. All rights reserved.</span></div><div class="line"><span class="comment">//</span></div><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">"TemplatesController.h"</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">TemplatesController</span> ()</span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">TemplatesController</span></span></div><div class="line"></div><div class="line"><span class="meta">#pragma mark - LifeCycle</span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)viewDidLoad&#123;</div><div class="line">    </div><div class="line">    [<span class="keyword">super</span> viewDidLoad];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)viewWillAppear:(<span class="built_in">BOOL</span>)animated&#123;</div><div class="line">    </div><div class="line">    [<span class="keyword">super</span> viewWillAppear:animated];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">#pragma mark - Setter Getter Methods</span></div><div class="line"></div><div class="line"><span class="meta">#pragma mark - Public Methods</span></div><div class="line"></div><div class="line"><span class="meta">#pragma mark - Private Methods</span></div><div class="line"></div><div class="line"><span class="meta">#pragma mark - UITableViewDelegate,UITableViewDataSource</span></div><div class="line"></div><div class="line"><span class="meta">#pragma mark - External Delegate</span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>使用自定义文件模版就可以做到上面这个控制器的内容自动生成，免去了每次都要重复写同样的东西的麻烦，下面讲一下如何创建自己一套模版（文使用的环境为 <code>macOS 10.12.6 和 Xcode 9.2</code>）</p>
+<h3 id="模版的位置"><a href="#模版的位置" class="headerlink" title="模版的位置"></a>模版的位置</h3><p>Xcode 里面 iOS 平台模版的位置：</p>
+<p><code>/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/Xcode/Templates</code></p>
+<p>watchOS 平台的模版位置：</p>
+<p><code>/Applications/Xcode.app/Contents/Developer/Platforms/WatchOS.platform/Developer/Library/Xcode/Templates</code></p>
+<p>tvOS 平台的模版位置：<br><code>/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/Library/Xcode/Templates</code></p>
+<p>macOS 平台文件模版的位置：</p>
+<p><code>/Applications/Xcode.app/Contents/Developer/Library/Xcode/Templates</code></p>
+<p>模版文件夹里面包含文件模板（File Templates）和工程模板（Project Templates）两个文件夹，这两个文件夹里面的内容分别对应到我们新建工程和新建文件的界面</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/xcodetemplates1.png" alt=""></p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/xcodetemplates2.png" alt=""></p>
+<p>用户自定义模板位置（如果我们没有自定义模版就没有 <code>Templates</code> 目录）<br><code>~/Library/Developer/Xcode/Templates</code></p>
+<p>我们使用的最多就是 iOS 平台 <code>File Templates/Source/Cocoa Touch Class.xctemplate</code>里面的文件模板，里面文件如图所示:<br><img src="http://onzskckoz.bkt.clouddn.com/xcodetemplates3.png" alt=""></p>
+<p>介绍一下模版文件夹里的文件</p>
+<blockquote>
+<p>xxx.xctemplate：文件模版</p>
+<p>xxxObjective-C：OC 模版文件，里面包含 <code>___FILEBASENAME___.h</code>和 <code>___FILEBASENAME___.m</code> 两个文件。</p>
+<p>xxxXIBObjective-C：比 xxxObjective-C 多了个 <code>___FILEBASENAME___.xib</code>文件，可自定义，表示带 Xib 的 OC 模版文件</p>
+<p>xxxSwift：Swift 模版文件，里面包含一个 <code>___FILEBASENAME___.swift</code> 文件</p>
+<p>xxxXIBSwift：比 xxxSwift 多了个 <code>___FILEBASENAME___.xib</code> 文件，可自定义，表示带 Xib 的 Swift 模版文件</p>
+<p>TemplateIcon.png：模版显示的图片</p>
+<p>TemplateInfo.plist：模版的配置信息</p>
+</blockquote>
+<h3 id="如何自定义文件模版"><a href="#如何自定义文件模版" class="headerlink" title="如何自定义文件模版"></a>如何自定义文件模版</h3><p>我们可以直接修改系统默认的文件模版，但是遇到Xcode 升级之类的会覆盖掉原有的文件模版，而且直接修改也不优雅，所以我们可以创建一个自己模版目录 <code>~/Library/Developer/Xcode/Templates/Custom</code>，然后把系统的文件模版<br><code>/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/Xcode/Templates/File Templates/Source/Cocoa Touch Class.xctemplate</code><br>复制到自己的模版目录</p>
+<p>完成上面的操作之后，重启Xcode，在一个工程里面 <code>command + N</code> 新建一个文件，在新建文件界面滑到最底部可以发现出现了我们自定的 <code>Custom</code> 目录</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/xcodetemplates4.png" alt=""></p>
+<p>接下来我们就可以修改 <code>Custom</code>目录下的文件模版了，本文以 <code>UIViewController</code>的文件模版举例，需要修改 <code>UIViewControllerObjective-C</code>、 <code>UIViewControllerSwift</code>、<code>UIViewControllerXIBObjective-C</code>、<code>UIViewControllerXIBSwift</code> 四个文件</p>
+<p>先打开 <code>UIViewControllerObjective-C</code> 中的 <code>___FILEBASENAME___.h</code> 文件修改为</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//  ___FILENAME___</span></div><div class="line"><span class="comment">//  ___PROJECTNAME___</span></div><div class="line"><span class="comment">//</span></div><div class="line"><span class="comment">//  Created by xiaovv on ___DATE___.</span></div><div class="line"><span class="comment">//  ___COPYRIGHT___</span></div><div class="line"><span class="comment">//</span></div><div class="line"></div><div class="line"></div><div class="line">___IMPORTHEADER_cocoaTouchSubclass___</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">___FILEBASENAMEASIDENTIFIER___</span> : <span class="title">UIViewController</span></span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>再打开 <code>UIViewControllerObjective-C</code> 中的 <code>___FILEBASENAME___.m</code> 文件修改为</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//</span></div><div class="line"><span class="comment">//  ___FILENAME___</span></div><div class="line"><span class="comment">//  ___PROJECTNAME___</span></div><div class="line"><span class="comment">//</span></div><div class="line"><span class="comment">//  Created by xiaovv on ___DATE___.</span></div><div class="line"><span class="comment">//  ___COPYRIGHT___</span></div><div class="line"><span class="comment">//</span></div><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">"___FILEBASENAME___.h"</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">___FILEBASENAMEASIDENTIFIER___</span> ()</span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">___FILEBASENAMEASIDENTIFIER___</span></span></div><div class="line"></div><div class="line"><span class="meta">#pragma mark - LifeCycle</span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)viewDidLoad&#123;</div><div class="line">    </div><div class="line">    [<span class="keyword">super</span> viewDidLoad];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)viewWillAppear:(<span class="built_in">BOOL</span>)animated&#123;</div><div class="line">    </div><div class="line">    [<span class="keyword">super</span> viewWillAppear:animated];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">#pragma mark - Setter Getter Methods</span></div><div class="line"></div><div class="line"><span class="meta">#pragma mark - Public Methods</span></div><div class="line"></div><div class="line"><span class="meta">#pragma mark - Private Methods</span></div><div class="line"></div><div class="line"><span class="meta">#pragma mark - UITableViewDelegate,UITableViewDataSource</span></div><div class="line"></div><div class="line"><span class="meta">#pragma mark - External Delegate</span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>打开 <code>UIViewControllerSwift</code> 中的 <code>___FILEBASENAME___.swift</code> 文件修改为</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//</span></div><div class="line"><span class="comment">//  ___FILENAME___</span></div><div class="line"><span class="comment">//  ___PROJECTNAME___</span></div><div class="line"><span class="comment">//</span></div><div class="line"><span class="comment">//  Created by xiaovv on ___DATE___.</span></div><div class="line"><span class="comment">//  ___COPYRIGHT___</span></div><div class="line"><span class="comment">//</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> UIKit</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">___FILEBASENAMEASIDENTIFIER___</span>: <span class="title">___VARIABLE_cocoaTouchSubclass___</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.viewDidLoad()</div><div class="line"></div><div class="line">        <span class="comment">// Do any additional setup after loading the view.</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewWillAppear</span><span class="params">(<span class="number">_</span> animated: Bool)</span></span> &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">super</span>.viewWillAppear(animated)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">//MARK: - Intial Methods</span></div><div class="line">    </div><div class="line">    <span class="comment">//MARK: - Target Methods</span></div><div class="line">    </div><div class="line">    <span class="comment">//MARK: - Private Method</span></div><div class="line">    </div><div class="line">    <span class="comment">//MARK: - Setter Getter Methods</span></div><div class="line">    </div><div class="line">    <span class="comment">//MARK: - UITableViewDelegate,UITableViewDataSource</span></div><div class="line">    </div><div class="line">    <span class="comment">//MARK: - External Delegate</span></div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>解释一下模版文件里面的宏的意思</p>
+<blockquote>
+<p><code>___FILENAME___</code> 文件名包括后缀<br><code>___PROJECTNAME___</code> 工程名<br><code>___FULLUSERNAME___</code> 用户的名字，这里我直接写死为自己的名字 xiaovv<br><code>___DATE___</code> 当前日期，年/月/日<br><code>___COPYRIGHT___</code> 版权<br><code>___FILEBASENAME___</code> 不带后缀的文件名<br><code>___FILEBASENAMEASIDENTIFIER___</code> 不带后缀的文件名</p>
+</blockquote>
+<p>按照上面的修改好文件模版之后重启 Xcode，在工程里面的新建文件从 <code>Custom</code> 里面选择 <code>Cocoa Touch Class</code> 新建一个控制器就可以看到效果了</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/xcodetemplates5.gif" alt=""><br><img src="http://onzskckoz.bkt.clouddn.com/xcodetemplates6.gif" alt=""></p>
+<h3 id="TemplateInfo-plist"><a href="#TemplateInfo-plist" class="headerlink" title="TemplateInfo.plist"></a>TemplateInfo.plist</h3><p><code>TemplateInfo.plist</code> 这个文件是 <code>.xctemplate</code> 模版文件夹的配置文件</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/xcodetemplates7.png" alt=""></p>
+<p>解释一下这个 plist 文件的 key 的含义</p>
+<blockquote>
+<p>Kind：模板类型</p>
+<blockquote>
+<p><code>Xcode.Xcode3.ProjectTemplateUnitKind</code> 该模板是工程(项目)模板</p>
+<p><code>Xcode.IDEFoundation.TextSubstitutionFileTemplateKind</code> 该模板是文件模板</p>
+</blockquote>
+<p>Description：模版的描述信息<br>Summary：模版的概括<br>SortOrder： 这个是排序的值，该模板显示的位置索引，可以设置在界面中的摆放位置，值越小越前面<br>Ancestors：要继承的模板，也就是模板的“父类”，从父类那里继承一些模板的基础属性，可以有多个父类<br>Concrete：设置为 YES 的模板才可以显示在新建工程的面板中，此时这个模板不能被其他模板继承<br>Identifier：模板的唯一标示符，若模板B要继承模板A，就在模板B的Ancestors中写上模板A的Identifier。<br>Nodes：定义要添加到项目中的文件，目标结构节点。<br>Definitions：将Nodes中定义的文件添加到项目中（相关.h、.m文件）<br>Options：是一个数组，数组内的四个 Item 分别对应下图的内容</p>
+</blockquote>
+<p><img src="http://onzskckoz.bkt.clouddn.com/xcodetemplates8.png" alt=""></p>
+<h3 id="如何自定义工程模版"><a href="#如何自定义工程模版" class="headerlink" title="如何自定义工程模版"></a>如何自定义工程模版</h3><p>上面讲了如何自定义文件模版，工程模版也是可以自定义的，我们可以添加一下我们自己总结的一些常用公用类，这样便于以后新建工程的时候，不再需要手动的拷贝到新建的工程</p>
+<p>新建一个 <code>Single View App</code> 工程举例，从系统默认的工程模版目录<br>（<code>/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/Xcode/Templates/Project Templates/iOS/Application/Single View App.xctemplate</code>）<br>复制 <code>Single View App</code> 的模版到用户自定义模板 <code>Custom</code> 目录，改名为 <code>Demo Single View App.xctemplate</code>，并且打开模版文件夹里面的 <code>TemplateInfo.plist</code> 文件，修改 <code>Identifier</code> 对应的值为<code>com.apple.dt.unit.DemoSingleApplication</code></p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/xcodetemplates9.png" alt=""></p>
+<p>重启 Xcode，使用<code>command + shfit + N</code> 新建一个工程可以发现可以选择定义的 <code>Demo Single View App</code>模版了</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/xcodetemplates10.png" alt=""></p>
+<p>接下来在自定义的工程模版 <code>Demo Application.xctemplate</code> 文件夹中，新建 <code>UIDeviceInfo</code> 文件夹，把 <code>UIDevice+Info.h</code> 及<code>UIDevice+Info.m</code> 放入 <code>UIDeviceInfo</code>文件夹中</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/xcodetemplates11.png" alt=""></p>
+<p>然后配置 <code>TemplateInfo.plist</code>文件，增加这两个文件的节点<br><img src="http://onzskckoz.bkt.clouddn.com/xcodetemplates12.png" alt=""></p>
+<p>我们还可以往工程里面默认添加导入一些 <code>Framework</code>，比如添加 <code>SystemConfiguration.framework</code> 和 <code>Security.framework</code>，可以对<code>TemplateInfo.plist</code>进行如下配置<br><img src="http://onzskckoz.bkt.clouddn.com/xcodetemplates13.png" alt=""></p>
+<p>完成上述配置之后，我们使用<code>command + shfit + N</code> 新建一个 <code>Demo Single View App</code> 工程就可以如下效果了</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/xcodetemplates14.png" alt=""></p>
+<p>Xcode 自定义模版还有很多地方可以调整和学习，以上内容仅供入门，更多可能就要自己去探索了</p>
+<p>以上です</p>
+<p>参考：</p>
+<p><a href="http://blog.csdn.net/lizhongfu2013/article/details/27672749" target="_blank" rel="noopener">iOS开发～自定义Xcode工程模版与文件模版</a></p>
+<p><a href="https://www.jianshu.com/p/93527682d8d3" target="_blank" rel="noopener">Xcode7 创建自定义模板</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"><i class="fa fa-tag"></i> iOS</a>
+          
+            <a href="/tags/Xcode/" rel="tag"><i class="fa fa-tag"></i> Xcode</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/07/iOS-interview-questions-2/" rel="next" title="iOS 面试题（二）">
+                <i class="fa fa-chevron-left"></i> iOS 面试题（二）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zNDUzMy8xMTA3MQ=="></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Hsiaovv" />
+          <p class="site-author-name" itemprop="name">Hsiaovv</p>
+           
+              <p class="site-description motion-element" itemprop="description">以绝大多数人的努力程度之低，根本轮不到去拼天赋</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#模版的位置"><span class="nav-number">1.</span> <span class="nav-text">模版的位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何自定义文件模版"><span class="nav-number">2.</span> <span class="nav-text">如何自定义文件模版</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TemplateInfo-plist"><span class="nav-number">3.</span> <span class="nav-text">TemplateInfo.plist</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何自定义工程模版"><span class="nav-number">4.</span> <span class="nav-text">如何自定义工程模版</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Hsiaovv</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("03EiT54MHYWVD5oet8EvooxX-gzGzoHsz", "pEuU3RFhQtvFv7b7w4xYXtE2");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
