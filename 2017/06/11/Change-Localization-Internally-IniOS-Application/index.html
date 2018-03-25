@@ -95,7 +95,7 @@
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="上篇文章 讲了如何对 iOS APP 进行本地化，但是本地化是随着系统语言更改才变化的，而现在很多 APP 包括微信、支付宝等，他们设置里面就可以直接切换 APP 的语言，不跟随系统语言，苹果官方并没有提供对应的解决方案，这些 App 是如何做到的呢？本文就讨论一下如何在应用内切换本地化语言 Bundle 和 NSLocalizedStringBundle先来了解一下 Bundle，Bundle">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-07-08T00:20:53.000Z">
+<meta property="og:updated_time" content="2018-03-25T06:18:32.906Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS 应用内切换语言">
 <meta name="twitter:description" content="上篇文章 讲了如何对 iOS APP 进行本地化，但是本地化是随着系统语言更改才变化的，而现在很多 APP 包括微信、支付宝等，他们设置里面就可以直接切换 APP 的语言，不跟随系统语言，苹果官方并没有提供对应的解决方案，这些 App 是如何做到的呢？本文就讨论一下如何在应用内切换本地化语言 Bundle 和 NSLocalizedStringBundle先来了解一下 Bundle，Bundle">
@@ -334,7 +334,7 @@
       
 
       
-        <p><a href="http://www.hsiaovv.com/2017/06/04/Localization-of-iOS/" target="_blank" rel="noopener">上篇文章</a> 讲了如何对 iOS APP 进行本地化，但是本地化是随着系统语言更改才变化的，而现在很多 APP 包括微信、支付宝等，他们设置里面就可以直接切换 APP 的语言，不跟随系统语言，苹果官方并没有提供对应的解决方案，这些 App 是如何做到的呢？本文就讨论一下如何在应用内切换本地化语言</p>
+        <p><a href="http://www.xiaovv.me/2017/06/04/Localization-of-iOS/" target="_blank" rel="noopener">上篇文章</a> 讲了如何对 iOS APP 进行本地化，但是本地化是随着系统语言更改才变化的，而现在很多 APP 包括微信、支付宝等，他们设置里面就可以直接切换 APP 的语言，不跟随系统语言，苹果官方并没有提供对应的解决方案，这些 App 是如何做到的呢？本文就讨论一下如何在应用内切换本地化语言</p>
 <h3 id="Bundle-和-NSLocalizedString"><a href="#Bundle-和-NSLocalizedString" class="headerlink" title="Bundle 和 NSLocalizedString"></a>Bundle 和 NSLocalizedString</h3><h4 id="Bundle"><a href="#Bundle" class="headerlink" title="Bundle"></a>Bundle</h4><p>先来了解一下 <code>Bundle</code>，<code>Bundle</code> 其实是一个目录，里面包含了程序会使用到的资源，这些资源包含了如图像、声音、编译好的代码、nib文件等等，我们编译好的一个 APP 包其实就是一个 <code>Bundle</code>目录，这个目录就是 <code>mainBundle</code>，而在我们要实现应用内切换语言其实就是通过 <code>mainBundle</code> 的路径去获取语言配置文件，根据这个语言配置文件重新加载语言并刷新 UI，苹果提供了一个 <code>NSBundle</code> (Swift 里直接就叫 <code>Bundle</code>)类型帮助我们处理 <code>Bundle</code></p>
 <p><code>Bundle</code> 的用途很多，配置APP语言只是其中一种用途，比如</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// NSBundle 获取nib 文件</span></div><div class="line"><span class="keyword">let</span> customView = <span class="type">Bundle</span>.main.loadNibNamed(<span class="string">"CustomView"</span>, owner: <span class="literal">nil</span>, options: <span class="literal">nil</span>)?.last <span class="keyword">as</span>! <span class="type">CustomView</span></div><div class="line"></div><div class="line"><span class="comment">// 获取 info.plist 的信息</span></div><div class="line"><span class="comment">// 版本号</span></div><div class="line"><span class="keyword">let</span> version = <span class="type">Bundle</span>.main.infoDictionary?[<span class="string">"CFBundleVersion"</span>]</div><div class="line"><span class="comment">// 应用标识</span></div><div class="line"><span class="keyword">let</span> bundleIdentifier = <span class="type">Bundle</span>.main.infoDictionary?[<span class="string">"CFBundleIdentifier"</span>]</div><div class="line"><span class="comment">//应用名称</span></div><div class="line"><span class="keyword">let</span> bundleDisplayName = <span class="type">Bundle</span>.main.infoDictionary?[<span class="string">"CFBundleDisplayName"</span>]</div></pre></td></tr></table></figure>
@@ -493,7 +493,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">40</span>
+                <span class="site-state-item-count">41</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

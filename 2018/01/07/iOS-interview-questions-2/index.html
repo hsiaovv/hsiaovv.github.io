@@ -99,7 +99,7 @@
 <meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/iOS-interview-questions2_2.png">
 <meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/iOS-interview-questions2_3.jpeg">
 <meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/iOS-interview-questions2_5.png">
-<meta property="og:updated_time" content="2018-01-07T08:06:09.388Z">
+<meta property="og:updated_time" content="2018-03-25T06:28:09.437Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS 面试题（二）">
 <meta name="twitter:description" content="接上一篇文章 iOS 面试题（一） 题目 9：如何创建一个可以被取消执行的 block?我们知道 block 默认是不能被取消掉的，请你封装一个可以被取消执行的 block wrapper 类，它的定义如下： 123456789typedef void (^Block)();@interface CancelableObject : NSObject- (id)initWithBlock:(Blo">
@@ -339,7 +339,7 @@
       
 
       
-        <p>接上一篇文章 <a href="http://hsiaovv.com/2018/01/06/iOS-interview-questions-1/" target="_blank" rel="noopener">iOS 面试题（一）</a></p>
+        <p>接上一篇文章 <a href="http://xiaovv.me/2018/01/06/iOS-interview-questions-1/" target="_blank" rel="noopener">iOS 面试题（一）</a></p>
 <h4 id="题目-9：如何创建一个可以被取消执行的-block"><a href="#题目-9：如何创建一个可以被取消执行的-block" class="headerlink" title="题目 9：如何创建一个可以被取消执行的 block?"></a>题目 9：如何创建一个可以被取消执行的 block?</h4><p>我们知道 block 默认是不能被取消掉的，请你封装一个可以被取消执行的 block wrapper 类，它的定义如下：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">void</span> (^Block)();</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">CancelableObject</span> : <span class="title">NSObject</span></span></div><div class="line"></div><div class="line">- (<span class="keyword">id</span>)initWithBlock:(Block)block;</div><div class="line">- (<span class="keyword">void</span>)start;</div><div class="line">- (<span class="keyword">void</span>)cancel;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
 <p>写法一：创建一个类，将要执行的 block 封装起来，然后类的内部有一个 _isCanceled 变量，在执行的时候，检查这个变量，如果 _isCanceled 被设置成 YES 了，则退出执行。</p>
@@ -606,7 +606,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">40</span>
+                <span class="site-state-item-count">41</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

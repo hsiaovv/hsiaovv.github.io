@@ -95,7 +95,7 @@
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="在上篇文章中介绍了UIWebView拦截URL的方式来处理JS与Swift交互: iOS下JS与Swift互相调用（一）UIWebView拦截URL 由于UIWebView比较耗内存，性能上不太好，而苹果在iOS 8中推出了WKWebView，用WKWebView也可以拦截URL，做 JS 与 Swift 交互。关于WKWebView与UIWebView的性能对比，大家可以自行百度或者 Googl">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-07-05T15:59:40.000Z">
+<meta property="og:updated_time" content="2018-03-25T06:22:02.999Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS下JS与Swift互相调用（二）WKWebView拦截URL">
 <meta name="twitter:description" content="在上篇文章中介绍了UIWebView拦截URL的方式来处理JS与Swift交互: iOS下JS与Swift互相调用（一）UIWebView拦截URL 由于UIWebView比较耗内存，性能上不太好，而苹果在iOS 8中推出了WKWebView，用WKWebView也可以拦截URL，做 JS 与 Swift 交互。关于WKWebView与UIWebView的性能对比，大家可以自行百度或者 Googl">
@@ -335,7 +335,7 @@
 
       
         <p>在上篇文章中介绍了UIWebView拦截URL的方式来处理JS与Swift交互:</p>
-<p><a href="http://hsiaovv.com/2017/04/12/iOS%E4%B8%8BJS%E4%B8%8ESwift%E4%BA%92%E7%9B%B8%E8%B0%83%E7%94%A8%EF%BC%88%E4%B8%80%EF%BC%89UIWebView%E6%8B%A6%E6%88%AAURL/" target="_blank" rel="noopener">iOS下JS与Swift互相调用（一）UIWebView拦截URL</a></p>
+<p><a href="http://xiaovv.me/2017/04/12/iOS%E4%B8%8BJS%E4%B8%8ESwift%E4%BA%92%E7%9B%B8%E8%B0%83%E7%94%A8%EF%BC%88%E4%B8%80%EF%BC%89UIWebView%E6%8B%A6%E6%88%AAURL/" target="_blank" rel="noopener">iOS下JS与Swift互相调用（一）UIWebView拦截URL</a></p>
 <p>由于UIWebView比较耗内存，性能上不太好，而苹果在iOS 8中推出了WKWebView，用WKWebView也可以拦截URL，做 JS 与 Swift 交互。关于WKWebView与UIWebView的性能对比，大家可以自行百度或者 Google</p>
 <p>WKWebView 与 UIWebView 拦截URL 的处理方式基本一样， 除了代理方法和WKWebView的使用不太一样，关于 WKWebView 更详尽的讲解和用法，还是自行搜索学习，本文重点还是讲解如何实现 Swift 与 JS 互相调用</p>
 <blockquote>
@@ -352,7 +352,7 @@
 </ul>
 <p>创建WKWebView的代码：</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">setupWKWebView</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">let</span> configuration = <span class="type">WKWebViewConfiguration</span>()</div><div class="line">    configuration.userContentController = <span class="type">WKUserContentController</span>()</div><div class="line">    <span class="keyword">let</span> preferences = <span class="type">WKPreferences</span>()</div><div class="line">    preferences.javaScriptCanOpenWindowsAutomatically = <span class="literal">true</span></div><div class="line">    preferences.minimumFontSize = <span class="number">30.0</span></div><div class="line">    configuration.preferences = preferences</div><div class="line">    <span class="keyword">self</span>.wkWebView = <span class="type">WKWebView</span>(frame: <span class="keyword">self</span>.view.frame, configuration: configuration)</div><div class="line">    <span class="keyword">let</span> urlStr = <span class="type">Bundle</span>.main.path(forResource: <span class="string">"index.html"</span>, ofType: <span class="literal">nil</span>)</div><div class="line">    <span class="keyword">let</span> url = <span class="type">URL</span>(fileURLWithPath: urlStr!)</div><div class="line">    <span class="keyword">self</span>.wkWebView?.loadFileURL(url, allowingReadAccessTo: url)</div><div class="line">    <span class="keyword">self</span>.wkWebView?.navigationDelegate = <span class="keyword">self</span></div><div class="line">    <span class="keyword">self</span>.wkWebView?.uiDelegate = <span class="keyword">self</span></div><div class="line">    <span class="keyword">self</span>.view.addSubview(<span class="keyword">self</span>.wkWebView!)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>因为加载的本地HTML内容，跟上一篇<a href="http://hsiaovv.com/2017/04/12/iOS%E4%B8%8BJS%E4%B8%8ESwift%E4%BA%92%E7%9B%B8%E8%B0%83%E7%94%A8%EF%BC%88%E4%B8%80%EF%BC%89UIWebView%E6%8B%A6%E6%88%AAURL/" target="_blank" rel="noopener">iOS下JS与Swift互相调用（一）UIWebView拦截URL</a>中介绍的HTML内容一样，所以关于HTML中的内容就不再讲解了</p>
+<p>因为加载的本地HTML内容，跟上一篇<a href="http://xiaovv.me/2017/04/12/iOS%E4%B8%8BJS%E4%B8%8ESwift%E4%BA%92%E7%9B%B8%E8%B0%83%E7%94%A8%EF%BC%88%E4%B8%80%EF%BC%89UIWebView%E6%8B%A6%E6%88%AAURL/" target="_blank" rel="noopener">iOS下JS与Swift互相调用（一）UIWebView拦截URL</a>中介绍的HTML内容一样，所以关于HTML中的内容就不再讲解了</p>
 <h3 id="2-拦截URL"><a href="#2-拦截URL" class="headerlink" title="2. 拦截URL"></a>2. 拦截URL</h3><p>使用WKNavigationDelegate中的代理方法，拦截自定义的URL来实现 JS 调用 Swift 方法, 这里和UIWebView拦截 URL 一样</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">webView</span><span class="params">(<span class="number">_</span> webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping <span class="params">(WKNavigationActionPolicy)</span></span></span> -&gt; <span class="type">Void</span>) &#123;</div><div class="line">    <span class="keyword">if</span> navigationAction.request.url?.scheme == <span class="string">"haleyaction"</span> &#123;</div><div class="line">        <span class="keyword">let</span> url = navigationAction.request.url</div><div class="line">        handleCustomAction(url: url!)</div><div class="line">        decisionHandler(<span class="type">WKNavigationActionPolicy</span>.cancel)</div><div class="line">        <span class="keyword">return</span></div><div class="line">    &#125;</div><div class="line">    decisionHandler(<span class="type">WKNavigationActionPolicy</span>.allow)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <blockquote>
@@ -502,7 +502,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">40</span>
+                <span class="site-state-item-count">41</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

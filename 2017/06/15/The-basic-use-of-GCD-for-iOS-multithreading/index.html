@@ -95,7 +95,7 @@
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="上篇文章讲了 NSThread 的基本使用，本文讨论一下 GCD 的基本使用 GCD 简介GCD（全称 Grand Central Dispatch），苹果在 iOS 4中首次推出，为多核的并行运算提出的解决方案，GCD 会自动管理线程的生命周期、创建线程、调度任务、销毁线程，开发者只需要关心要执行的任务而不用考虑任何线程管理的相关代码。由于 GCD 是基于 C 的 API，在 OC 和 Swif">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-07-08T00:39:07.000Z">
+<meta property="og:updated_time" content="2018-03-25T06:25:39.783Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS多线程之 GCD 的基本使用">
 <meta name="twitter:description" content="上篇文章讲了 NSThread 的基本使用，本文讨论一下 GCD 的基本使用 GCD 简介GCD（全称 Grand Central Dispatch），苹果在 iOS 4中首次推出，为多核的并行运算提出的解决方案，GCD 会自动管理线程的生命周期、创建线程、调度任务、销毁线程，开发者只需要关心要执行的任务而不用考虑任何线程管理的相关代码。由于 GCD 是基于 C 的 API，在 OC 和 Swif">
@@ -334,7 +334,7 @@
       
 
       
-        <p><a href="http://www.hsiaovv.com/2017/06/12/The-basic-use-of-NSThread-for-iOS-multithreading/" target="_blank" rel="noopener">上篇文章</a>讲了 NSThread 的基本使用，本文讨论一下 GCD 的基本使用</p>
+        <p><a href="http://www.xiaovv.me/2017/06/12/The-basic-use-of-NSThread-for-iOS-multithreading/" target="_blank" rel="noopener">上篇文章</a>讲了 NSThread 的基本使用，本文讨论一下 GCD 的基本使用</p>
 <h3 id="GCD-简介"><a href="#GCD-简介" class="headerlink" title="GCD 简介"></a>GCD 简介</h3><p>GCD（全称 Grand Central Dispatch），苹果在 iOS 4中首次推出，为多核的并行运算提出的解决方案，GCD 会自动管理线程的生命周期、创建线程、调度任务、销毁线程，开发者只需要关心要执行的任务而不用考虑任何线程管理的相关代码。由于 GCD 是基于 C 的 API，在 OC 和 Swift 2 都是 C 语言风格，在 Swift 3 中苹果使用了全新的 Swift 语法风格改写了 GCD，本文会展示 OC 和 Swift 3 两种语言的写法使用 GCD</p>
 <h3 id="任务和队列"><a href="#任务和队列" class="headerlink" title="任务和队列"></a>任务和队列</h3><p>使用 GCD 之前先了解一些基本概念</p>
 <h4 id="任务"><a href="#任务" class="headerlink" title="任务"></a>任务</h4><p>任务就是执行操作的意思，就是你在线程中执行的操作，GCD 中任务的代码放在 Block（DispatchWorkItem）中，执行任务有两种方式：<strong>同步执行（sync）</strong> 和 <strong>异步执行（async）</strong>，他们的区别就是 <strong>是否会开启新的线程</strong></p>
@@ -517,8 +517,8 @@
 </ul>
 <p>GCD 还有很多高级用法需要深入的学习，本文仅仅列举了 GCD 的一些基本用法，不过已经可以满足日常的大部分多线程的开发工作了</p>
 <p>其他相关文章：</p>
-<p><a href="http://www.hsiaovv.com/2017/06/12/The-basic-use-of-NSThread-for-iOS-multithreading/" target="_blank" rel="noopener">iOS 多线程之 NSThread 的基本使用</a></p>
-<p><a href="http://www.hsiaovv.com/2017/06/17/The-basic-use-of-NSOperation-for-iOS-multithreading/" target="_blank" rel="noopener">iOS多线程之 NSOperation 的基本使用</a></p>
+<p><a href="http://www.xiaovv.me/2017/06/12/The-basic-use-of-NSThread-for-iOS-multithreading/" target="_blank" rel="noopener">iOS 多线程之 NSThread 的基本使用</a></p>
+<p><a href="http://www.xiaovv.me/2017/06/17/The-basic-use-of-NSOperation-for-iOS-multithreading/" target="_blank" rel="noopener">iOS多线程之 NSOperation 的基本使用</a></p>
 <p>本文参考：</p>
 <p><a href="http://www.swift.gg/2016/11/30/grand-central-dispatch/" target="_blank" rel="noopener">Grand Central Dispatch (GCD) and Dispatch Queues in Swift 3</a></p>
 <p><a href="http://blog.csdn.net/Hello_Hwc/article/details/54293280?winzoom=1&amp;utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="noopener">GCD精讲（Swift 3）</a></p>
@@ -654,7 +654,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">40</span>
+                <span class="site-state-item-count">41</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
