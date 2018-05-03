@@ -1,0 +1,925 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="IAP 全称：In-App Purchase，是指苹果 App Store 的应用内购买，是苹果为 App 内购买虚拟商品或服务提供的一套交易系统 IAP 的适用范围在 App 内需要付费使用的产品功能或虚拟商品/服务，如游戏道具、电子书、音乐、视频、订阅会员、App的高级功能等需要使用 IAP，而在 App 内购买实体商品（如淘宝购买手机）或者不在 App 内使用的虚拟商品（如充话费）或服务（如">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 内购（In-App Purchase）总结">
+<meta property="og:url" content="http://yoursite.com/2018/05/03/My-iOS-In-App-Purchase-Summarize/index.html">
+<meta property="og:site_name" content="笑忘书店">
+<meta property="og:description" content="IAP 全称：In-App Purchase，是指苹果 App Store 的应用内购买，是苹果为 App 内购买虚拟商品或服务提供的一套交易系统 IAP 的适用范围在 App 内需要付费使用的产品功能或虚拟商品/服务，如游戏道具、电子书、音乐、视频、订阅会员、App的高级功能等需要使用 IAP，而在 App 内购买实体商品（如淘宝购买手机）或者不在 App 内使用的虚拟商品（如充话费）或服务（如">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/iap_sum1.png">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/iap_sum2.png">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/iap_sum3.png">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/iap_sum4.png">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/iap_sum6.png">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/iap_sum7.png">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/iap_sum8.png">
+<meta property="og:updated_time" content="2018-05-03T13:57:33.245Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS 内购（In-App Purchase）总结">
+<meta name="twitter:description" content="IAP 全称：In-App Purchase，是指苹果 App Store 的应用内购买，是苹果为 App 内购买虚拟商品或服务提供的一套交易系统 IAP 的适用范围在 App 内需要付费使用的产品功能或虚拟商品/服务，如游戏道具、电子书、音乐、视频、订阅会员、App的高级功能等需要使用 IAP，而在 App 内购买实体商品（如淘宝购买手机）或者不在 App 内使用的虚拟商品（如充话费）或服务（如">
+<meta name="twitter:image" content="http://onzskckoz.bkt.clouddn.com/iap_sum1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/03/My-iOS-In-App-Purchase-Summarize/"/>
+
+
+
+
+
+  <title> iOS 内购（In-App Purchase）总结 | 笑忘书店 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笑忘书店</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/03/My-iOS-In-App-Purchase-Summarize/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Hsiaovv">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笑忘书店">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS 内购（In-App Purchase）总结
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-03T21:53:12+08:00">
+                2018-05-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/05/03/My-iOS-In-App-Purchase-Summarize/" class="leancloud_visitors" data-flag-title="iOS 内购（In-App Purchase）总结">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>IAP 全称：<code>In-App Purchase</code>，是指苹果 App Store 的应用内购买，是苹果为 App 内购买虚拟商品或服务提供的一套交易系统</p>
+<h3 id="IAP-的适用范围"><a href="#IAP-的适用范围" class="headerlink" title="IAP 的适用范围"></a>IAP 的适用范围</h3><p>在 App 内需要付费使用的产品功能或虚拟商品/服务，如游戏道具、电子书、音乐、视频、订阅会员、App的高级功能等需要使用 IAP，而在 App 内购买实体商品（如淘宝购买手机）或者不在 App 内使用的虚拟商品（如充话费）或服务（如滴滴叫车）则不适用于 IAP</p>
+<p>简而言之，苹果规定：适用范围内的虚拟商品或服务，必须使用 IAP 进行购买支付，不允许使用支付宝、微信支付等其它第三方支付方式（包括Apple Pay），也不允许以任何方式（包括跳出App、提示文案等）引导用户通过应用外部渠道购买</p>
+<h3 id="iOS-内购的准备"><a href="#iOS-内购的准备" class="headerlink" title="iOS 内购的准备"></a>iOS 内购的准备</h3><p>App 内集成内购代码之前需要先去开发账号的 Itunes Connect 后台填写银行账户信息、配置内购商品（包括产品ID、价格等），还需要配置沙盒账号用于 IAP 测试</p>
+<h4 id="银行账户信息填写"><a href="#银行账户信息填写" class="headerlink" title="银行账户信息填写"></a>银行账户信息填写</h4><p>关于如何去 Itunes Connect 后台填写账户信息，本文不做讨论，可以参考以下文章：</p>
+<p><a href="https://www.jianshu.com/p/4f5f0b45b083" target="_blank" rel="noopener">iOS内购一条龙—账户信息填写</a></p>
+<h4 id="配置内购商品"><a href="#配置内购商品" class="headerlink" title="配置内购商品"></a>配置内购商品</h4><p>IAP 是一套商品交易系统，而非简单的支付系统，每一个购买项目都需要在开发者后台的Itunes Connect后台为 App 创建一个对应的商品，提交给苹果审核通过后，购买项目才会生效</p>
+<p>Itunes Connect 后台选择 <code>我的APP</code>，选择需要内购 App，选择 <code>功能</code>，可以进入到配置内购商品的页面</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/iap_sum1.png" alt=""></p>
+<p>新建内购商品有四种选择分别是：</p>
+<ul>
+<li><strong>消耗型项目</strong>：只可使用一次的产品，使用之后即失效，必须再次购买，如：游戏币、一次性虚拟道具等</li>
+<li><strong>非消耗型项目</strong>：只需购买一次，不会过期或随着使用而减少的产品。如：电子书</li>
+<li><strong>自动续期订阅</strong>：允许用户在固定时间段内购买动态内容的产品。除非用户选择取消，否则此类订阅会自动续期，如：Apple Music这类按月订阅的商品</li>
+<li><strong>非续期订阅</strong>：允许用户购买有时限性服务的产品，此 App 内购买项目的内容可以是静态的。此类订阅不会自动续期</li>
+</ul>
+<p><img src="http://onzskckoz.bkt.clouddn.com/iap_sum2.png" alt=""></p>
+<p>一般情况下用的最多的是消耗型商品，根据 App 类型也会使用到非消耗型和自动续期订阅，以消耗型商品举例</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/iap_sum3.png" alt=""></p>
+<p>这里需要注意的是产品 ID 具有唯一性，建议使用项目的 <code>Bundle Identidier</code> 作为前缀后面拼接自定义的唯一的商品名或者 ID（字母、数字），这里有个坑：<font color="#F3423D"><strong>一旦新建一个内购商品，它的产品ID将永远被占用，即使该商品已经被删除</strong></font>，已创建的内购商品除了产品 ID 之外的所有信息都可以修改，如果删除了一个内购商品，将无法再创建一个相同产品 ID 的商品，也意味着该产品 ID 永久失效，一般来说产品ID有特定的命名规则，如果命名规则下有某个产品 ID 永久失效，可能会导致整个产品ID命名规则都要修改，这里千万要注意！</p>
+<p>另外内购商品的定价只能从苹果提供的价格等级去选择，这个价格等级是固定的，同一价格等级会对应各个国家的货币，也就是说内购商品的价格是根据 Apple ID 所在区域的货币进行结算的，比如：一个内购商品你选择等级1，那么这个商品在美区是 0.66 美元，在中区是 6 元人民币，在香港去是 8 港币，这些价格一般是固定的，除非某些货币出现大的变动（印象中有过一次卢布大跌，苹果调整过俄区的价格），价格等级表可以点击上图右边的 <code>所有价格和货币</code> 查看</p>
+<p>另外要注意：<font color="#F3423D"><strong>苹果内购是需要抽取30%的分成</strong></font>，实际结算是分成之前需要先扣除交易税，不同地区交易税不同，具体分成数额参看价格表</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/iap_sum4.png" alt=""></p>
+<p>iOS 11 用户可以在 App Store 内 App 的下载页面内直接购买应用的内购商品，这项功能苹果称作做 <code>Promoting In-App Purchases</code>，如果你的 App 需要在 App Store 推广自己的内购商品，则需要在上图的 <code>App Store 推广</code> 里上传推广用的图像，另外苹果也在 iOS11 SDK 里面新增了从 App Store 购买内购项目跳转到 App 的新方法</p>
+<h4 id="配置沙箱测试账号"><a href="#配置沙箱测试账号" class="headerlink" title="配置沙箱测试账号"></a>配置沙箱测试账号</h4><p>内购也是需要测试的，但是内购涉及到钱，所以苹果为内购测试提供了 <code>沙箱测试账号</code> 的功能，Apple Pay 推出之后 <code>沙箱测试账号</code> 也可以用于 Apple Pay 支付的测试，<code>沙箱测试账号</code> 简单理解就是：只能用于内购和 Apple Pay 测试功能的 Apple ID，它并不是真实的 Apple ID，下面看如何创建 <code>沙箱测试账号</code></p>
+<p>Itunes Connect 后台选择 <code>用户和职能</code>，选择 <code>+</code> 添加测试账号</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/iap_sum6.png" alt=""></p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/iap_sum7.png" alt=""></p>
+<p>填写沙箱测试账号信息需要注意以下几点：</p>
+<ul>
+<li>电子邮件不能是别人已经注册过 AppleID 的邮箱</li>
+<li>电子邮箱可以不是真实的邮箱，但是必须符合邮箱格式</li>
+<li>App Store 地区的选择，测试的时候弹出的提示框以及结算的价格会按照沙箱账号选择的地区来，建议测试的时候新建几个不同地区的账号进行测试</li>
+</ul>
+<p>配置好测试账号之后，看一下沙箱账号测试的时候如何使用：</p>
+<ul>
+<li>首先沙箱测试账号必须在真机环境下进行测试，并且是 adhoc 证书或者 develop 证书签名的安装包，沙盒账号不支持直接从 App Store 下载的安装包</li>
+<li>去真机的 App Store 退出真实的 Apple ID 账号，退出之后并不需要在App Store 里面登录沙箱测试账号</li>
+<li>然后去 App 里面测试购买商品，会弹出登录框，选择 <code>使用现有的 Apple ID</code>，然后登录沙箱测试账号，登录成功之后会弹出购买提示框，点击 <code>购买</code>，然后会弹出提示框完成购买</li>
+</ul>
+<p><img src="http://onzskckoz.bkt.clouddn.com/iap_sum8.png" alt=""></p>
+<p>上面说了这么多只是集成内购的一些准备，真正重要的是下面的内购代码的实现</p>
+<h3 id="iOS-内购具体代码"><a href="#iOS-内购具体代码" class="headerlink" title="iOS 内购具体代码"></a>iOS 内购具体代码</h3><p>写代码之前先来了解对比一下 IPA 和支付宝支付，首先看支付宝的支付流程：</p>
+<ul>
+<li>App 发起一笔支付交易，然后服务端根据支付宝的要求把订单信息进行加密签名</li>
+<li>服务端把加密的交易信息返回给 App，App 拿到交易信息调用支付宝的 SDK，把支付信息给到支付宝的服务端验证</li>
+<li>验证通过后，App 跳转到支付宝 App 或者网页版支付宝，用户使用支付宝进行支付</li>
+<li>支付成功后从支付宝 App 跳转回到我们自己 APP，我们在 App 里处理回调结果刷新UI等</li>
+<li>同时支付宝的服务器也会回调我们自己服务器，把收据传给服务器，支付宝服务器会一直回调我们的服务器直到我们的服务器确认收到收据</li>
+<li>我们的服务器收到回调确认之后，确认订单支付成功</li>
+<li>为了以防万一，App 上回调返回成功之后我们还需要去自己服务器验证是否真的支付成功（一切以服务器为准）</li>
+</ul>
+<p>微信支付和支付宝支付的流程是类似的，来看看 IAP 的支付流程：</p>
+<ul>
+<li>App 发起一笔内购支付，然后服务端生成一个订单号并且返回给 App</li>
+<li>App 拿到交易订单之后调用 IPA 创建一个 IPA 交易，并且添加到支付队列</li>
+<li>然后 IAP 会调用 Apple ID 支付页面等待用户确认支付，IPA 和苹果自己的 IPA 服务器通讯，回调购买成功，并且把收据写入 App 沙盒</li>
+<li>然后 App 去沙盒获取收据并且上传到自己的服务器</li>
+<li>服务器去 IAP 服务器查询收据的有效性并且对应到某个订单号，如果有效就通知 App，并且发放该内购商品，App 调用IAP 支付队列去结束该 IPA 交易</li>
+</ul>
+<p>对比来看两者区别好像也不大，支付宝或者微信支付，一旦App 端支付成功，之后的验证工作就完全是我们的服务器和支付宝服务器之前的通讯了，服务端之间的通讯就保证了交易的可靠性，但是看看 IAP，同样的交易，服务端的验证却需要 App 端去驱动，由于 App 的网络环境比服务端复杂、用户操作的不确定性可能会导致 APP 无法正确的驱动服务端验证交易，另一方面 IAP 的服务器在美国，验证查询交易的延迟也很严重</p>
+<p>苹果 IAP 的那些坑后面再讲，先按照上面的流程，我们把 IPA 代码的逻辑理一理：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> UIKit</div><div class="line"><span class="keyword">import</span> StoreKit</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ViewController</span>: <span class="title">UIViewController</span>, <span class="title">SKProductsRequestDelegate</span>,<span class="title">SKPaymentTransactionObserver</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.viewDidLoad()</div><div class="line">        </div><div class="line">        <span class="comment">// 监听支付队列</span></div><div class="line">        <span class="type">SKPaymentQueue</span>.<span class="keyword">default</span>().add(<span class="keyword">self</span> <span class="keyword">as</span> <span class="type">SKPaymentTransactionObserver</span>)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">deinit</span> &#123;</div><div class="line">        </div><div class="line">        <span class="type">SKPaymentQueue</span>.<span class="keyword">default</span>().remove(<span class="keyword">self</span> <span class="keyword">as</span> <span class="type">SKPaymentTransactionObserver</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 点击购买</span></div><div class="line">    <span class="meta">@IBAction</span> <span class="function"><span class="keyword">func</span> <span class="title">buy</span><span class="params">(<span class="number">_</span> sender: UIButton)</span></span> &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">if</span> <span class="type">SKPaymentQueue</span>.canMakePayments() &#123;</div><div class="line">            </div><div class="line">            requestProductInfo(<span class="string">"com.xiaovv.IAPDemo.vip1"</span>)</div><div class="line">            </div><div class="line">        &#125;<span class="keyword">else</span> &#123;</div><div class="line">            <span class="built_in">print</span>(<span class="string">"用户禁止购买"</span>)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 请求查询 iTunes Connect 后台配置的内购商品</span></div><div class="line">    fileprivate <span class="function"><span class="keyword">func</span> <span class="title">requestProductInfo</span> <span class="params">(<span class="number">_</span> productId: String)</span></span> &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> identifiers: <span class="type">Set</span>&lt;<span class="type">String</span>&gt; = [productId]</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> request = <span class="type">SKProductsRequest</span>(productIdentifiers: identifiers)</div><div class="line">        </div><div class="line">        request.delegate = <span class="keyword">self</span></div><div class="line">        request.start()</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    fileprivate <span class="function"><span class="keyword">func</span> <span class="title">transcationPurchasing</span><span class="params">(<span class="number">_</span> transcation: SKPaymentTransaction)</span></span> &#123;</div><div class="line">        </div><div class="line">        <span class="built_in">print</span>(<span class="string">"交易中..."</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    fileprivate <span class="function"><span class="keyword">func</span> <span class="title">transcationPurchased</span><span class="params">(<span class="number">_</span> transcation: SKPaymentTransaction)</span></span> &#123;</div><div class="line">        </div><div class="line">        <span class="built_in">print</span>(<span class="string">"交易成功..."</span>)</div><div class="line">        <span class="comment">// 持久化订单信息</span></div><div class="line">        <span class="keyword">if</span> <span class="keyword">let</span> receiptUrl = <span class="type">Bundle</span>.main.appStoreReceiptURL &#123;<span class="comment">//获取收据地址</span></div><div class="line">            </div><div class="line">            <span class="keyword">let</span> receipt = <span class="type">NSData</span>(contentsOf: receiptUrl)</div><div class="line">            </div><div class="line">            <span class="keyword">let</span> receiptStr = receipt?.base64EncodedString(options: <span class="type">NSData</span>.<span class="type">Base64EncodingOptions</span>(rawValue: <span class="number">0</span>))</div><div class="line">            </div><div class="line">            <span class="type">DispatchQueue</span>.main.asyncAfter(deadline: <span class="type">DispatchTime</span>(uptimeNanoseconds: <span class="number">3</span>)) &#123;<span class="comment">// 模拟上传收据到服务端</span></div><div class="line">                </div><div class="line">                <span class="built_in">print</span>(<span class="string">"receiptStr:<span class="subst">\(String(describing: receiptStr)</span>)"</span>)</div><div class="line">                <span class="built_in">print</span>(<span class="string">"applicationUsername:<span class="subst">\(String(describing: transcation.payment.applicationUsername)</span>)"</span>)</div><div class="line">                <span class="comment">// 收据发送到服务器</span></div><div class="line">                <span class="comment">// 收据验证成功之后结束交易</span></div><div class="line">                <span class="type">SKPaymentQueue</span>.<span class="keyword">default</span>().finishTransaction(transcation)</div><div class="line">                <span class="comment">// 删除保存的订单信息</span></div><div class="line">            &#125;   </div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    fileprivate <span class="function"><span class="keyword">func</span> <span class="title">transcationFailed</span><span class="params">(<span class="number">_</span> transcation: SKPaymentTransaction)</span></span> &#123;</div><div class="line">        </div><div class="line">        <span class="built_in">print</span>(<span class="string">"交易失败..."</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    fileprivate <span class="function"><span class="keyword">func</span> <span class="title">transcationRrestored</span><span class="params">(<span class="number">_</span> transcation: SKPaymentTransaction)</span></span> &#123;</div><div class="line">        </div><div class="line">        <span class="built_in">print</span>(<span class="string">"已经购买该商品..."</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    fileprivate <span class="function"><span class="keyword">func</span> <span class="title">transcationDeferred</span><span class="params">(<span class="number">_</span> transcation: SKPaymentTransaction)</span></span> &#123;</div><div class="line">        </div><div class="line">        <span class="built_in">print</span>(<span class="string">"交易延期..."</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">//MARK: - SKPaymentTransactionObserver</span></div><div class="line">    <span class="comment">// 购买内购商品之后会调用的代理方法</span></div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">paymentQueue</span><span class="params">(<span class="number">_</span> queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction])</span></span> &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">for</span> transcation <span class="keyword">in</span> transactions &#123;</div><div class="line">            </div><div class="line">            <span class="keyword">switch</span> (transcation.transactionState) &#123;</div><div class="line">                </div><div class="line">                <span class="keyword">case</span> .purchasing:</div><div class="line">                    transcationPurchasing(transcation)</div><div class="line">                <span class="keyword">case</span> .purchased:</div><div class="line">                    transcationPurchased(transcation)</div><div class="line">                <span class="keyword">case</span> .failed:</div><div class="line">                    transcationFailed(transcation)</div><div class="line">                <span class="keyword">case</span> .restored:</div><div class="line">                    transcationRrestored(transcation)</div><div class="line">                <span class="keyword">case</span> .deferred:</div><div class="line">                    transcationDeferred(transcation)</div><div class="line">                &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">//MARK: - SKProductsRequestDelegate</span></div><div class="line">    <span class="comment">// 查询iTunes Connect 后台内购商品的回调代理方法</span></div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">productsRequest</span><span class="params">(<span class="number">_</span> request: SKProductsRequest, didReceive response: SKProductsResponse)</span></span> &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">if</span> response.products.<span class="built_in">count</span> &gt; <span class="number">0</span> &#123;</div><div class="line">            </div><div class="line">            <span class="keyword">let</span> payment = <span class="type">SKMutablePayment</span>(product: response.products.first!)</div><div class="line">            </div><div class="line">            <span class="comment">// applicationUsername 可以把我们的自己订单和IAP的交易订单绑定</span></div><div class="line">            payment.applicationUsername = <span class="string">"orderid，userid and so on"</span></div><div class="line">            </div><div class="line">        &#125;<span class="keyword">else</span> &#123;</div><div class="line">            <span class="built_in">print</span>(<span class="string">"没有可以购买的商品"</span>)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>IAP 的代码看起来并不多流程也比较清晰，主要是下面几步：</p>
+<ul>
+<li>根据内购商品的产品 ID 初始化一个 <code>SKProductsRequest</code> 对象，调用该对象的 <code>start()</code> 方法进行内购商品的请求</li>
+<li>把商品请求中获取到的 <code>SKProduct</code> 对象生成一个 <code>SKPayment</code> 对象，并把它压入到 <code>SKPaymentQueue</code> 支付队列中</li>
+<li>然后从支付队列的代理方法 <code>func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction])</code> 里面获取到交易（transaction）的状态，交易完成后调用支付队列的 <code>finishTransaction()</code>完成内购支付</li>
+</ul>
+<h3 id="iOS-内购减少丢单处理"><a href="#iOS-内购减少丢单处理" class="headerlink" title="iOS 内购减少丢单处理"></a>iOS 内购减少丢单处理</h3><p>上面说到 IAP 的坑，下面就列举一下 IAP 留给开发者的 “坑”：</p>
+<ol>
+<li>用户输入完 Apple ID 密码或者验证完指纹支付成功之后，网络突然中断导致 IAP 没有收到支付成功的通知，App 就无法在支付队列的代理方法中获取支付成功的通知，后续的发放内购商品也就不可能了</li>
+<li>App 在代理方法里收到了支付成功的通知，但是 App 上传交易收据到我们服务器去查询的时候如果查询失败，那么服务器就无法发放内购商品，因为这个行为是 App 驱动服务器的行为，这里有个坑就是支付队列的代理方法 <code>func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction])</code> 需要下次 App 重新启动才会重新调用，这个时候我们 App 才能重新去驱动服务器查询交易，由于用户操作的不确定性，不知道什么时候用户才会重新打开App，发放内购商品的周期自然也不确定</li>
+<li>之前有开发者反应，IAP 通知代理方法交易成功，但是沙盒里面取收据的时候发现为空，或者当前支付成功的订单并没有写入沙盒的收据，导致上传到服务器的收据查询不到结果</li>
+<li>如果用户支付成功，收据也上传服务器成功，但是在服务器验证阶段用户删除了App，导致App 无法去处理这些没有被验证完的订单</li>
+<li>如何处理越狱iOS手机内购的问题</li>
+</ol>
+<p>以上问题都可能会导致用户支付成功了，却收不到我们发放的内购商品，统一起来称为：<font color="#F3423D"><strong>内购丢单</strong></font></p>
+<p>接下来讨论一下如何处理 IAP 支付的一些细节问题克服上述 IAP 的坑</p>
+<h4 id="越狱问题"><a href="#越狱问题" class="headerlink" title="越狱问题"></a>越狱问题</h4><p>我本人也折腾过 iOS 越狱，安装实用插件、美化主题等，自从iOS 9 之后越狱社区越来越不活跃了，能完美越狱的基本都是iPhone 5 以及更老的 32位设备了，这也侧面也说明了 iOS 在功能方面已经非常完善了，导致折腾越狱的人越来越少了，当前 iOS 版本是否越狱可以去这个网站查看：<strong><a href="https://canijailbreak.com/" target="_blank" rel="noopener">Can I jailbreak</a></strong></p>
+<p>回归正题，因为越狱之后会导致系统不确定的问题很多，我觉得可以采用宁可错杀一千也不放过一个原则，对于已越狱的iOS 设备全部不允许内购行为，简单粗暴有效，可以通过下面工具的方法判断iOS设备是否越狱</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div></pre></td><td class="code"><pre><div class="line">.h 文件</div><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">JailbreakDetectTool</span> : <span class="title">NSObject</span></span></div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 检查当前设备是否已经越狱。</div><div class="line"> */</div><div class="line">+ (<span class="built_in">BOOL</span>)detectCurrentDeviceIsJailbroken;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line">.m 文件</div><div class="line"><span class="meta">#import <span class="meta-string">"JailbreakDetectTool.h"</span></span></div><div class="line"></div><div class="line"><span class="meta">#define ARRAY_SIZE(a) sizeof(a)/sizeof(a[0])</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">JailbreakDetectTool</span></span></div><div class="line"></div><div class="line"><span class="comment">// 四种检查是否越狱的方法, 只要命中一个, 就说明已经越狱.</span></div><div class="line">+ (<span class="built_in">BOOL</span>)detectCurrentDeviceIsJailbroken &#123;</div><div class="line">    <span class="built_in">BOOL</span> result =  <span class="literal">NO</span>;</div><div class="line">    </div><div class="line">    result = [<span class="keyword">self</span> detectJailBreakByJailBreakFileExisted];</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (!result) &#123;</div><div class="line">        result = [<span class="keyword">self</span> detectJailBreakByAppPathExisted];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (!result) &#123;</div><div class="line">        result = [<span class="keyword">self</span> detectJailBreakByEnvironmentExisted];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (!result) &#123;</div><div class="line">        result = [<span class="keyword">self</span> detectJailBreakByCydiaPathExisted];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> result;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 判定常见的越狱文件</div><div class="line"> * /Applications/Cydia.app</div><div class="line"> * /Library/MobileSubstrate/MobileSubstrate.dylib</div><div class="line"> * /bin/bash</div><div class="line"> * /usr/sbin/sshd</div><div class="line"> * /etc/apt</div><div class="line"> * 这个表可以尽可能的列出来，然后判定是否存在，只要有存在的就可以认为机器是越狱了。</div><div class="line"> */</div><div class="line"><span class="keyword">const</span> <span class="keyword">char</span>* jailbreak_tool_pathes[] = &#123;</div><div class="line">    <span class="string">"/Applications/Cydia.app"</span>,</div><div class="line">    <span class="string">"/Library/MobileSubstrate/MobileSubstrate.dylib"</span>,</div><div class="line">    <span class="string">"/bin/bash"</span>,</div><div class="line">    <span class="string">"/usr/sbin/sshd"</span>,</div><div class="line">    <span class="string">"/etc/apt"</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line">+ (<span class="built_in">BOOL</span>)detectJailBreakByJailBreakFileExisted &#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i&lt;ARRAY_SIZE(jailbreak_tool_pathes); i++) &#123;</div><div class="line">        <span class="keyword">if</span> ([[<span class="built_in">NSFileManager</span> defaultManager] fileExistsAtPath:[<span class="built_in">NSString</span> stringWithUTF8String:jailbreak_tool_pathes[i]]]) &#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"The device is jail broken!"</span>);</div><div class="line">            <span class="keyword">return</span> <span class="literal">YES</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"The device is NOT jail broken!"</span>);</div><div class="line">    <span class="keyword">return</span> <span class="literal">NO</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 判断cydia的URL scheme.</div><div class="line"> */</div><div class="line">+ (<span class="built_in">BOOL</span>)detectJailBreakByCydiaPathExisted &#123;</div><div class="line">    <span class="keyword">if</span> ([[<span class="built_in">UIApplication</span> sharedApplication] canOpenURL:[<span class="built_in">NSURL</span> URLWithString:<span class="string">@"cydia://"</span>]]) &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"The device is jail broken!"</span>);</div><div class="line">        <span class="keyword">return</span> <span class="literal">YES</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"The device is NOT jail broken!"</span>);</div><div class="line">    <span class="keyword">return</span> <span class="literal">NO</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 读取系统所有应用的名称.</div><div class="line"> * 这个是利用不越狱的机器没有这个权限来判定的。</div><div class="line"> */</div><div class="line"><span class="meta">#define USER_APP_PATH                 @<span class="meta-string">"/User/Applications/"</span></span></div><div class="line">+ (<span class="built_in">BOOL</span>)detectJailBreakByAppPathExisted &#123;</div><div class="line">    <span class="keyword">if</span> ([[<span class="built_in">NSFileManager</span> defaultManager] fileExistsAtPath:USER_APP_PATH]) &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"The device is jail broken!"</span>);</div><div class="line">        <span class="built_in">NSArray</span> *applist = [[<span class="built_in">NSFileManager</span> defaultManager] contentsOfDirectoryAtPath:USER_APP_PATH error:<span class="literal">nil</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"applist = %@"</span>, applist);</div><div class="line">        <span class="keyword">return</span> <span class="literal">YES</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"The device is NOT jail broken!"</span>);</div><div class="line">    <span class="keyword">return</span> <span class="literal">NO</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 这个DYLD_INSERT_LIBRARIES环境变量，在非越狱的机器上应该是空，越狱的机器上基本都会有Library/MobileSubstrate/MobileSubstrate.dylib.</div><div class="line"> */</div><div class="line"><span class="keyword">char</span>* printEnv(<span class="keyword">void</span>) &#123;</div><div class="line">    <span class="keyword">char</span> *env = getenv(<span class="string">"DYLD_INSERT_LIBRARIES"</span>);</div><div class="line">    <span class="keyword">return</span> env;</div><div class="line">&#125;</div><div class="line"></div><div class="line">+ (<span class="built_in">BOOL</span>)detectJailBreakByEnvironmentExisted &#123;</div><div class="line">    <span class="keyword">if</span> (printEnv()) &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"The device is jail broken!"</span>);</div><div class="line">        <span class="keyword">return</span> <span class="literal">YES</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"The device is NOT jail broken!"</span>);</div><div class="line">    <span class="keyword">return</span> <span class="literal">NO</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<h4 id="储存交易订单"><a href="#储存交易订单" class="headerlink" title="储存交易订单"></a>储存交易订单</h4><p>上述第1、2点坑都是因为交易订单支付成功了，但是没有完成服务器验证收据，所以我们非常有必要持久化我们的订单信息，IAP 支付成功的交易（transaction）只要没有调用 <code>finishTransaction()</code>，下次启动 App 重新监听支付队列的时候会重新调用 <code>func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction])</code> 这个时候就可以重新获取到未完成的该交易（transaction）</p>
+<p>支付成功后，我们持久化自己订单信息的目的就是和 IAP的交易（transaction）绑定起来，这样如果在App驱动服务器验证订单的时候出现了异常，App重新启动之后我们获取到未完成的 IAP的交易（transaction）之后依然可以和我们自己的订单联系起来，然后可以继续发送给后台服务器去去验证，直到验证成功完成 IAP 交易（transaction），购买结束</p>
+<p>这里我的做法是：用户支付成功之后用 <code>UserDefault</code> 把该交易的交易标识（transactionIdentifier）和我们自己的交易订单作为字典的键值保存在沙盒内，然后把我们自己的订单号和支付收据发送给服务器去验证，服务器返回验证结果之后，删除 <code>UserDefault</code> 中的订单信息，并且完成该笔IAP 交易（transaction），如果在服务器返回验证结果之前出现异常（用户杀掉App、手机关机了，App崩溃等）订单信息便不会从<code>UserDefault</code> 中删除，该笔IAP 交易也不会被完成，App重新启动之后，重新监听支付队列的时候，可以重新获取到该笔交易（transaction），然后根据该笔交易（transaction）的交易标识（transactionIdentifier）找到 <code>UserDefault</code> 中对应的我们自己的订单号，重新把订单号和交易收据发送给后台服务器验证</p>
+<p>我们自己的订单是后台生成并且和用户ID进行了绑定的，所以这里不担心用户支付成功之后，切换 App 账号会把内购商品发放给另一个用户</p>
+<p>我的做法比较简单，实际上用户如果删除 App，<code>UserDefault</code> 的订单信息就会丢失，所以订单信息储存在钥匙串 <code>keychain</code> 才是相对最稳妥的，特别是如果你的项目以内购为主并且支付非常频繁，这里可以参看贝聊的做法 <a href="https://www.jianshu.com/p/8e5bf711f9f0" target="_blank" rel="noopener">贝聊 IAP 实战之见坑填坑
+</a> </p>
+<h4 id="applicationUsername"><a href="#applicationUsername" class="headerlink" title="applicationUsername"></a>applicationUsername</h4><p>由于 IAP 支付成功之后我们只能从 IAP 的代理方法里面获取到支付成功的交易（transaction），所以我们就必须把自己的订单号和对应的 IAP 交易（transaction）绑定在一起，IAP 创建 <code>SKPayment</code> 对象，并把它压入到<code>SKPaymentQueue</code> 支付队列的时候，我们可以使用可变的 <code>SKMutablePayment</code>，它有一个属性叫做 <code>applicationUsername</code>，这个属性就可以用来储存我们自己生成的订单号信息，用户支付成功之后可以成功的交易（transaction）的 <code>payment</code> 中获取到绑定的订单号信息，这样就可以完美的把 IAP交易（transaction）和我们自己的订单号绑定在一起了</p>
+<p>但是，但是！苹果在这个属性上面有个巨坑，前面说到如果某个IAP交易（transaction）支付成功但是并没有调用 <code>finishTransaction()</code>去完成这个交易的时候，下次启动 App 重新监听支付队列的时候会重新调用 <code>func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction])</code> 这个时候就可以重新获取到这个未完成的交易（transaction），<font color="#F3423D">苹果的坑就是这个时候获取&nbsp;transaction&nbsp;的&nbsp;payment&nbsp;的 &nbsp;applicationUsername&nbsp;会出现&nbsp;nil&nbsp;的情况</font>，所以实际开发中不能完全去相信这个 <code>applicationUsername</code> 属性，这也是为什么上面我要把自己的订单号和 IAP 交易（transaction）的交易标识持久化下来的原因</p>
+<h4 id="其他错漏问题"><a href="#其他错漏问题" class="headerlink" title="其他错漏问题"></a>其他错漏问题</h4><p>第3点坑，用户支付成功之后从沙盒获取收据为空，IAP 提供了一个<code>SKReceiptRefreshRequest</code>类，通过这个类可以在收据无效或者丢失的时候申请到新的收据，<code>SKReceiptRefreshRequest</code>继承自 <code>SKRequest</code> 和 <code>SKProductsRequest</code> 都遵循 <code>SKRequestDelegate</code></p>
+<p>第4点坑，如果我们的订单信息是持久化到钥匙串中，那么即使 App 被删除，下次重新安装的时候依然可以拿到持久化的订单信息</p>
+<p>实际上即使把上面的问题全部考虑到了依然还可能出问题，比如用户切换了 Apple ID 这个时候钥匙串里持久化的订单信息也会发生改变、或者验证成功之前用户换新的手机登录或者用户其他的不可预知的操作行为依然会导致错漏单的问题，但是我觉得内购大部分时候是用户一种强意识的行为，上面这些操作只能是认为用户在阻止自己购买成功，所以我们最终是无法百分之百避免错漏单的，手动去处理这些订单是非常有必要的</p>
+<h3 id="IAP-服务端的处理"><a href="#IAP-服务端的处理" class="headerlink" title="IAP 服务端的处理"></a>IAP 服务端的处理</h3><p>前面说到用户支付成功之后，我们拿到沙盒的收据信息去苹果的 IAP 服务器去验证，这里既可以直接在 App 端验证也可以让服务器去验证，实际上根据我的测试，App 端直接去IAP服务器验证比较快，毕竟中间少了很多步骤，但是考虑到越狱的 iOS 设备完全可以在系统层面跳过或者伪造收据，早期的 iOS 开发很多公司都是采用都是这种本地验证，但是现在基本都是通过后台验证的方式，具体的后台验证步骤如下：</p>
+<ul>
+<li>App端拿到沙盒的收据（receipt-data）,进行一次base64编码，上传给服务器</li>
+<li>服务器拿到收据之后发到 IAP 服务器去验证，验证成功之后收据需要和自己的订单号进行映射并且记录在数据库，之后每次验证之前都需要先判断收据是否存在，防止 App 端重复上传相同的收据，重复发放内购商品</li>
+<li>服务器发放内购商品，推送通知给用户等</li>
+</ul>
+<p>由于 App 上线 App Store 之前我们是使用沙盒账号测试的，沙盒测试的收据验证也是要去沙盒收据的服务器验证</p>
+<ul>
+<li>沙盒环境验证服务器：<a href="https://sandbox.itunes.apple.com/verifyReceipt" target="_blank" rel="noopener">https://sandbox.itunes.apple.com/verifyReceipt</a></li>
+<li>正式环境验证服务器：<a href="https://buy.itunes.apple.com/verifyReceipt" target="_blank" rel="noopener">https://buy.itunes.apple.com/verifyReceipt</a></li>
+</ul>
+<p>而且苹果在上线审核的时候也是使用沙盒账号测试的，那如何识别App端发过来的收据是沙盒测试还是正式环境用户的购买呢？这里服务端就要采用双重验证，即先把收据拿到正式环境的验证地址去验证，如果苹果的正式环境验证服务器返回的状态码 status 为 21007，则说明当前收据是沙盒环境产生，则再连接一次沙盒环境服务器进行验证，这样不管是我们自己采用沙盒账号测试还是苹果审核人员采用沙盒账号进行审核、或者用户购买都可以保证收据正常的验证成功</p>
+<h3 id="沙盒测试遇到的其他问题"><a href="#沙盒测试遇到的其他问题" class="headerlink" title="沙盒测试遇到的其他问题"></a>沙盒测试遇到的其他问题</h3><ul>
+<li>在进行沙盒测试的时候，遇到过 IAP 沙盒服务器出现异常，购买过程非常的慢，而且总是超时，返回购买失败，谷歌到有同行也出现过沙盒购买缓慢的问题（<a href="https://forums.developer.apple.com/thread/96389" target="_blank" rel="noopener">iTunes Sandbox Extremely Slow</a>），所以如果确定代码没有问题，多半就是 IAP 的沙盒服务器出现了问题，建议换个时间再测试，可以通过 <a href="https://developer.apple.com/system-status/" target="_blank" rel="noopener">System Status - Apple Developer</a> 查看苹果公司开发者相关的服务的服务状态</li>
+<li>如果内购的时候提示 <strong><code>您已购买此 App 内购买项目。此项目将免费恢复。</code></strong>，说明有一个购买了同一商品 IAP 交易（transaction）没有调用 <code>finishTransaction()</code>去结束这个交易</li>
+</ul>
+<h3 id="Promoting-In-App-Purchases"><a href="#Promoting-In-App-Purchases" class="headerlink" title="Promoting In-App Purchases"></a>Promoting In-App Purchases</h3><p>前面提到iOS 11 之后，开发者可以在 App Store 自己App的下载页面推广自己的内购商品，用户可以直接在App下载页面购买内购商品，这就涉及到从App Store跳转到自己App，所以苹果在 <code>SKPaymentTransactionObserver</code> 新增了一个代理方法：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">paymentQueue</span><span class="params">(<span class="number">_</span> queue: SKPaymentQueue, shouldAddStorePayment payment: SKPayment, </span></span></div><div class="line"><span class="keyword">for</span> product: SKProduct) -&gt; <span class="type">Bool</span> &#123;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>用户如果在 App下载页面点击购买你推广的内购商品，如果用户已经安装过你的 App 则会直接跳转你的App并调用上述代理方法；如果用户还没有安装你的 App 那么就会去下载你的 App，下载完成之后系统会推送一个通知，如果用户点击该通知就会跳转到你的App并且调用上面的代理方法</p>
+<p>上面的代理方法返回  <code>true</code> 则表示跳转到你的 App，IAP 继续完成交易，如果返回 <code>false</code> 则表示推迟或者取消购买，实际开发中因为可能还需要用户登录自己的账号、生成订单等，一般都是返回 <code>false</code>，之后自己手动把代理方法里面返回的 <code>SKPayment</code> 加入支付队列，然后在按照自己的支付、验证逻辑完成支付</p>
+<p><strong>以上就是我做内购的时候从网上的资料以及官方文档总结的一些东西</strong></p>
+<p>参考和推荐阅读：</p>
+<p><a href="https://www.jianshu.com/p/4f5f0b45b083" target="_blank" rel="noopener">iOS内购一条龙——账户信息填写</a></p>
+<p><a href="http://www.pmcaff.com/article/index/968640397863040?from=related&amp;pmc_param%5Bentry_id%5D=975040810207296" target="_blank" rel="noopener">苹果应用内购买(IAP)—从入门到放弃</a></p>
+<p><a href="https://www.jianshu.com/p/07b5ec193353" target="_blank" rel="noopener">iOS 贝聊 IAP 实战之满地是坑</a></p>
+<p><a href="http://zhangtielei.com/posts/blog-iap.html" target="_blank" rel="noopener">苹果IAP开发中的那些坑和掉单问题</a></p>
+<p><a href="https://developer.apple.com/library/content/releasenotes/General/ValidateAppStoreReceipt/Introduction.html#//apple_ref/doc/uid/TP40010573-CH105-SW1" target="_blank" rel="noopener">Receipt Validation Programming Guide</a></p>
+<p><a href="https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StoreKitGuide/Introduction.html#//apple_ref/doc/uid/TP40008267" target="_blank" rel="noopener">In-App Purchase Programming Guide</a></p>
+<p><a href="https://developer.apple.com/cn/app-store/Receipt-Validation-Programming-Guide-CN.pdf" target="_blank" rel="noopener">收据验证编程指南</a></p>
+<p><a href="http://cwqqq.com/2017/12/05/ios_in-app_pay_server_side_code" target="_blank" rel="noopener">iOS内购充值 服务器端处理</a></p>
+<p><a href="https://blog.csdn.net/goodeveningbaby/article/details/53372934" target="_blank" rel="noopener">iOS 内购服务器验票（漏单处理）</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/25/iOS11-Password-AutoFill-for-Apps/" rel="next" title="iOS 11 新特性：App 密码自动填充">
+                <i class="fa fa-chevron-left"></i> iOS 11 新特性：App 密码自动填充
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zNDUzMy8xMTA3MQ=="></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Hsiaovv" />
+          <p class="site-author-name" itemprop="name">Hsiaovv</p>
+           
+              <p class="site-description motion-element" itemprop="description">以绝大多数人的努力程度之低，根本轮不到去拼天赋</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">42</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#IAP-的适用范围"><span class="nav-number">1.</span> <span class="nav-text">IAP 的适用范围</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iOS-内购的准备"><span class="nav-number">2.</span> <span class="nav-text">iOS 内购的准备</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#银行账户信息填写"><span class="nav-number">2.1.</span> <span class="nav-text">银行账户信息填写</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置内购商品"><span class="nav-number">2.2.</span> <span class="nav-text">配置内购商品</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置沙箱测试账号"><span class="nav-number">2.3.</span> <span class="nav-text">配置沙箱测试账号</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iOS-内购具体代码"><span class="nav-number">3.</span> <span class="nav-text">iOS 内购具体代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iOS-内购减少丢单处理"><span class="nav-number">4.</span> <span class="nav-text">iOS 内购减少丢单处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#越狱问题"><span class="nav-number">4.1.</span> <span class="nav-text">越狱问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#储存交易订单"><span class="nav-number">4.2.</span> <span class="nav-text">储存交易订单</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#applicationUsername"><span class="nav-number">4.3.</span> <span class="nav-text">applicationUsername</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他错漏问题"><span class="nav-number">4.4.</span> <span class="nav-text">其他错漏问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IAP-服务端的处理"><span class="nav-number">5.</span> <span class="nav-text">IAP 服务端的处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#沙盒测试遇到的其他问题"><span class="nav-number">6.</span> <span class="nav-text">沙盒测试遇到的其他问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Promoting-In-App-Purchases"><span class="nav-number">7.</span> <span class="nav-text">Promoting In-App Purchases</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Hsiaovv</span>
+</div>
+
+
+<div class="powered-by">
+
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+  <div class="powered-by">  
+  </div>
+  <span>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></span>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("03EiT54MHYWVD5oet8EvooxX-gzGzoHsz", "pEuU3RFhQtvFv7b7w4xYXtE2");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
