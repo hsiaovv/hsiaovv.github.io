@@ -1,0 +1,973 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="本文转载自掘金 WWDC 2018：效率提升爆表的 Xcode 和 LLDB 调试技巧  WWDC 2018 Session 412: Advanced Debugging with Xcode and LLDB  前言在程序员写 bug 的职业生涯中，只有 bug 会永远陪伴着你，如何处理与 bug 之间的关系，是每一位程序员的必修课。特别是入门程序员经常受 bug 的影响，熬夜加班压力大，长痘">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WWDC 2018：效率提升爆表的 Xcode 和 LLDB 调试技巧">
+<meta property="og:url" content="http://yoursite.com/2018/07/04/Advanced-Debugging-with-Xcode-and-LLDB/index.html">
+<meta property="og:site_name" content="笑忘书店">
+<meta property="og:description" content="本文转载自掘金 WWDC 2018：效率提升爆表的 Xcode 和 LLDB 调试技巧  WWDC 2018 Session 412: Advanced Debugging with Xcode and LLDB  前言在程序员写 bug 的职业生涯中，只有 bug 会永远陪伴着你，如何处理与 bug 之间的关系，是每一位程序员的必修课。特别是入门程序员经常受 bug 的影响，熬夜加班压力大，长痘">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl1.JPG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl2.JPG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl3.JPG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl4.JPG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl5.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl6.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl7.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl8.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl9.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl10.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl11.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl12.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl13.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl14.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl15.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl16.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl17.GIF">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl18.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl19.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl20.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl21.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl22.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl23.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl24.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl25.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl26.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl27.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl28.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl29.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl30.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl31.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl32.PNG">
+<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/adwxl33.PNG">
+<meta property="og:updated_time" content="2018-07-04T14:03:58.452Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="WWDC 2018：效率提升爆表的 Xcode 和 LLDB 调试技巧">
+<meta name="twitter:description" content="本文转载自掘金 WWDC 2018：效率提升爆表的 Xcode 和 LLDB 调试技巧  WWDC 2018 Session 412: Advanced Debugging with Xcode and LLDB  前言在程序员写 bug 的职业生涯中，只有 bug 会永远陪伴着你，如何处理与 bug 之间的关系，是每一位程序员的必修课。特别是入门程序员经常受 bug 的影响，熬夜加班压力大，长痘">
+<meta name="twitter:image" content="http://onzskckoz.bkt.clouddn.com/adwxl1.JPG">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/07/04/Advanced-Debugging-with-Xcode-and-LLDB/"/>
+
+
+
+
+
+  <title> WWDC 2018：效率提升爆表的 Xcode 和 LLDB 调试技巧 | 笑忘书店 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笑忘书店</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/04/Advanced-Debugging-with-Xcode-and-LLDB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Hsiaovv">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笑忘书店">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                WWDC 2018：效率提升爆表的 Xcode 和 LLDB 调试技巧
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-04T21:59:19+08:00">
+                2018-07-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/07/04/Advanced-Debugging-with-Xcode-and-LLDB/" class="leancloud_visitors" data-flag-title="WWDC 2018：效率提升爆表的 Xcode 和 LLDB 调试技巧">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文转载自掘金 <a href="https://juejin.im/post/5b1cd870e51d4506dc0ac76c" target="_blank" rel="noopener">WWDC 2018：效率提升爆表的 Xcode 和 LLDB 调试技巧</a></p>
+<blockquote>
+<p>WWDC 2018 Session 412: <a href="https://developer.apple.com/videos/play/wwdc2018/412/" target="_blank" rel="noopener">Advanced Debugging with Xcode and LLDB</a></p>
+</blockquote>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>在程序员写 bug 的职业生涯中，只有 bug 会永远陪伴着你，如何处理与 bug 之间的关系，是每一位程序员的必修课。特别是入门程序员经常受 bug 的影响，熬夜加班压力大，长痘长胖还脱发。</p>
+<p>每一位 iOS 和 macOS 开发者都是幸运的，因为苹果的 Xcode 和 LLDB 调试工具，这是每一位开发者应该使用的调试神器，可以帮助我们更快地解决问题。本文将主要讲解 Xcode 的 <strong>断点调试</strong>、<strong>LLDB 调试器</strong> 以及 <strong>视图结构调试（UI Hierarchy）</strong>的使用技巧，这些技巧将大幅减少调试中重新编译的次数，减少你的等待时间。</p>
+<p>这些技巧使用起来非常简单，而且在开发场景非常实用，每一位开发者都有必要掌握这些技巧。</p>
+<h3 id="一、提升-Swift-调试可用性（Swift-Debugging-Reliability）"><a href="#一、提升-Swift-调试可用性（Swift-Debugging-Reliability）" class="headerlink" title="一、提升 Swift 调试可用性（Swift Debugging Reliability）"></a>一、提升 Swift 调试可用性（Swift Debugging Reliability）</h3><h4 id="1-1-解决从-AST-context-获取模块失败问题（Failed-to-get-module-from-AST-context）"><a href="#1-1-解决从-AST-context-获取模块失败问题（Failed-to-get-module-from-AST-context）" class="headerlink" title="1.1 解决从 AST context 获取模块失败问题（Failed to get module from AST context）"></a>1.1 解决从 AST context 获取模块失败问题（Failed to get module from AST context）</h4><p>相信很多开发者在使用 Swift 的时候，调试过程中的一些问题会让你很头痛。<br>比如说下面这个问题，LLDB 在 AST Context 重建编译状态时，有些时候在复杂的情况下可能无法检测到部分模块的变化，于是调试器提示 <font color="#ff502c"><code>Failed to get module from AST context</code></font>。</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl1.JPG" alt=""></p>
+<p>在 Xcode 10 中，为了应对这个问题，会为当前的 frame 调用栈创建一个新的 expression evaluator。</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl2.JPG" alt=""></p>
+<h4 id="1-2-解决-Swift-类型问题（Swift-Type-Resolution）"><a href="#1-2-解决-Swift-类型问题（Swift-Type-Resolution）" class="headerlink" title="1.2 解决 Swift 类型问题（Swift Type Resolution）"></a>1.2 解决 Swift 类型问题（Swift Type Resolution）</h4><p>还有一些开发者会遇到在调试的时候无法显示变量类型、打印变量信息的问题如下图：</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl3.JPG" alt=""></p>
+<p>苹果针对大量的错误报告进行追踪，在 Xcode 10 中修复了这个 bug ，调试信息中将不再会出现此类错误。</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl4.JPG" alt=""></p>
+<h3 id="二、-吐血推荐的调试小技巧（Advanced-Debugging-Tips-and-Tricks）"><a href="#二、-吐血推荐的调试小技巧（Advanced-Debugging-Tips-and-Tricks）" class="headerlink" title="二、 吐血推荐的调试小技巧（Advanced Debugging Tips and Tricks）"></a>二、 吐血推荐的调试小技巧（Advanced Debugging Tips and Tricks）</h3><h4 id="2-1-自动创建调试标签页（Configure-behaviors-to-dedicate-a-tab-for-debugging）"><a href="#2-1-自动创建调试标签页（Configure-behaviors-to-dedicate-a-tab-for-debugging）" class="headerlink" title="2.1 自动创建调试标签页（Configure behaviors to dedicate a tab for debugging）"></a>2.1 自动创建调试标签页（Configure behaviors to dedicate a tab for debugging）</h4><p>想必你经常在看代码的时候由于执行到断点而被强行切换到断点所在的页面，在断点页面和之前页面进行切换的体验是非常差的。现在你可以设置在被断点的时候自动新建一个标签页，通过切换标签页你可以快速便捷地切回到之前浏览的页面。</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl5.PNG" alt=""></p>
+<p>设置自动新建 Debug Tab 方法：顶部导航栏 Xcode -&gt; Behaviors -&gt; Edit Behaviors… -&gt; Runing -&gt; Pauses -&gt; ✅ Show Tab Name tab name in active window。</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl6.PNG" alt=""></p>
+<h4 id="2-2-在-LLDB-中修改-App-状态（LLDB-expressions-can-modify-program-state）"><a href="#2-2-在-LLDB-中修改-App-状态（LLDB-expressions-can-modify-program-state）" class="headerlink" title="2.2 在 LLDB 中修改 App 状态（LLDB expressions can modify program state）"></a>2.2 在 LLDB 中修改 App 状态（LLDB expressions can modify program state）</h4><p>在 LLDB 中通过 <font color="#ff502c"><code>expression</code></font> 命令可以改变程序当前的各种状态，<font color="#ff502c"><code>e、expr</code></font> 作为简写也可以实现同样的功能。我们用一个简单的 <code>UILabel</code> 来举例，为 <code>myLabel</code>设置一个值 hello，正常来讲视图上的 <code>myLabel</code>就应该显示 hello。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">test</span><span class="params">()</span></span> -&gt; <span class="type">Void</span> &#123;</div><div class="line">    myLabel.text = <span class="string">"hello"</span></div><div class="line"><span class="comment">// 断点 -&gt; </span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>你可以在 <code>myLabel.text = &quot;hello&quot;</code> 这句代码后设置一个断点，运行程序执行断点后，在控制台的 LLDB 调试器 中输入下面的表达式改变它的值，在继续运行程序之后，相信你在界面上看到的值一定是 hello world。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">// 改变 myLabel 文案</div><div class="line">expr myLabel.text = <span class="string">"hello world"</span></div></pre></td></tr></table></figure>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl7.PNG" alt=""></p>
+<p>除了改变 <code>myLabel.text</code> 的值之外，你可以像在 Xcode 中写代码一样，在 LLDB 中进行同样的操作。例如你可以像下面的代码一样使用表达式改变它的文字颜色，也可以执行某个函数。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">// 改变 myLabel 文字颜色</div><div class="line">expr myLabel.textColor = UIColor.red</div><div class="line"></div><div class="line">// 执行 <span class="built_in">test</span> 方法</div><div class="line">expr <span class="built_in">test</span>()</div></pre></td></tr></table></figure>
+<h4 id="2-3-利用断点实时插入代码（Use-auto-continuing-breakpoints-with-debugger-commands-to-inject-code-live）"><a href="#2-3-利用断点实时插入代码（Use-auto-continuing-breakpoints-with-debugger-commands-to-inject-code-live）" class="headerlink" title="2.3 利用断点实时插入代码（Use auto-continuing breakpoints with debugger commands to inject code live）"></a>2.3 利用断点实时插入代码（Use auto-continuing breakpoints with debugger commands to inject code live）</h4><p>除了直接在控制台通过 LLDB 调试器修改 App 状态，你还可以通过在断点中添加命令来实现同样的功能。而且通过断点来设置调试命令的方式更加方便实用，几乎是实时插入代码的功能。</p>
+<p>如下图，设置一个断点，通过 Edit Breakpoint… 打开编辑框，你可以将多个不同的调试命令按顺序填入 Action 中，就能实现之前同样的功能。另外你可以勾选  <code>Automatically continue after evaluationg actions</code>，可以自动继续执行后续代码，而不会停在这一行。</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl8.PNG" alt=""></p>
+<h4 id="2-4-在汇编调用栈中打印函数实参（”po-arg1”-arg2-etc-in-assembly-frames-to-print-function-arguments）"><a href="#2-4-在汇编调用栈中打印函数实参（”po-arg1”-arg2-etc-in-assembly-frames-to-print-function-arguments）" class="headerlink" title="2.4 在汇编调用栈中打印函数实参（”po $arg1” ($arg2, etc) in assembly frames to print function arguments）"></a>2.4 在汇编调用栈中打印函数实参（”po $arg1” ($arg2, etc) in assembly frames to print function arguments）</h4><p>首先，我们了解一下全局断点，你可以点击在 Breakpoints Navigator 左下角 + 号，然后选择 Symbolic Breakpoint… ，如下图，你可以在 Symbol 一栏输入任何你想监听的函数比如 <code>[UILabel setText:]</code>，之后所有页面下的所有 <code>UILabel</code> 类型对象在设置 <code>text</code>属性的时候都会执行该断点。（ps：我还不是最酷的😎）</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl9.PNG" alt=""></p>
+<p>在这个断点的控制台中，并没有显示变量属性等信息，我们怎么能知道设置了什么呢？接下来我们可以用 <code>$arg1</code>、<code>$arg2</code>等命令来打印出我们想要的信息。</p>
+<p>如下图，在这里 <code>$arg1</code> 是指对象本身，<code>$arg2</code> 是对象被调用的函数，po命令无法直接输出函数名，需要加上<code>(SEL)</code>，<code>$arg3</code>是被赋给 <code>text</code> 的值。</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl10.PNG" alt=""></p>
+<h4 id="2-5-利用-“breakpoint-set-–one-shot-true”-命令创建一次性断点（Create-dependent-breakpoints-using-）"><a href="#2-5-利用-“breakpoint-set-–one-shot-true”-命令创建一次性断点（Create-dependent-breakpoints-using-）" class="headerlink" title="2.5 利用 “breakpoint set –one-shot true” 命令创建一次性断点（Create dependent breakpoints using ）"></a>2.5 利用 “breakpoint set –one-shot true” 命令创建一次性断点（Create dependent breakpoints using ）</h4><p>上面我们介绍了全局断点，它能监测到全局的函数调用，但是我想监测某一个函数内局部区域的函数调用，这个时候我们可以使用 <font color="#ff502c"><code>breakpoint set --one-shot true</code></font> 命令动态生成一个断点，这个断点将是一次性的，执行一次后将被自动删除。</p>
+<p>最酷的是，我们将创建会先一个断点,如下图，让这个断点来实现这一切，即用一个断点来创建另外一个一次性的断点，为了让整个过程是无感的，我建议勾选 <code>Automatically continue after evaluationg actions</code> 选项。</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl11.PNG" alt=""></p>
+<p>上图这个断点到底干了什么？当执行到图中第 61 行的断点时，这个断点并不会导致命令执行暂停，它只干了一件事，就是通过命令 <font color="#ff502c"><code>breakpoint set --name &quot;[UILabel setText:]&quot;</code></font> 创建了一个全局断点，加上<font color="#ff502c"><code>--one-shot true</code></font>就代表是一次性的断点。</p>
+<p>如上图的执行效果就是<font color="#ff502c"><code>breakpoint set --one-shot true --name &quot;[UILabel setText:]&quot;</code></font> 命令会让指针在<code>myLabel.text = &quot;hello&quot;</code> 这一行暂停，暂停后一次性的使命就已经结束，所以在下一行 <code>myLabel.text = &quot;hello world&quot;</code> 是不会暂停的。</p>
+<h4 id="2-6-通过拖拽指令指针或-“thread-jump-–by-1”-命令跳过一行代码（Skip-lines-of-code-by-dragging-Instruction-Pointer-or-“thread-jump-–by-1”-）"><a href="#2-6-通过拖拽指令指针或-“thread-jump-–by-1”-命令跳过一行代码（Skip-lines-of-code-by-dragging-Instruction-Pointer-or-“thread-jump-–by-1”-）" class="headerlink" title="2.6 通过拖拽指令指针或 “thread jump –by 1” 命令跳过一行代码（Skip lines of code by dragging Instruction Pointer or “thread jump –by 1” ）"></a>2.6 通过拖拽指令指针或 “thread jump –by 1” 命令跳过一行代码（Skip lines of code by dragging Instruction Pointer or “thread jump –by 1” ）</h4><p>首先我们看如何通过拖拽指令指针来，跳过一段代码不执行。如下图，直接拖拽红色箭头指向的按钮，拖到哪从哪里开始执行，往上拖可以重复执行之前的代码，往下拖将不执行中间被跳过的代码。</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl12.PNG" alt=""></p>
+<p>我们通过<font color="#ff502c"><code>thread jump --by 2</code></font> 命令，跳过了 2 行代码，如下图将只打印 1 和 4 。</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl13.PNG" alt=""></p>
+<h4 id="2-7-利用-watchpoints-监听变量的变化（Pause-when-variables-are-modified-by-using-watchpoints）"><a href="#2-7-利用-watchpoints-监听变量的变化（Pause-when-variables-are-modified-by-using-watchpoints）" class="headerlink" title="2.7 利用 watchpoints 监听变量的变化（Pause when variables are modified by using watchpoints）"></a>2.7 利用 watchpoints 监听变量的变化（Pause when variables are modified by using watchpoints）</h4><p>上面我们介绍了使用全局断点和一次性断点对 <code>[UILabel setText:]</code> 函数监听属性的变化，其实我们还有另一个选择，<br>使用 watchpoints 通过监测内存的变化来监听属性的变化。</p>
+<p>我们可以在 <code>viewDidLoad</code> 函数中设置一个断点，然后再控制台找到你需要监听的属性，如下图：</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl14.PNG" alt=""></p>
+<p>选中你想要监听的属性后，点击右键将弹出下图窗口，点击 Watch “count”即可监听属性 count 的值的改变，如执行 <code>count+=1</code>。需要注意的是每当重新编译后指针发生变化，就需要重新设置 watchpoints。</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl15.PNG" alt=""></p>
+<h4 id="2-8-Swift-调用栈中在-LLDB-调试器使用-Obj-C-代码命令（Evaluate-Obj-C-code-in-Swift-frames-with-“expression-l-objc-O-–-”）"><a href="#2-8-Swift-调用栈中在-LLDB-调试器使用-Obj-C-代码命令（Evaluate-Obj-C-code-in-Swift-frames-with-“expression-l-objc-O-–-”）" class="headerlink" title="2.8 Swift 调用栈中在 LLDB 调试器使用 Obj-C 代码命令（Evaluate Obj-C code in Swift frames with “expression -l objc -O – ”）"></a>2.8 Swift 调用栈中在 LLDB 调试器使用 Obj-C 代码命令（Evaluate Obj-C code in Swift frames with “expression -l objc -O – ”）</h4><p>在日常调试中，使用 LLDB 命令 <font color="#ff502c"><code>po [self.view recursiveDescription]</code></font> 命令来输出页面视图结构是非常方便的，然而我们在 Swift 调用栈中使用这个命令的时候将打印以下错误：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">po self.view.recursiveDescription()</div><div class="line">error: &lt;EXPR&gt;:3:6: error: value of <span class="built_in">type</span> <span class="string">'UIView?'</span> has no member <span class="string">'recursiveDescription'</span></div><div class="line">self.view.recursiveDescription()</div><div class="line">~~~~~^~~~ ~~~~~~~~~~~~~~~~~~~~</div></pre></td></tr></table></figure>
+<p>其实我们可以通过 <font color="#ff502c"><code>“expression -l objc -O -- ”</code></font> 命令来使用 Obj-C 代码来输出我们想要的视图结构，记得 <code>self.view</code> 两边一定要加上 ` 符号。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">expression <span class="_">-l</span> objc -O -- [`self.view` recursiveDescription]</div></pre></td></tr></table></figure>
+<p>不知道你们有没有觉得上面这个命令有点长，还好我们可以可以通过 <font color="#ff502c"><code>command alias &lt;alias name&gt; expression -l objc -O —-</code></font>为这句命令建立一个别名，之后就可以通过别名来使用相关操作。</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl16.PNG" alt=""></p>
+<p>再另一种方式，我们可以使用 <font color="#ff502c"><code>po unsafeBitCast(&lt;pstr&gt; , UnsafePointer.self)</code></font> 命令打印对象描述、中心点坐标，当然也可以设置相关属性。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">// 打印对象</div><div class="line">(lldb) po unsafeBitCast(0x7fe439d13160, UILabel.self)</div><div class="line">&lt;UILabel: 0x7fe439d13160; frame = (57 141; 42 21); text = <span class="string">'Label'</span>; opaque = NO; autoresize = RM+BM; userInteractionEnabled = NO; layer = &lt;_UILabelLayer: 0x600003942a30&gt;&gt;</div><div class="line"></div><div class="line">// 打印中心点坐标</div><div class="line">(lldb) po unsafeBitCast(0x7fe439d13160, UILabel.self).center</div><div class="line">▿ (78.0, 151.5)</div><div class="line">  - x : 78.0</div><div class="line">  - y : 151.5</div><div class="line">  </div><div class="line">// 设置中心点坐标</div><div class="line">(lldb) po unsafeBitCast(0x7fe439d13160, UILabel.self).center.y = 300</div></pre></td></tr></table></figure>
+<h4 id="2-9-利用-“expression-CATransaction-flush-”-命令刷新页面（Flush-view-changes-to-the-screen-using-“expression-CATransaction-flush-”"><a href="#2-9-利用-“expression-CATransaction-flush-”-命令刷新页面（Flush-view-changes-to-the-screen-using-“expression-CATransaction-flush-”" class="headerlink" title="2.9 利用 “expression CATransaction.flush()” 命令刷新页面（Flush view changes to the screen using “expression CATransaction.flush()”"></a>2.9 利用 “expression CATransaction.flush()” 命令刷新页面（Flush view changes to the screen using “expression CATransaction.flush()”</h4><p>你可以在控制台通过 LLDB 调试器中改变 UI 的坐标值，但你并不能立即看到页面有任何改变。事实上你确实修改了它的值，你只是需要使用 <font color="#ff502c"><code>“expression CATransaction.flush()”</code></font>来刷新一下你的页面。</p>
+<p>配合修改 UI 坐标值的命令一起使用，你能看到你的模拟器正在发生令人振奋的一幕。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">// 修改坐标点</div><div class="line">po unsafeBitCast(0x7fe439d13160, UILabel.self).center.y = 300</div><div class="line">// 刷新页面</div><div class="line">expression CATransaction.flush()</div></pre></td></tr></table></figure>
+<h4 id="2-10-利用别名和脚本添加自定义-LLDB-命令（Add-custom-LLDB-commands-using-aliases-and-scripts）"><a href="#2-10-利用别名和脚本添加自定义-LLDB-命令（Add-custom-LLDB-commands-using-aliases-and-scripts）" class="headerlink" title="2.10 利用别名和脚本添加自定义 LLDB 命令（Add custom LLDB commands using aliases and scripts）"></a>2.10 利用别名和脚本添加自定义 LLDB 命令（Add custom LLDB commands using aliases and scripts）</h4><p>当你对 LLDB 命令越来越了解，操作越来越骚的时候，你会发现小小的控制台会限制你的发挥，这个时候你需要一个更大的舞台。</p>
+<p>现在我要展示如何使用 Python 脚本执行命令，你需要先下载一 个 <a href="https://developer.apple.com/sample-code/wwdc/2018/UseScriptsToAddCustomCommandsToLLDB.zip" target="_blank" rel="noopener">nudge.py</a> ，这是苹果开发工程师为我们准备好的 Python 脚本，它可以帮助我们简单、快速地移动 UI 控件。我们需要将 <a href="https://developer.apple.com/sample-code/wwdc/2018/UseScriptsToAddCustomCommandsToLLDB.zip" target="_blank" rel="noopener">nudge.py</a> 文件放入你的用户根目录 <code>~/nudge.py</code>。</p>
+<p>下一步我们需要在用户根目录下新建一个 <code>~/.lldbinit</code> 文件，并加入下方命令和别名：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">command</span> script import ~/nudge.py</div><div class="line"><span class="built_in">command</span> <span class="built_in">alias</span> poc expression <span class="_">-l</span> objc -O --</div><div class="line"><span class="built_in">command</span> <span class="built_in">alias</span> 🚽 expression <span class="_">-l</span> objc -- (void)[CATransaction flush]</div></pre></td></tr></table></figure>
+<p>做完这些，我们就可以来使用我们的自定义命令<font color="#ff502c"><code>nudge x-offset y-offset [view]</code></font> 了，具体用法如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">// 引用 nudge</div><div class="line">(lldb) <span class="built_in">command</span> script import ~/nudge.py</div><div class="line">The <span class="string">"nudge"</span> <span class="built_in">command</span> has been installed, <span class="built_in">type</span> <span class="string">"help nudge"</span> <span class="keyword">for</span> detailed help.</div><div class="line"></div><div class="line">// 拿到对象指针</div><div class="line">(lldb) po myLabel</div><div class="line">▿ Optional&lt;UILabel&gt;</div><div class="line">  - some : &lt;UILabel: 0x7<span class="built_in">fc</span>04a60fff0; frame = (57 141; 42 21); text = <span class="string">'Label'</span>; opaque = NO; autoresize = RM+BM; userInteractionEnabled = NO; layer = &lt;_UILabelLayer: 0x600001d36c10&gt;&gt;</div><div class="line">  </div><div class="line">// Y轴向上偏移5</div><div class="line">(lldb) nudge 0 -5 0x7<span class="built_in">fc</span>04a60fff0</div></pre></td></tr></table></figure>
+<p>调整模拟器中控件位置的效果：</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl17.GIF" alt=""></p>
+<h4 id="2-11-LLDB-打印命令（LLDB-Print-Commands）"><a href="#2-11-LLDB-打印命令（LLDB-Print-Commands）" class="headerlink" title="2.11 LLDB 打印命令（LLDB Print Commands）"></a>2.11 LLDB 打印命令（LLDB Print Commands）</h4><table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Alias For</th>
+<th>Steps TO Evaluate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>po <code>&lt;expression&gt;</code></td>
+<td>expression --object-description -- <expression></expression></td>
+<td>1. Expression: evaluate <br>2. Expression: debug description</td>
+</tr>
+<tr>
+<td>p</td>
+<td>expression --</td>
+<td>1. Expression: evaluate <br>2. Outputs LLDB-formatted description</td>
+</tr>
+<tr>
+<td>frame variable</td>
+<td>none</td>
+<td>1. Reads value of from memory <br>2. Outputs LLDB-formatted description</td>
+</tr>
+</tbody>
+</table>
+<p>p 和 po 命令从别名和执行过程上来看，分别输出的是对象和 LLDB 格式数据。</p>
+<p>而 frame variable 不同之处的是从当前 frame 调用栈的内存中拿到的值。只接受变量作为参数，不接受表达式。通过 <font color="#ff502c"><code>frame variable</code> </font>命令，可以打印出当前 frame 调用栈的的所有变量。</p>
+<h3 id="三、深入了解-Xcode-视图调试技巧（Advanced-View-Debugging）"><a href="#三、深入了解-Xcode-视图调试技巧（Advanced-View-Debugging）" class="headerlink" title="三、深入了解 Xcode 视图调试技巧（Advanced View Debugging）"></a>三、深入了解 Xcode 视图调试技巧（Advanced View Debugging）</h3><h4 id="3-1-在调试导航栏中快速定位到视图位置（Reveal-in-Debug-Navigator）"><a href="#3-1-在调试导航栏中快速定位到视图位置（Reveal-in-Debug-Navigator）" class="headerlink" title="3.1 在调试导航栏中快速定位到视图位置（Reveal in Debug Navigator）"></a>3.1 在调试导航栏中快速定位到视图位置（Reveal in Debug Navigator）</h4><p>在开发中我们会频繁使用到 <code>Debug View Hierarchy</code> 查看当前页面视图结构，正常情况下导航栏的 UI 嵌套层级会非常多，让我们无法快速准确找到我们想查看的控件所在的层级。</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl18.PNG" alt=""></p>
+<p>其实 Xcode 已经有快捷方式可以让你快速定位到控件在导航栏中的位置，首先点击选中你需要查看的控件，然后再导航栏中的 navigate 选项，展开后选择 <code>Reveal in Debug Navigator</code>，如下图：</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl19.PNG" alt=""></p>
+<h4 id="3-2-显示被裁剪的视图内容（View-clipped-content）"><a href="#3-2-显示被裁剪的视图内容（View-clipped-content）" class="headerlink" title="3.2 显示被裁剪的视图内容（View clipped content）"></a>3.2 显示被裁剪的视图内容（View clipped content）</h4><p><img src="http://onzskckoz.bkt.clouddn.com/adwxl20.PNG" alt=""></p>
+<p>当我们遇到这样一个显示不全的 bug 的时候，我们可以用到 <code>Debug View Hierarchy</code> 查看当前视图具体情况，进入调试页面你会看到下面这种情况：</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl21.PNG" alt=""></p>
+<p>我想我的 label 应该是完整的，但是超出页面被裁剪掉了，这个时候我需要确认一下事实是不是和我想的一样。如下图，我们需要开启 <code>Show Clipped Content</code> 选项。</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl22.PNG" alt=""></p>
+<p>最后我看到了真相和我猜测的是一致的，我可以根据真实情况准确制定出解决方案。</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl23.PNG" alt=""></p>
+<h4 id="3-3-在调试中查看自动布局信息（Auto-Layout-debugging）"><a href="#3-3-在调试中查看自动布局信息（Auto-Layout-debugging）" class="headerlink" title="3.3 在调试中查看自动布局信息（Auto Layout debugging）"></a>3.3 在调试中查看自动布局信息（Auto Layout debugging）</h4><p>在调试 <code>Debug View Hierarchy</code> 中查看控件的约束只需要启动 <code>Show Constraints</code>选项，选中任何一个控件都会显示出其拥有的约束。</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl24.PNG" alt=""></p>
+<p>选中约束后可以在右边栏对象检查器 <code>Object Inspector</code> 中查看约束的详细信息。</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl25.PNG" alt=""></p>
+<h4 id="3-4-在调试检查器中显示调用栈（Creation-backtraces-in-the-inspector）"><a href="#3-4-在调试检查器中显示调用栈（Creation-backtraces-in-the-inspector）" class="headerlink" title="3.4 在调试检查器中显示调用栈（Creation backtraces in the inspector）"></a>3.4 在调试检查器中显示调用栈（Creation backtraces in the inspector）</h4><p>在调试模式下，我们有办法看到每一个控件，每一个约束的创建调用栈，方便我们快速定位到问题的源头。举个例子，我手动为我的 label 对顶部距离 100 的约束。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> myLabelTopConstraint =  myLabel.topAnchor.constraint(equalTo: <span class="keyword">self</span>.view.topAnchor, constant: <span class="number">100</span>)</div><div class="line"><span class="type">NSLayoutConstraint</span>.activate([myLabelTopConstraint])</div></pre></td></tr></table></figure>
+<p>运行 Demo 后开启 <code>Debug View Hierarchy</code>，开启显示约束选项后，你可以找到这个约束并选中，在右边栏的对象检查器的 Backtrace 一栏你可以看到一个调用栈的列表。如下图，点击右边小箭头可以跳转到创建该对象的代码处。</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl26.PNG" alt=""></p>
+<p>这项功能是需要手动开启的，你可以通过点击项目 <code>Target -&gt; Edit Scheme... -&gt; Run -&gt; Diagnostics -&gt; Logging -&gt;</code> 勾选 <code>Malloc Stack</code> 并且切换至 <code>All Allocation and Free History</code> 模式开启此功能。</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl27.PNG" alt=""></p>
+<h4 id="3-5-获取对象指针及其拓展（Access-object-pointers-copy-casted-expressions-）"><a href="#3-5-获取对象指针及其拓展（Access-object-pointers-copy-casted-expressions-）" class="headerlink" title="3.5 获取对象指针及其拓展（Access object pointers (copy casted expressions) ）"></a>3.5 获取对象指针及其拓展（Access object pointers (copy casted expressions) ）</h4><p>在视图调试模式中，我们有时候也会需要在 LLDB 调试器中输入表达式来达到修改控件位置的的效果。</p>
+<p>举例我们要修改一个约束的值，我们首先要拿到这个约束对象的指针，好消息是 Xcode 可以非常方便让我们拿到，选中该约束，直接快捷键 <code>⌘ + C</code> 就复制好了，可以直接复制到控制台中使用。</p>
+<p>你可以输出该约束的描述信息，和右边栏检查器中的 Description 是一样的效果。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">// po + 复制好的指针</div><div class="line">po ((NSLayoutConstraint *)0x600000dd4460)</div><div class="line"></div><div class="line">// 输出结果</div><div class="line">&lt;NSLayoutConstraint:0x600000dd4460 UILabel:0x7fdb1c70a710<span class="string">'WWDC 2018：效率提升爆表的 Xcode 和...'</span>.top == UIView:0x7fdb1c70b950.top + 100   (active)&gt;</div></pre></td></tr></table></figure>
+<p>也许你还需要复习一下之前的内容，来修改一下约束的值，并且刷新页面，完成这些后赶紧看看模拟器的效果。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">// 设置约束的值为 200</div><div class="line">(lldb) e [((NSLayoutConstraint *)0x600000dd4460) <span class="built_in">set</span>Constant:200]</div><div class="line"></div><div class="line">// 刷新 UI</div><div class="line">// 🚽 是 expression <span class="_">-l</span> objc -- (void)[CATransaction flush] 命令的别名</div><div class="line">(lldb) 🚽</div></pre></td></tr></table></figure>
+<h4 id="3-6-利用快捷键-⌘-click-选中被遮挡的视图-（⌘-click-through-for-selection）"><a href="#3-6-利用快捷键-⌘-click-选中被遮挡的视图-（⌘-click-through-for-selection）" class="headerlink" title="3.6 利用快捷键 ⌘-click 选中被遮挡的视图 （⌘-click-through for selection）"></a>3.6 利用快捷键 ⌘-click 选中被遮挡的视图 （⌘-click-through for selection）</h4><p>在调试中，你要选择的视图被另一个视图遮挡住的情况下，你可以通过 3D 的查看模式，选中后背的视图，如下图。</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl28.PNG" alt=""></p>
+<p>但是这种方式实在难称优雅，况且还有一些刁钻的角度会让你非常头疼。在 2D 的情况下，正确的选中方式应该是 ⌘-click 直接选中背后被遮挡的视图，快去试试看吧。</p>
+<h3 id="四、调试深色模式（Debugging-Dark-Mode）"><a href="#四、调试深色模式（Debugging-Dark-Mode）" class="headerlink" title="四、调试深色模式（Debugging Dark Mode）"></a>四、调试深色模式（Debugging Dark Mode）</h3><h4 id="4-1-切换深色模式（Appearance-overrides）"><a href="#4-1-切换深色模式（Appearance-overrides）" class="headerlink" title="4.1 切换深色模式（Appearance overrides）"></a>4.1 切换深色模式（Appearance overrides）</h4><p>在 macOS 10.14 版本下并且安装了 Xcode 10 ，你就可以在开发中使用 Dark Mode 了，你可以在 Xcode 底部的找到一个黑白两色小方块按钮，通过选中这个按钮，你可以切换模拟器 Dark 和 Light 两种外观。如果你的 Macbook 有 Touch Bar 的话，你也可以通过 Touch Bar 上的按钮来切换。</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl29.PNG" alt=""></p>
+<p>在 StoryBoard 中你可以在底部找到 View as : Light/Dark Appearance 来预览 Dark 和 Light 外观。</p>
+<p>macOS 开发中选中任意一个 View ，你都可以在右边栏的检查器中找到 Appearance 属性，通过这个属性你可以为这个 View 及其子视图设置固定的外观颜色，且不会随着用户切换 Dark 和 Light 外观而改变颜色。</p>
+<h4 id="4-2-捕获活动的-Mac-app（Capturing-active-Mac-apps）"><a href="#4-2-捕获活动的-Mac-app（Capturing-active-Mac-apps）" class="headerlink" title="4.2 捕获活动的 Mac app（Capturing active Mac apps）"></a>4.2 捕获活动的 Mac app（Capturing active Mac apps）</h4><p>我们的 UI Hirerachey 同时只能显示一个 UIWindow 的内容，所有在调试的时候，弹出的 UIWindow 并不会和页面内的 UI 结构一起展示给我们，像 UIAlertView 这种弹出 UIWindow 就无法一起显示。</p>
+<p>如果我们需要查看弹出 UIWindow ， 我们需要把左边栏当前的文件结构全部关闭收起，这个时候你会看到 ViewController 所在的 UIWindow 下面还有另外一个 UIWindow ，选中之后就可以查看弹出的 UIWindow 的 UI 层级结构了。</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl30.PNG" alt=""></p>
+<h4 id="4-3-在检查器中查看深色模式信息（Named-colors-and-NSAppearance-details-in-inspector）"><a href="#4-3-在检查器中查看深色模式信息（Named-colors-and-NSAppearance-details-in-inspector）" class="headerlink" title="4.3 在检查器中查看深色模式信息（Named colors and NSAppearance details in inspector）"></a>4.3 在检查器中查看深色模式信息（Named colors and NSAppearance details in inspector）</h4><p>在 UI Hierarchy 调试中我们可以在右边栏的检查器中查看 Dark Mode 相关信息，选中一个 UILabel 可以查看该 label 的 Text Color 属性。在 Dark Mode 下一共有 3 中类型颜色：</p>
+<ul>
+<li><strong>System Color</strong>：系统推荐颜色 System Color ，可以根据当前外观颜色自适应文字颜色。</li>
+<li><strong>Named Color</strong>：Named Color 需要开发者在 assets catalog 中设置，可以针对 Dark Light 设置不同色值。</li>
+<li><strong>自定义 RGB 颜色</strong>：纯手动设置的自定义 RGB 固定色值。</li>
+</ul>
+<p>下图中的 Text Color 就是在 assets catalog 中设置的 Named Color ，设置的名字为 titleColor，你可以根据场景为该设置设置合适的名字。</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl31.PNG" alt=""></p>
+<p>如下图，检查器偏下的位置 View 一栏中，我们可以找到 Appearance 和 Effective 属性，Appearance 是表示该视图下子视图无法切换的固定的外观颜色选择，Effective 是当前生效的外观颜色。</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl32.PNG" alt=""></p>
+<p>在 assets catalog 中设置 Named Color：</p>
+<p><img src="http://onzskckoz.bkt.clouddn.com/adwxl33.PNG" alt=""></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>功能强大的 LLDB ，特别是配合 BreakPoint 一起使用，让我们有了更多的想象空间，加上越来越好用的 UI Hirerachey ，让我们的调试手段。 这些内容虽然需要花一些时间去了解，但我相信掌握这些技巧将会为你节省下更多的时间。</p>
+<p>从此你再也不用为下班前测出 bug 而焦虑了，早用上，早收工，最多干到下午 3 点钟。希望本文内容对每一位读者有所帮助。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/04/Record-an-experience-of-App-store-review/" rel="next" title="记一次 App 上架审核的经历">
+                <i class="fa fa-chevron-left"></i> 记一次 App 上架审核的经历
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zNDUzMy8xMTA3MQ=="></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Hsiaovv" />
+          <p class="site-author-name" itemprop="name">Hsiaovv</p>
+           
+              <p class="site-description motion-element" itemprop="description">以绝大多数人的努力程度之低，根本轮不到去拼天赋</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">44</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一、提升-Swift-调试可用性（Swift-Debugging-Reliability）"><span class="nav-number">2.</span> <span class="nav-text">一、提升 Swift 调试可用性（Swift Debugging Reliability）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-解决从-AST-context-获取模块失败问题（Failed-to-get-module-from-AST-context）"><span class="nav-number">2.1.</span> <span class="nav-text">1.1 解决从 AST context 获取模块失败问题（Failed to get module from AST context）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-解决-Swift-类型问题（Swift-Type-Resolution）"><span class="nav-number">2.2.</span> <span class="nav-text">1.2 解决 Swift 类型问题（Swift Type Resolution）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、-吐血推荐的调试小技巧（Advanced-Debugging-Tips-and-Tricks）"><span class="nav-number">3.</span> <span class="nav-text">二、 吐血推荐的调试小技巧（Advanced Debugging Tips and Tricks）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-自动创建调试标签页（Configure-behaviors-to-dedicate-a-tab-for-debugging）"><span class="nav-number">3.1.</span> <span class="nav-text">2.1 自动创建调试标签页（Configure behaviors to dedicate a tab for debugging）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-在-LLDB-中修改-App-状态（LLDB-expressions-can-modify-program-state）"><span class="nav-number">3.2.</span> <span class="nav-text">2.2 在 LLDB 中修改 App 状态（LLDB expressions can modify program state）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-利用断点实时插入代码（Use-auto-continuing-breakpoints-with-debugger-commands-to-inject-code-live）"><span class="nav-number">3.3.</span> <span class="nav-text">2.3 利用断点实时插入代码（Use auto-continuing breakpoints with debugger commands to inject code live）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-在汇编调用栈中打印函数实参（”po-arg1”-arg2-etc-in-assembly-frames-to-print-function-arguments）"><span class="nav-number">3.4.</span> <span class="nav-text">2.4 在汇编调用栈中打印函数实参（”po $arg1” ($arg2, etc) in assembly frames to print function arguments）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-利用-“breakpoint-set-–one-shot-true”-命令创建一次性断点（Create-dependent-breakpoints-using-）"><span class="nav-number">3.5.</span> <span class="nav-text">2.5 利用 “breakpoint set –one-shot true” 命令创建一次性断点（Create dependent breakpoints using ）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-6-通过拖拽指令指针或-“thread-jump-–by-1”-命令跳过一行代码（Skip-lines-of-code-by-dragging-Instruction-Pointer-or-“thread-jump-–by-1”-）"><span class="nav-number">3.6.</span> <span class="nav-text">2.6 通过拖拽指令指针或 “thread jump –by 1” 命令跳过一行代码（Skip lines of code by dragging Instruction Pointer or “thread jump –by 1” ）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-7-利用-watchpoints-监听变量的变化（Pause-when-variables-are-modified-by-using-watchpoints）"><span class="nav-number">3.7.</span> <span class="nav-text">2.7 利用 watchpoints 监听变量的变化（Pause when variables are modified by using watchpoints）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-8-Swift-调用栈中在-LLDB-调试器使用-Obj-C-代码命令（Evaluate-Obj-C-code-in-Swift-frames-with-“expression-l-objc-O-–-”）"><span class="nav-number">3.8.</span> <span class="nav-text">2.8 Swift 调用栈中在 LLDB 调试器使用 Obj-C 代码命令（Evaluate Obj-C code in Swift frames with “expression -l objc -O – ”）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-9-利用-“expression-CATransaction-flush-”-命令刷新页面（Flush-view-changes-to-the-screen-using-“expression-CATransaction-flush-”"><span class="nav-number">3.9.</span> <span class="nav-text">2.9 利用 “expression CATransaction.flush()” 命令刷新页面（Flush view changes to the screen using “expression CATransaction.flush()”</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-10-利用别名和脚本添加自定义-LLDB-命令（Add-custom-LLDB-commands-using-aliases-and-scripts）"><span class="nav-number">3.10.</span> <span class="nav-text">2.10 利用别名和脚本添加自定义 LLDB 命令（Add custom LLDB commands using aliases and scripts）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-11-LLDB-打印命令（LLDB-Print-Commands）"><span class="nav-number">3.11.</span> <span class="nav-text">2.11 LLDB 打印命令（LLDB Print Commands）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、深入了解-Xcode-视图调试技巧（Advanced-View-Debugging）"><span class="nav-number">4.</span> <span class="nav-text">三、深入了解 Xcode 视图调试技巧（Advanced View Debugging）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-在调试导航栏中快速定位到视图位置（Reveal-in-Debug-Navigator）"><span class="nav-number">4.1.</span> <span class="nav-text">3.1 在调试导航栏中快速定位到视图位置（Reveal in Debug Navigator）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-显示被裁剪的视图内容（View-clipped-content）"><span class="nav-number">4.2.</span> <span class="nav-text">3.2 显示被裁剪的视图内容（View clipped content）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-在调试中查看自动布局信息（Auto-Layout-debugging）"><span class="nav-number">4.3.</span> <span class="nav-text">3.3 在调试中查看自动布局信息（Auto Layout debugging）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-在调试检查器中显示调用栈（Creation-backtraces-in-the-inspector）"><span class="nav-number">4.4.</span> <span class="nav-text">3.4 在调试检查器中显示调用栈（Creation backtraces in the inspector）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5-获取对象指针及其拓展（Access-object-pointers-copy-casted-expressions-）"><span class="nav-number">4.5.</span> <span class="nav-text">3.5 获取对象指针及其拓展（Access object pointers (copy casted expressions) ）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-6-利用快捷键-⌘-click-选中被遮挡的视图-（⌘-click-through-for-selection）"><span class="nav-number">4.6.</span> <span class="nav-text">3.6 利用快捷键 ⌘-click 选中被遮挡的视图 （⌘-click-through for selection）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、调试深色模式（Debugging-Dark-Mode）"><span class="nav-number">5.</span> <span class="nav-text">四、调试深色模式（Debugging Dark Mode）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-切换深色模式（Appearance-overrides）"><span class="nav-number">5.1.</span> <span class="nav-text">4.1 切换深色模式（Appearance overrides）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-捕获活动的-Mac-app（Capturing-active-Mac-apps）"><span class="nav-number">5.2.</span> <span class="nav-text">4.2 捕获活动的 Mac app（Capturing active Mac apps）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-在检查器中查看深色模式信息（Named-colors-and-NSAppearance-details-in-inspector）"><span class="nav-number">5.3.</span> <span class="nav-text">4.3 在检查器中查看深色模式信息（Named colors and NSAppearance details in inspector）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Hsiaovv</span>
+</div>
+
+
+<div class="powered-by">
+
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+  <div class="powered-by">  
+  </div>
+  <span>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></span>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("03EiT54MHYWVD5oet8EvooxX-gzGzoHsz", "pEuU3RFhQtvFv7b7w4xYXtE2");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
