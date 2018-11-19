@@ -95,12 +95,12 @@
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="本系列文章转载自南峰子的技术博客 本文原地址：Objective-C Runtime 运行时之三：方法与消息 前面我们讨论了 Runtime 中对类和对象的处理，及对成员变量与属性的处理。这一章，我们就要开始讨论 Runtime 中最有意思的一部分：消息处理机制，我们将详细讨论消息的发送及消息的转发，不过在讨论消息之前，我们先来了解一下与方法相关的一些内容 基础数据类型SELSEL 又叫选择器，是">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/objcmsgSendF.png">
-<meta property="og:updated_time" content="2017-06-03T07:12:37.000Z">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/objcmsgSendF.png">
+<meta property="og:updated_time" content="2018-11-19T13:04:57.595Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Objective-C Runtime 运行时之三：方法与消息">
 <meta name="twitter:description" content="本系列文章转载自南峰子的技术博客 本文原地址：Objective-C Runtime 运行时之三：方法与消息 前面我们讨论了 Runtime 中对类和对象的处理，及对成员变量与属性的处理。这一章，我们就要开始讨论 Runtime 中最有意思的一部分：消息处理机制，我们将详细讨论消息的发送及消息的转发，不过在讨论消息之前，我们先来了解一下与方法相关的一些内容 基础数据类型SELSEL 又叫选择器，是">
-<meta name="twitter:image" content="http://onzskckoz.bkt.clouddn.com/objcmsgSendF.png">
+<meta name="twitter:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/objcmsgSendF.png">
 
 
 
@@ -401,7 +401,7 @@
 </ol>
 <p>当我们创建一个新对象时，先为其分配内存，并初始化其成员变量。其中 <code>isa</code> 指针也会被初始化，让对象可以访问类及类的继承体系</p>
 <p>下图演示了这样一个消息的基本框架:</p>
-<p><img src="http://onzskckoz.bkt.clouddn.com/objcmsgSendF.png" alt=""></p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/objcmsgSendF.png" alt=""></p>
 <p>当消息发送给一个对象时，<code>objc_msgSend</code> 通过对象的 <code>isa</code> 指针获取到类的结构体，然后在方法分发表里面查找方法的 <code>selector</code>。如果没有找到<code>selector</code>，则通过 <code>objc_msgSend</code> 结构体中的指向父类的指针找到其父类，并在父类的分发表里面查找方法的<code>selector</code>。依此，会一直沿着类的继承体系到达 <code>NSObject</code> 类。一旦定位到<code>selector</code>，函数会就获取到了实现的入口点，并传入相应的参数来执行方法的具体实现。如果最后没有定位到 <code>selector</code>，则会走消息转发流程，这个我们在后面讨论</p>
 <p>为了加速消息的处理，运行时系统缓存使用过的 <code>selector</code> 及对应的方法的地址。这点我们在前面讨论过，不再重复</p>
 <h4 id="隐藏参数"><a href="#隐藏参数" class="headerlink" title="隐藏参数"></a>隐藏参数</h4><p><code>objc_msgSend</code> 有两个隐藏参数：</p>

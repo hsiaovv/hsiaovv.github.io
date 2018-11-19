@@ -95,13 +95,13 @@
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="OC 的分类（类别）和扩展基本上是面试必问的一个知识点，它们在日常开发中用的也非常多，相关文章网上非常多，好多都是一样的内容，本文也不免俗，按我自己的整理记录一下这个知识点 分类／类别（Category）分类能够做到的事情主要是：即使在你不知道一个类的源码情况下，向这个类添加扩展的方法，通过分类可以将庞大一个类的方法进行划分,从而便于代码的日后的维护、更新以及提高代码的阅读性，那么怎么样新建一个分">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/addCategory1.png">
-<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/addCategory2.png">
-<meta property="og:updated_time" content="2017-07-08T00:42:43.000Z">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/addCategory1.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/addCategory2.png">
+<meta property="og:updated_time" content="2018-11-19T13:04:57.511Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="OC 的类别和扩展（Category 和 Extension）">
 <meta name="twitter:description" content="OC 的分类（类别）和扩展基本上是面试必问的一个知识点，它们在日常开发中用的也非常多，相关文章网上非常多，好多都是一样的内容，本文也不免俗，按我自己的整理记录一下这个知识点 分类／类别（Category）分类能够做到的事情主要是：即使在你不知道一个类的源码情况下，向这个类添加扩展的方法，通过分类可以将庞大一个类的方法进行划分,从而便于代码的日后的维护、更新以及提高代码的阅读性，那么怎么样新建一个分">
-<meta name="twitter:image" content="http://onzskckoz.bkt.clouddn.com/addCategory1.png">
+<meta name="twitter:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/addCategory1.png">
 
 
 
@@ -340,9 +340,9 @@
         <p>OC 的分类（类别）和扩展基本上是面试必问的一个知识点，它们在日常开发中用的也非常多，相关文章网上非常多，好多都是一样的内容，本文也不免俗，按我自己的整理记录一下这个知识点</p>
 <h3 id="分类／类别（Category）"><a href="#分类／类别（Category）" class="headerlink" title="分类／类别（Category）"></a>分类／类别（Category）</h3><p><strong>分类能够做到的事情主要是：即使在你不知道一个类的源码情况下，向这个类添加扩展的方法</strong>，通过分类可以将庞大一个类的方法进行划分,从而便于代码的日后的维护、更新以及提高代码的阅读性，那么怎么样新建一个分类呢？</p>
 <p>在项目工程里使用快捷键 <code>Command</code> + <code>N</code> 新建文件，选择 <code>Objective-C File</code></p>
-<p><img src="http://onzskckoz.bkt.clouddn.com/addCategory1.png" alt=""></p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/addCategory1.png" alt=""></p>
 <p>然后在 <code>File</code> 给这个分类的取个名字， <code>File Type</code> 选择 <code>Category</code>，<code>Class</code> 选择你需要为那个类新建一个分类</p>
-<p><img src="http://onzskckoz.bkt.clouddn.com/addCategory2.png" alt=""></p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/addCategory2.png" alt=""></p>
 <p>之后就创建好了一个叫 <code>NSString+Utility</code> 的分类</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// .h</span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">NSString</span> (<span class="title">Utility</span>)</span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="comment">// .m</span></div><div class="line"><span class="meta">#import <span class="meta-string">"NSString+Utility.h"</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">NSString</span> (<span class="title">Utility</span>)</span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
 <p>然后我们就可以在这个分类里添加方法，既然叫 <code>Utility</code> 那么我就添加一个 <code>NSString</code> 相关的工具方法，比如增加一个给字符串 MD5 加密的方法</p>

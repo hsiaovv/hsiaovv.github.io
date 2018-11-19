@@ -94,19 +94,19 @@
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="上篇文章讲到了使用第三方App 1Password 集成到自己App内实现密码的填充和管理，iOS 11 之后苹果官方推出了类似的功能并且直接集成到了iOS 系统，这个功能官方称之为：Password AutoFill iOS 和 macOS 的Safari 浏览器都内建密码管理器，使用Safari 进行网页登陆的时候，Safari 会询问是否保存密码，下次登录的时候Safari 可以为用户自动填">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/passwordautofill1.png">
-<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/passwordautofill2.png">
-<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/passwordautofill3.png">
-<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/passwordautofill4.png">
-<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/passwordautofill5.png">
-<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/passwordautofill6.png">
-<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/passwordautofill7.png">
-<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/passwordautofill8.png">
-<meta property="og:updated_time" content="2018-03-25T06:15:34.000Z">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/passwordautofill1.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/passwordautofill2.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/passwordautofill3.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/passwordautofill4.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/passwordautofill5.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/passwordautofill6.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/passwordautofill7.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/passwordautofill8.png">
+<meta property="og:updated_time" content="2018-11-19T13:04:57.493Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS 11 新特性：App 密码自动填充">
 <meta name="twitter:description" content="上篇文章讲到了使用第三方App 1Password 集成到自己App内实现密码的填充和管理，iOS 11 之后苹果官方推出了类似的功能并且直接集成到了iOS 系统，这个功能官方称之为：Password AutoFill iOS 和 macOS 的Safari 浏览器都内建密码管理器，使用Safari 进行网页登陆的时候，Safari 会询问是否保存密码，下次登录的时候Safari 可以为用户自动填">
-<meta name="twitter:image" content="http://onzskckoz.bkt.clouddn.com/passwordautofill1.png">
+<meta name="twitter:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/passwordautofill1.png">
 
 
 
@@ -345,25 +345,25 @@
         <p><a href="http://xiaovv.me/2018/03/22/make-your-app-add-1Password-support/" target="_blank" rel="noopener">上篇文章</a>讲到了使用第三方App 1Password 集成到自己App内实现密码的填充和管理，iOS 11 之后苹果官方推出了类似的功能并且直接集成到了iOS 系统，这个功能官方称之为：<code>Password AutoFill</code></p>
 <p>iOS 和 macOS 的Safari 浏览器都内建密码管理器，使用Safari 进行网页登陆的时候，Safari 会询问是否保存密码，下次登录的时候Safari 可以为用户自动填充之前保存的密码，而 <code>Password AutoFill</code> 是iOS11 新增的一个功能，这一功能的实现能够让用户在 App 内进行密码填充以及密码管理</p>
 <h3 id="如何实现"><a href="#如何实现" class="headerlink" title="如何实现"></a>如何实现</h3><p>在iOS 11 中 UITextField 的 ContentType 新增了两个类型用于实现<code>Password AutoFill</code></p>
-<p><img src="http://onzskckoz.bkt.clouddn.com/passwordautofill1.png" alt=""></p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/passwordautofill1.png" alt=""></p>
 <p>我们需要在代码里面把用户名和密码的<code>TextField</code>输入框的ContentType 分别设置为<code>.username</code> 和 <code>. password</code></p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">usernameTF.textContentType = <span class="type">UITextContentType</span>.username</div><div class="line">usernameTF.textContentType = <span class="type">UITextContentType</span>.password</div></pre></td></tr></table></figure>
 <p>这时候用户在需要在输入用户名与密码的时候，可以通过点击 QuickType bar 右侧的钥匙串按钮，在所有的保存的密码中选择要填充的用户名和密码了</p>
-<p><img src="http://onzskckoz.bkt.clouddn.com/passwordautofill2.png" alt=""></p>
-<p>但是这样看起来还是不够方便，因为如果用户保存了非常多的密码，那就需要从列表中去查找，但是如果能让系统根据打开的 App 把候选的密码展示出来我们只需要选择就能理解填充岂不是更加方便？如下图那样的效果：<br><img src="http://onzskckoz.bkt.clouddn.com/passwordautofill3.png" alt=""></p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/passwordautofill2.png" alt=""></p>
+<p>但是这样看起来还是不够方便，因为如果用户保存了非常多的密码，那就需要从列表中去查找，但是如果能让系统根据打开的 App 把候选的密码展示出来我们只需要选择就能理解填充岂不是更加方便？如下图那样的效果：<br><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/passwordautofill3.png" alt=""></p>
 <h3 id="关联-App-和网站"><a href="#关联-App-和网站" class="headerlink" title="关联 App 和网站"></a>关联 App 和网站</h3><h4 id="App-设置"><a href="#App-设置" class="headerlink" title="App 设置"></a>App 设置</h4><p>如果 App 已经适配了 <code>Universal Link</code>，那网站跟 App 就已经关联起来了，iOS 系统会把正确的登录信息显示在 QuickType bar 上，如果没有实现 <code>Universal Link</code> 可以使用以下方式把 APP 和自己的网站进行关联</p>
 <p>首先，我们需要在 Xcode 上的 <code>Associated Domains</code>(关联域，<code>Capabilities -&gt; Associated Domains</code>) 添加网站域，格式为：webcredentials+我们的网站域名</p>
-<p><img src="http://onzskckoz.bkt.clouddn.com/passwordautofill4.png" alt=""></p>
-<p>登录<a href="https://developer.apple.com/account/" target="_blank" rel="noopener">Apple开发者网站</a>，确认<code>Associated Domains</code>已经启用。另外记录一下当前应用的 <code>Prefix</code>，后面会用到<br><img src="http://onzskckoz.bkt.clouddn.com/passwordautofill5.png" alt=""><br><img src="http://onzskckoz.bkt.clouddn.com/passwordautofill6.png" alt=""></p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/passwordautofill4.png" alt=""></p>
+<p>登录<a href="https://developer.apple.com/account/" target="_blank" rel="noopener">Apple开发者网站</a>，确认<code>Associated Domains</code>已经启用。另外记录一下当前应用的 <code>Prefix</code>，后面会用到<br><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/passwordautofill5.png" alt=""><br><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/passwordautofill6.png" alt=""></p>
 <h4 id="网站设置"><a href="#网站设置" class="headerlink" title="网站设置"></a>网站设置</h4><p>新建一个 <code>Associated Domains File</code> 内容如下：</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"webcredentials"</span>:&#123;</div><div class="line">        <span class="attr">"apps"</span>:[<span class="string">"E5336VM85F.com.example.Shiny"</span>] </div><div class="line">        //E5336VM85F 是上面记录下来的Prefix，后面是需关联的应用的 Bundle ID ，</div><div class="line">        //和 Universal Link 类似</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>把这个文件添加到以下网站目录：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">https://example.com/.well-known/apple-app-site-association </div><div class="line">https://example.com/apple-app-site-association</div></pre></td></tr></table></figure>
 <p>网站设置完成后，再次运行App，App会在启动时访问上面的地址进行验证</p>
-<p><img src="http://onzskckoz.bkt.clouddn.com/passwordautofill7.png" alt=""></p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/passwordautofill7.png" alt=""></p>
 <p>验证通过后就可以在填充密码的时候在QuickType bar 上展示与该网站相关的密码了，如果验证不通过重新检查网站和App的相关设置</p>
 <p>上面的设置完成之后，用户按照下面的步骤去设置里面保存账号密码</p>
-<p><img src="http://onzskckoz.bkt.clouddn.com/passwordautofill8.png" alt=""></p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/passwordautofill8.png" alt=""></p>
 <p>以上就是 App 自动填充密码功能的实现，文章参考自 <a href="https://developer.apple.com/videos/play/wwdc2017/206/" target="_blank" rel="noopener">Introducing Password AutoFill for Apps</a></p>
 
       

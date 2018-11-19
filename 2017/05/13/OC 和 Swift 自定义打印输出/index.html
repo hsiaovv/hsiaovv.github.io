@@ -95,13 +95,13 @@
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="iOS 开发过程中，经常需要在 Debug 模式下使用打印日志输出（在 OC 中默认是使用 NSLog 打印, Swift 中默认使用 print 打印）进行调试，但是 Release 之后打包生成安装文件之后就不需要这些输出了，并且 Release 之后打印输出还会影响 App 的性能，苹果上架审核规则也是不允许的，下面就分别介绍 OC 和 Swift 下怎么实现 Debug 模式下打印输出，R">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/setpchpath.png">
-<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/setswiftdebug.png">
-<meta property="og:updated_time" content="2017-07-08T00:42:00.000Z">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/setpchpath.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/setswiftdebug.png">
+<meta property="og:updated_time" content="2018-11-19T13:04:57.624Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="OC 和 Swift 自定义打印输出">
 <meta name="twitter:description" content="iOS 开发过程中，经常需要在 Debug 模式下使用打印日志输出（在 OC 中默认是使用 NSLog 打印, Swift 中默认使用 print 打印）进行调试，但是 Release 之后打包生成安装文件之后就不需要这些输出了，并且 Release 之后打印输出还会影响 App 的性能，苹果上架审核规则也是不允许的，下面就分别介绍 OC 和 Swift 下怎么实现 Debug 模式下打印输出，R">
-<meta name="twitter:image" content="http://onzskckoz.bkt.clouddn.com/setpchpath.png">
+<meta name="twitter:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/setpchpath.png">
 
 
 
@@ -356,14 +356,14 @@
 <p>1. 打开你的 Xcode 工程. 在Supporting Files目录下,使用 <code>Command</code> + <code>N</code> 新建一个文件选择 other 下面的 <code>PCH File</code>，<code>PCH</code> 文件名格式建议为 <code>工程名-Prefix.pch</code>，比如：<code>NSLogDemo-Prefix.pch</code></p>
 <p>2. 在工程的 <code>Build Settings</code> 里搜索找到 <code>Prefix Header</code> 选项，然后给这个选项配置路径为：项目名称/PCH 文件名，比如：NSLogDemo/NSLogDemo-Prefix.pch</p>
 <p>3. 将 <code>Precompile Prefix Header</code> 为 <code>YES</code>，预编译后的 <code>PCH</code> 文件会被缓存起来，可以提高编译速度</p>
-<p><img src="http://onzskckoz.bkt.clouddn.com/setpchpath.png" alt=""></p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/setpchpath.png" alt=""></p>
 <p>4. Clean 一下工程，就可以使用 <code>PCH</code> 文件了</p>
 <h3 id="Swift-自定义-Print-输出"><a href="#Swift-自定义-Print-输出" class="headerlink" title="Swift 自定义 Print 输出"></a>Swift 自定义 Print 输出</h3><p>Swift 中已经没有宏定义文件了，但是 Swift 只要在一个文件中声明了一个公开的方法, 其他文件都是可以访问到的. 所以可以把自定义 Log 的方法放到一个公共使用的方法的文件中，可以这样定义：</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> UIKit</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">XWLog</span>&lt;T&gt;<span class="params">(<span class="number">_</span> messsage : T, file : String = #file, funcName : String = #function, lineNum : Int = #line&#123;</span></span></div><div class="line">    </div><div class="line">    #<span class="keyword">if</span> DEBUG</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> fileName = <span class="params">(file <span class="keyword">as</span> NSString)</span>.lastPathComponent</div><div class="line">        </div><div class="line">        <span class="built_in">print</span>(<span class="string">"File:<span class="subst">\(fileName)</span> Function:<span class="subst">\(funcName)</span> Line:<span class="subst">\(lineNum)</span> Content:<span class="subst">\(messsage)</span>"</span>)</div><div class="line">        </div><div class="line">    #endif</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> UIKit</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">XWLog</span>&lt;T&gt;<span class="params">(<span class="number">_</span> messsage : T, file : String = #file, funcName : String = #function, lineNum : Int = #line&#123;</span></span></div><div class="line">    </div><div class="line">    #<span class="keyword">if</span> DEBUG</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> fileName = <span class="params">(file <span class="keyword">as</span> NSString)</span>.lastPathComponent</div><div class="line">        </div><div class="line">        <span class="built_in">print</span>(<span class="string">"File:\(fileName) Function:\(funcName) Line:\(lineNum) Content:\(messsage)"</span>)</div><div class="line">        </div><div class="line">    #endif</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>使用上面的 <code>XWLog</code> 打印的结果如下：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">File:ViewController.swift Function:viewDidLoad() Line:18 Content:LogDemo</div></pre></td></tr></table></figure>
 <p>这里 <code>#if DEBUG</code> 以及 <code>#endif</code> 还是宏，但是这个宏和 OC 中的宏是两回事了，因为这个是我们自定义的宏，Swift2 需要我们自己去配置这个自定义的宏，Swift 3 貌似默认已经配置了，Swift 2 需要在 <code>Building Settings</code> 进行如下设置</p>
-<p><img src="http://onzskckoz.bkt.clouddn.com/setswiftdebug.png" alt=""></p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/setswiftdebug.png" alt=""></p>
 <p>解释一下 <code>XWLog</code> 函数：</p>
 <ul>
 <li>使用泛型函数（<t> 标志）,可以让调用者传递任意的类型,进行打印Log的操作，可以自行搜索 Swift 泛型函数相关内容</t></li>

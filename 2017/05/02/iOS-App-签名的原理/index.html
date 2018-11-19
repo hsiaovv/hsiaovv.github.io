@@ -95,15 +95,15 @@
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="本文章转载自 iOS App 签名的原理，iOS 开发肯定避免不了要接触到 iOS 的各种证书、配置文件等，总是让人搞得很晕，还容易出错，这篇文章从原理上解释了 iOS 的签名机制，最重要的是作者由浅入深的讲解，通俗易懂！ 下面开始文章的正文： iOS 签名机制挺复杂，各种证书，Provisioning Profile，entitlements，CertificateSigningRequest，">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/ios_sign1.png">
-<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/ios_sign2.png">
-<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/ios_sign3.png">
-<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/ios_sign4.png">
-<meta property="og:updated_time" content="2017-06-03T07:12:01.000Z">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/ios_sign1.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/ios_sign2.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/ios_sign3.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/ios_sign4.png">
+<meta property="og:updated_time" content="2018-11-19T13:04:57.571Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS App 签名的原理">
 <meta name="twitter:description" content="本文章转载自 iOS App 签名的原理，iOS 开发肯定避免不了要接触到 iOS 的各种证书、配置文件等，总是让人搞得很晕，还容易出错，这篇文章从原理上解释了 iOS 的签名机制，最重要的是作者由浅入深的讲解，通俗易懂！ 下面开始文章的正文： iOS 签名机制挺复杂，各种证书，Provisioning Profile，entitlements，CertificateSigningRequest，">
-<meta name="twitter:image" content="http://onzskckoz.bkt.clouddn.com/ios_sign1.png">
+<meta name="twitter:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/ios_sign1.png">
 
 
 
@@ -364,7 +364,7 @@
 <h3 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h3><p>现在知道了有非对称加密这东西，那数字签名是怎么回事呢？</p>
 <p>数字签名的作用是我对某一份数据打个标记，表示我认可了这份数据（签了个名），然后我发送给其他人，其他人可以知道这份数据是经过我认证的，数据没有被篡改过。</p>
 <p>有了上述非对称加密算法，就可以实现这个需求：</p>
-<p><img src="http://onzskckoz.bkt.clouddn.com/ios_sign1.png" alt=""></p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/ios_sign1.png" alt=""></p>
 <ul>
 <li><p>首先用一种算法，算出原始数据的摘要。需满足 a.若原始数据有任何变化，计算出来的摘要值都会变化。 b.摘要要够短。这里最常用的算法是MD5。</p>
 </li>
@@ -378,7 +378,7 @@
 <p>之所以要有第一步计算摘要，是因为非对称加密的原理限制可加密的内容不能太大（不能大于上述 n 的位数，也就是一般不能大于 1024 位 / 2048 位），于是若要对任意大的数据签名，就需要改成对它的特征值签名，效果是一样的。</p>
 <p>好了，有了非对称加密的基础，知道了数字签名是什么，怎样可以保证一份数据是经过某个地方认证的，来看看怎样通过数字签名的机制保证每一个安装到 iOS 上的 APP 都是经过苹果认证允许的</p>
 <h3 id="最简单的签名"><a href="#最简单的签名" class="headerlink" title="最简单的签名"></a>最简单的签名</h3><p>要实现这个需求很简单，最直接的方式，苹果官方生成一对公私钥，在 iOS 里内置一个公钥，私钥由苹果后台保存，我们传 App 上 AppStore 时，苹果后台用私钥对 APP 数据进行签名，iOS 系统下载这个 APP 后，用公钥验证这个签名，若签名正确，这个 APP 肯定是由苹果后台认证的，并且没有被修改过，也就达到了苹果的需求：保证安装的每一个 APP 都是经过苹果官方允许的。</p>
-<p><img src="http://onzskckoz.bkt.clouddn.com/ios_sign2.png" alt=""></p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/ios_sign2.png" alt=""></p>
 <p>如果我们 iOS 设备安装 APP 只有从 AppStore 下载这一种方式的话，这件事就结束了，没有任何复杂的东西，只有一个数字签名，非常简单地解决问题。</p>
 <p>但实际上因为除了从 AppStore 下载，我们还可以有三种方式安装一个 App：</p>
 <ul>
@@ -421,11 +421,11 @@
 </ul>
 <h3 id="加点东西"><a href="#加点东西" class="headerlink" title="加点东西"></a>加点东西</h3><p>上述流程只解决了上面第一个需求，也就是需要经过苹果允许才可以安装，还未解决第二个避免被滥用的问题。怎么解决呢？苹果再加了两个限制，一是限制在苹果后台注册过的设备才可以安装，二是限制签名只能针对某一个具体的 APP。</p>
 <p>怎么加的？在上述第三步，苹果用私钥 A 签名我们本地公钥 L 时，实际上除了签名公钥 L，还可以加上无限多数据，这些数据都可以保证是经过苹果官方认证的，不会有被篡改的可能。</p>
-<p><img src="http://onzskckoz.bkt.clouddn.com/ios_sign3.png" alt=""></p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/ios_sign3.png" alt=""></p>
 <p>可以想到把 允许安装的设备 ID 列表 和 App对应的 AppID 等数据，都在第三步这里跟公钥L一起组成证书，再用苹果私钥 A 对这个证书签名。在最后第 5 步验证时就可以拿到设备 ID 列表，判断当前设备是否符合要求。根据数字签名的原理，只要数字签名通过验证，第 5 步这里的设备 IDs / AppID / 公钥 L 就都是经过苹果认证的，无法被修改，苹果就可以限制可安装的设备和 APP，避免滥用。</p>
 <h3 id="最终流程"><a href="#最终流程" class="headerlink" title="最终流程"></a>最终流程</h3><p>到这里这个证书已经变得很复杂了，有很多额外信息，实际上除了 设备 ID / AppID，还有其他信息也需要在这里用苹果签名，像这个 APP 里 iCloud / push / 后台运行 等权限苹果都想控制，苹果把这些权限开关统一称为 Entitlements，它也需要通过签名去授权。</p>
 <p>实际上一个“证书”本来就有规定的格式规范，上面我们把各种额外信息塞入证书里是不合适的，于是苹果另外搞了个东西，叫 Provisioning Profile，一个 Provisioning Profile 里就包含了证书以及上述提到的所有额外信息，以及所有信息的签名。<br>所以整个流程稍微变一下，就变成这样了：</p>
-<p><img src="http://onzskckoz.bkt.clouddn.com/ios_sign4.png" alt=""></p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/ios_sign4.png" alt=""></p>
 <p>因为步骤有小变动，这里我们不辞啰嗦重新再列一遍整个流程：</p>
 <ul>
 <li><p>在你的 Mac 开发机器生成一对公私钥，这里称为公钥L，私钥L。L:Local</p>

@@ -95,13 +95,13 @@
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="iOS 10.3 新增了更换 App 图标的功能，这个功能使用起来也不复杂，这篇文章就介绍一下 iOS 10.3 怎么更换 App 的图标 官方文档介绍更换图标的需要用到下面几个新 API 方法： 1234567891011// If false, alternate icons are not supported for the current process.@available(iOS 10">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/changeIconPlist.png">
-<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/changIcon.PNG">
-<meta property="og:updated_time" content="2017-07-04T14:13:06.000Z">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/changeIconPlist.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/changIcon.PNG">
+<meta property="og:updated_time" content="2018-11-19T13:04:57.509Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS10.3 更换应用图标">
 <meta name="twitter:description" content="iOS 10.3 新增了更换 App 图标的功能，这个功能使用起来也不复杂，这篇文章就介绍一下 iOS 10.3 怎么更换 App 的图标 官方文档介绍更换图标的需要用到下面几个新 API 方法： 1234567891011// If false, alternate icons are not supported for the current process.@available(iOS 10">
-<meta name="twitter:image" content="http://onzskckoz.bkt.clouddn.com/changeIconPlist.png">
+<meta name="twitter:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/changeIconPlist.png">
 
 
 
@@ -341,7 +341,7 @@
 <h3 id="官方文档介绍"><a href="#官方文档介绍" class="headerlink" title="官方文档介绍"></a>官方文档介绍</h3><p>更换图标的需要用到下面几个新 API 方法：</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// If false, alternate icons are not supported for the current process.</span></div><div class="line"><span class="meta">@available</span>(iOS <span class="number">10.3</span>, *)</div><div class="line">open <span class="keyword">var</span> supportsAlternateIcons: <span class="type">Bool</span> &#123; <span class="keyword">get</span> &#125;</div><div class="line">  </div><div class="line"><span class="comment">// Pass `nil` to use the primary application icon. The completion handler will be invoked asynchronously on an arbitrary background queue; be sure to dispatch back to the main queue before doing any further UI work.</span></div><div class="line"><span class="meta">@available</span>(iOS <span class="number">10.3</span>, *)</div><div class="line">open <span class="function"><span class="keyword">func</span> <span class="title">setAlternateIconName</span><span class="params">(<span class="number">_</span> alternateIconName: String?, completionHandler: <span class="params">(<span class="params">(Error?)</span></span></span></span> -&gt; <span class="type">Swift</span>.<span class="type">Void</span>)? = <span class="literal">nil</span>)</div><div class="line">    </div><div class="line"><span class="comment">// If `nil`, the primary application icon is being used.</span></div><div class="line"><span class="meta">@available</span>(iOS <span class="number">10.3</span>, *)</div><div class="line">open <span class="keyword">var</span> alternateIconName: <span class="type">String</span>? &#123; <span class="keyword">get</span> &#125;</div></pre></td></tr></table></figure>
 <p>其中最主要的是 <code>setAlternateIconName</code> 方法，<a href="https://developer.apple.com/reference/uikit/uiapplication/2806818-setalternateiconname#parameters" target="_blank" rel="noopener">这是这个方法的官方文档</a>   除了使用这个方法之外还需要在 <code>info.plist</code> 文件里配置，<a href="https://developer.apple.com/library/content/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html#//apple_ref/doc/uid/TP40009249-SW14" target="_blank" rel="noopener">这是配置说明</a> 具体配置如图：</p>
-<p><img src="http://onzskckoz.bkt.clouddn.com/changeIconPlist.png" alt=""></p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/changeIconPlist.png" alt=""></p>
 <ul>
 <li>Primary Icon：主要图标<ul>
 <li>Icon files：图标数组</li>
@@ -368,7 +368,7 @@
     <span class="keyword">if</span> <span class="type">UIApplication</span>.shared.supportsAlternateIcons {<span class="comment">//判断设备是否支持更换图标      </span>
         <span class="type">UIApplication</span>.shared.setAlternateIconName(iconName, completionHandler: { (error) <span class="keyword">in</span>
             <span class="keyword">if</span> error != <span class="literal">nil</span> {
-                 <span class="built_in">print</span>(<span class="string">"替换icon失败<span class="subst">\(String(describing: error?.localizedDescription)</span>)"</span>)
+                 <span class="built_in">print</span>(<span class="string">"替换icon失败\(String(describing: error?.localizedDescription))"</span>)
             }
         })
     }<span class="keyword">else</span> {
@@ -377,7 +377,7 @@
 }
 </code></pre>
 <p>更换图标的时候会弹出提示框，提示框左边会显示更换的图标的样子，选择确定之后，回到桌面就可以看到图标被修改了</p>
-<p><img src="http://onzskckoz.bkt.clouddn.com/changIcon.PNG" alt=""></p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/changIcon.PNG" alt=""></p>
 <p>如果需要恢复原来的图标 <code>setAlternateIconName</code> 传 <code>nil</code> 就可以恢复了</p>
 <p>这是 <a href="https://github.com/hsiaovv/iOS10.3ChangesAppIconDemo" target="_blank" rel="noopener">demo 代码地址</a> </p>
 <p><strong>本人刚开始写博客，主要是为了给自己的知识点做一个笔记，方便自己以后查阅，如果能让别人有所启发也是荣幸之至！如有错误，欢迎指正！</strong></p>

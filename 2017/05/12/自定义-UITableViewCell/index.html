@@ -95,15 +95,15 @@
 <meta property="og:site_name" content="笑忘书店">
 <meta property="og:description" content="iOS 开发中 UITableView 是用的非常多的控件之一，而 UITableViewCell 是构建一个 UITableView 的基础，UITableViewCell 系统提供了四种默认的样式，但是实际开发中这四种样式往往不能满足要求，于是就需要自定义 UITableViewCell，本文就简单介绍一下如何自定义 UITableViewCell  系统 UITableViewCell 样式">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/system_cell.PNG">
-<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/addcustomxibcell.png">
-<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/setcustomXIBcell.png">
-<meta property="og:image" content="http://onzskckoz.bkt.clouddn.com/addcustomcodecell.png">
-<meta property="og:updated_time" content="2017-06-03T07:11:52.000Z">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/system_cell.PNG">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/addcustomxibcell.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/setcustomXIBcell.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/addcustomcodecell.png">
+<meta property="og:updated_time" content="2018-11-19T13:04:57.603Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="自定义 UITableViewCell">
 <meta name="twitter:description" content="iOS 开发中 UITableView 是用的非常多的控件之一，而 UITableViewCell 是构建一个 UITableView 的基础，UITableViewCell 系统提供了四种默认的样式，但是实际开发中这四种样式往往不能满足要求，于是就需要自定义 UITableViewCell，本文就简单介绍一下如何自定义 UITableViewCell  系统 UITableViewCell 样式">
-<meta name="twitter:image" content="http://onzskckoz.bkt.clouddn.com/system_cell.PNG">
+<meta name="twitter:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/system_cell.PNG">
 
 
 
@@ -341,19 +341,19 @@
       
         <p>iOS 开发中 UITableView 是用的非常多的控件之一，而 UITableViewCell 是构建一个 UITableView 的基础，UITableViewCell 系统提供了四种默认的样式，但是实际开发中这四种样式往往不能满足要求，于是就需要自定义 UITableViewCell，本文就简单介绍一下如何自定义 UITableViewCell </p>
 <h3 id="系统-UITableViewCell-样式"><a href="#系统-UITableViewCell-样式" class="headerlink" title="系统 UITableViewCell 样式"></a>系统 UITableViewCell 样式</h3><p>自定义 UITableViewCell 之前还是先介绍一下系统默认提供的四种样式的 UITableViewCell 吧</p>
-<p><img src="http://onzskckoz.bkt.clouddn.com/system_cell.PNG" alt=""></p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/system_cell.PNG" alt=""></p>
 <p><strong>UITableViewCellStyleDefault</strong>: Default样式，左边一个显示图片的imageView，一个标题textLabel，没有detailTextLabel</p>
 <p><strong>UITableViewCellStyleSubtitle</strong>: Subtitle样式,左边一个显示图片的imageView，图片右边的上边一个主标题textLabel，下边一个副标题detailTextLabel，主标题字体大且加黑，副标题字体小颜色是淡灰色</p>
 <p><strong>UITableViewCellStyleValue1</strong>: Value1样式，左边一个显示图片的imageView，图片右边一个主标题textLabel，cell的最右边一个副标题detailTextLabel，主标题字体比较黑</p>
 <p><strong>UITableViewCellStyleValue2</strong>：Value2样式，左边一个主标题textLabel字体偏小，挨着右边一个副标题detailTextLabel，字体大且加黑</p>
 <p>实际开发中系统默认的四种样式用的很少，所以才有本文的内容，自定义 UITableViewCell</p>
 <h3 id="使用-XIB-自定义-UITableViewCell"><a href="#使用-XIB-自定义-UITableViewCell" class="headerlink" title="使用 XIB 自定义 UITableViewCell"></a>使用 XIB 自定义 UITableViewCell</h3><p>使用 XIB 自定义 UITableViewCell比较简单快捷， 首先需要在工程里新建一个继承自 UITableViewCell 的 <code>XIBCustomCell</code> 的类，创建的时候勾选 <code>Also creat XIB file</code>，</p>
-<p><img src="http://onzskckoz.bkt.clouddn.com/addcustomxibcell.png" alt=""></p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/addcustomxibcell.png" alt=""></p>
 <p>然后在 XIB 里面添加控件，设置好约束和位置，再通过拖线的方式把添加的控件作为属性</p>
-<p><img src="http://onzskckoz.bkt.clouddn.com/setcustomXIBcell.png" alt=""></p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/setcustomXIBcell.png" alt=""></p>
 <p>然后在 UITableView 中使用自定义的 Cell 的时候就可以直接给 <code>centerImage</code> 和 <code>rightLab</code> 属性赋值了</p>
 <h3 id="纯代码自定义-UITableViewCell"><a href="#纯代码自定义-UITableViewCell" class="headerlink" title="纯代码自定义 UITableViewCell"></a>纯代码自定义 UITableViewCell</h3><p>纯代码的方式自定义 UITableViewCell 的话就需要自己手写代码了，在工程里新建一个继承自 UITableViewCell 的 <code>CodeCustomcCell</code> 的类</p>
-<p><img src="http://onzskckoz.bkt.clouddn.com/addcustomcodecell.png" alt=""></p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/addcustomcodecell.png" alt=""></p>
 <p>然后根据项目的 UI 设计图，重写 <code>init(style: UITableViewCellStyle, reuseIdentifier: String?)</code> 方法，在这个方法里面添加所需的控件：</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">override</span> <span class="keyword">init</span>(style: <span class="type">UITableViewCellStyle</span>, reuseIdentifier: <span class="type">String</span>?) &#123;</div><div class="line">        </div><div class="line">    <span class="keyword">super</span>.<span class="keyword">init</span>(style: style, reuseIdentifier: reuseIdentifier)</div><div class="line">    </div><div class="line">    <span class="comment">// 添加所需的控件</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>添加完控件之后，再重写 <code>layoutSubviews</code> 方法，在这个方法里面布局我们添加的控件，这边为了演示方便就简单的在 <code>CodeCustomcCell</code> 中间添加一个图片，右边添加一个 <code>UILabel</code>，下面是完整的<code>CodeCustomcCell</code> 代码：</p>
