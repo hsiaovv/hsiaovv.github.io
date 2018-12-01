@@ -1,0 +1,928 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="本文转载自 航歌 - 做最好的开发者知识平台，原博分为三篇讲解，我这里就合并成一篇进行转载，有一些部分做了一些改动，博文内的代码我使用OC和Swift 重新写了一遍，使用的是 Xcode 10.1 Swift - GCDWebServer使用详解1（介绍、安装配置、HTTP服务实现） Swift - GCDWebServer使用详解2（实现静态、动态网站，Web服务器） Swift - GCDWe">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GCDWebServer 使用详解">
+<meta property="og:url" content="http://yoursite.com/2018/11/30/GCDWebServer-使用详解/index.html">
+<meta property="og:site_name" content="笑忘书店">
+<meta property="og:description" content="本文转载自 航歌 - 做最好的开发者知识平台，原博分为三篇讲解，我这里就合并成一篇进行转载，有一些部分做了一些改动，博文内的代码我使用OC和Swift 重新写了一遍，使用的是 Xcode 10.1 Swift - GCDWebServer使用详解1（介绍、安装配置、HTTP服务实现） Swift - GCDWebServer使用详解2（实现静态、动态网站，Web服务器） Swift - GCDWe">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse1.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse2.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse3.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse4.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse5.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse6.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse7.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse8.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse9.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse10.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse11.png">
+<meta property="og:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse12.png">
+<meta property="og:updated_time" content="2018-12-01T14:56:29.312Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GCDWebServer 使用详解">
+<meta name="twitter:description" content="本文转载自 航歌 - 做最好的开发者知识平台，原博分为三篇讲解，我这里就合并成一篇进行转载，有一些部分做了一些改动，博文内的代码我使用OC和Swift 重新写了一遍，使用的是 Xcode 10.1 Swift - GCDWebServer使用详解1（介绍、安装配置、HTTP服务实现） Swift - GCDWebServer使用详解2（实现静态、动态网站，Web服务器） Swift - GCDWe">
+<meta name="twitter:image" content="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/30/GCDWebServer-使用详解/"/>
+
+
+
+
+
+  <title> GCDWebServer 使用详解 | 笑忘书店 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笑忘书店</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/30/GCDWebServer-使用详解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Hsiaovv">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笑忘书店">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                GCDWebServer 使用详解
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-30T14:52:56+08:00">
+                2018-11-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/11/30/GCDWebServer-使用详解/" class="leancloud_visitors" data-flag-title="GCDWebServer 使用详解">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文转载自 <a href="http://www.hangge.com/" target="_blank" rel="noopener">航歌 - 做最好的开发者知识平台</a>，原博分为三篇讲解，我这里就合并成一篇进行转载，有一些部分做了一些改动，博文内的代码我使用OC和Swift 重新写了一遍，使用的是 Xcode 10.1</p>
+<p><a href="http://www.hangge.com/blog/cache/detail_1555.html#" target="_blank" rel="noopener">Swift - GCDWebServer使用详解1（介绍、安装配置、HTTP服务实现）</a></p>
+<p><a href="http://www.hangge.com/blog/cache/detail_1563.html" target="_blank" rel="noopener">Swift - GCDWebServer使用详解2（实现静态、动态网站，Web服务器）</a></p>
+<p><a href="http://www.hangge.com/blog/cache/detail_1562.html" target="_blank" rel="noopener">Swift - GCDWebServer使用详解3（文件传输、WebDav服务器实现）</a></p>
+<h3 id="一、GCDWebServer介绍"><a href="#一、GCDWebServer介绍" class="headerlink" title="一、GCDWebServer介绍"></a>一、GCDWebServer介绍</h3><p>GCDWebServer 是一个基于 GCD 的轻量级服务器框架，用于内嵌到 MacOS 或者 iOS 系统的应用中提供 HTTP1.1 的服务。使用 GCDWebServer 我们可以很轻松的在我们的应用中搭建一个 HTTP 服务器，让用户可以通过浏览器访问我们应用中的数据。或者使用 GCDWebServer 来实现一个无线U盘 App。这个框架有什么使用场景呢，摘录博主在原博的评论，比如下面几个场景可以使用：</p>
+<ol>
+<li>做个无线U盘这样的App（AppStore里搜一下就有好多）</li>
+<li>做个无线相册这样的App（电脑使用浏览器直接访问到手机里的照片）</li>
+<li>你的App如果需要用户导入一些文件进来</li>
+<li>你的App如果需要导出一些文件到用户电脑上</li>
+</ol>
+<p>Github主页：<a href="https://github.com/swisspol/GCDWebServer" target="_blank" rel="noopener">https://github.com/swisspol/GCDWebServer</a></p>
+<h4 id="1，特点"><a href="#1，特点" class="headerlink" title="1，特点"></a>1，特点</h4><ul>
+<li>设计优雅，易于使用。仅仅包含4个核心类：server, connection, request 和 response</li>
+<li>设计良好的 API。头文件注释齐全，非常易于继承和定制个性化需求。</li>
+<li>事件驱动模型。基于 GCD 框架，实现最佳性能和并发。</li>
+<li>不依赖任何第三方源码。</li>
+<li>符合新的 BSD 许可协议。</li>
+</ul>
+<h4 id="2，支持的功能"><a href="#2，支持的功能" class="headerlink" title="2，支持的功能"></a>2，支持的功能</h4><ul>
+<li>针对 http 请求，支持完全异步处理</li>
+<li>针对较大 HTTP 请求和响应流，采用内存最优化策略</li>
+<li>支持解析使用”application/x-www-form-urlencoded” 或者 “multipart/form-data”编码格式提交的 html 表单</li>
+<li>支持对 json 格式的请求或响应进行解析和序列化</li>
+<li>HTTP 请求或响应采用分块传输编码</li>
+<li>HTTP 请求和响应采用 gzip 方式压缩</li>
+<li>对本地文件的请求支持多种 HTTP 类型</li>
+<li>采用通用、简单的密码保护访问认证机制</li>
+<li>支持在 app 前台、后台或挂起时自动处理事务</li>
+<li>完全支持 ipv4 和 ipv6</li>
+<li>支持文件上传功能。提供通过浏览器实现文件上传和下载的接口。（GCDWebUploader -&gt; GCDWebServer）</li>
+<li>支持文件系统服务。DAV 不仅被看作 HTTP 的扩展，甚至被看作一种网络文件系统。（GCDWebDAVServer -&gt; GCDWebServer）</li>
+</ul>
+<h4 id="3，不支持的功能"><a href="#3，不支持的功能" class="headerlink" title="3，不支持的功能"></a>3，不支持的功能</h4><ul>
+<li>长连接</li>
+<li>https 请求</li>
+</ul>
+<h3 id="二、安装配置"><a href="#二、安装配置" class="headerlink" title="二、安装配置"></a>二、安装配置</h3><p>原博是使用Swift，但是框架是使用OC编写的，并且原博是直接导入框架，所以需要配置一些东西，详情请参考原博第一篇的这部分内容，我这边直接使用 CocoaPods 导入框架，把一下内容加入到 <code>Podfile</code>中，然后运行 <code>pod install</code> 即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">pod <span class="string">"GCDWebServer"</span>, <span class="string">"~&gt; 3.0"</span></div><div class="line">pod <span class="string">"GCDWebServer/WebUploader"</span>, <span class="string">"~&gt; 3.0"</span></div><div class="line">pod <span class="string">"GCDWebServer/WebDAV"</span>, <span class="string">"~&gt; 3.0"</span></div></pre></td></tr></table></figure>
+<h3 id="三、实现一个简单的HTTP服务器"><a href="#三、实现一个简单的HTTP服务器" class="headerlink" title="三、实现一个简单的HTTP服务器"></a>三、实现一个简单的HTTP服务器</h3><p>下面程序启动的时候会自动运行个 HTTP 服务，端口 8080。当用户访问这个服务时，会返回一个显示欢迎信息的 html 页面。</p>
+<p>Swift 代码</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> UIKit</div><div class="line"><span class="keyword">import</span> GCDWebServer</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ViewController</span>: <span class="title">UIViewController</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.viewDidLoad()</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> webServer = <span class="type">GCDWebServer</span>()</div><div class="line">        </div><div class="line">         webServer.addDefaultHandler(forMethod: <span class="string">"GET"</span>, request: <span class="type">GCDWebServerRequest</span>.<span class="keyword">self</span>, processBlock: &#123; (request) -&gt; <span class="type">GCDWebServerResponse</span>? <span class="keyword">in</span></div><div class="line">            </div><div class="line">            <span class="keyword">let</span> html = <span class="string">"&lt;html&gt;&lt;body&gt;欢迎访问 &lt;b&gt;hangge.com&lt;/b&gt;&lt;/body&gt;&lt;/html&gt;"</span></div><div class="line">            <span class="keyword">return</span> <span class="type">GCDWebServerDataResponse</span>(html: html)</div><div class="line">        &#125;)</div><div class="line">        </div><div class="line">        webServer.start(withPort: <span class="number">8080</span>, bonjourName: <span class="string">"GCD Web Server"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"服务启动成功，使用你的浏览器访问：<span class="subst">\(webServer.serverURL!)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>OC 代码</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">"ViewController.h"</span></span></div><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebServer.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebServerDataResponse.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebServerURLEncodedFormRequest.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebUploader.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebDAVServer.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ViewController</span> ()</span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">ViewController</span></span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</div><div class="line">    [<span class="keyword">super</span> viewDidLoad];</div><div class="line">    </div><div class="line">    GCDWebServer *webServer = [[GCDWebServer alloc] init];</div><div class="line">    </div><div class="line">    [webServer addDefaultHandlerForMethod:<span class="string">@"GET"</span> requestClass:[GCDWebServerRequest <span class="keyword">class</span>] processBlock:^GCDWebServerResponse * _Nullable(__kindof GCDWebServerRequest * _Nonnull request) &#123;</div><div class="line">        </div><div class="line">        <span class="built_in">NSString</span> *html = <span class="string">@"&lt;html&gt;&lt;body&gt;欢迎访问 &lt;b&gt;hangge.com&lt;/b&gt;&lt;/body&gt;&lt;/html&gt;"</span>;</div><div class="line">        </div><div class="line">        <span class="keyword">return</span> [GCDWebServerDataResponse responseWithHTML:html];</div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">    [webServer startWithPort:<span class="number">8080</span> bonjourName:<span class="string">@"GCD Web Server"</span>];</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"服务启动成功，使用你的浏览器访问：%@"</span>,webServer.serverURL);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>我这里使用模拟器运行程序，让后使用电脑浏览器访问 <a href="http://localhost:8080" target="_blank" rel="noopener">http://localhost:8080</a> 就可以看到效果了。由于我程序中没有对不同的请求分别做处理，所以无论任何请求服务器都会返回同样的 HTML 页面。</p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse1.png" alt=""></p>
+<h3 id="四、异步响应HTTP请求"><a href="#四、异步响应HTTP请求" class="headerlink" title="四、异步响应HTTP请求"></a>四、异步响应HTTP请求</h3><p>上面的样例中我们是同步处理响应 HTTP 请求， GCDWebServer 3.0 起新增了异步地处理 HTTP 请求的特性，方便我们在响应中进行比较耗时的操作（如网路请求、I/O读写操作）。使用时只需将<code>processBlock</code> 方法改成 <code>asyncProcessBlock</code> 方法即可。</p>
+<p>Swift 代码</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> UIKit</div><div class="line"><span class="keyword">import</span> GCDWebServer</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ViewController</span>: <span class="title">UIViewController</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.viewDidLoad()</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> webServer = <span class="type">GCDWebServer</span>()</div><div class="line">        </div><div class="line">        webServer.addDefaultHandler(forMethod: <span class="string">"GET"</span>, request: <span class="type">GCDWebServerRequest</span>.<span class="keyword">self</span>, asyncProcessBlock: &#123; (request, completionBlock) <span class="keyword">in</span></div><div class="line">            </div><div class="line">            <span class="type">DispatchQueue</span>.main.asyncAfter(deadline: <span class="type">DispatchTime</span>.now() + <span class="number">5</span>, execute: &#123;</div><div class="line">                <span class="keyword">let</span> html = <span class="string">"&lt;html&gt;&lt;body&gt;欢迎访问 &lt;b&gt;hangge.com&lt;/b&gt;&lt;/body&gt;&lt;/html&gt;"</span></div><div class="line">                </div><div class="line">                <span class="keyword">let</span> response = <span class="type">GCDWebServerDataResponse</span>(html: html)</div><div class="line">                completionBlock(response)</div><div class="line">                </div><div class="line">            &#125;)</div><div class="line">        &#125;)</div><div class="line">        </div><div class="line">        webServer.start(withPort: <span class="number">8080</span>, bonjourName: <span class="string">"GCD Web Server"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"服务启动成功，使用你的浏览器访问：<span class="subst">\(webServer.serverURL!)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>OC 代码</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">"ViewController.h"</span></span></div><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebServer.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebServerDataResponse.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebServerURLEncodedFormRequest.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebUploader.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebDAVServer.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ViewController</span> ()</span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">ViewController</span></span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</div><div class="line">    [<span class="keyword">super</span> viewDidLoad];</div><div class="line">    </div><div class="line">    GCDWebServer *webServer = [[GCDWebServer alloc] init];</div><div class="line">    </div><div class="line">    [webServer addDefaultHandlerForMethod:<span class="string">@"GET"</span> requestClass:[GCDWebServerRequest <span class="keyword">class</span>] asyncProcessBlock:^(__kindof GCDWebServerRequest * _Nonnull request, GCDWebServerCompletionBlock  _Nonnull completionBlock) &#123;</div><div class="line">        </div><div class="line">        <span class="comment">//5秒后返回响应（模拟网络请求、I/O读写等耗时操作）</span></div><div class="line">        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(<span class="number">5</span> * <span class="built_in">NSEC_PER_SEC</span>)), dispatch_get_main_queue(), ^&#123;</div><div class="line">            </div><div class="line">            <span class="built_in">NSString</span> *html = <span class="string">@"&lt;html&gt;&lt;body&gt;欢迎访问 &lt;b&gt;xiaovv.me&lt;/b&gt;&lt;/body&gt;&lt;/html&gt;"</span>;</div><div class="line">            GCDWebServerDataResponse *reponse = [GCDWebServerDataResponse responseWithHTML:html];</div><div class="line">    </div><div class="line">            completionBlock(reponse);</div><div class="line">        &#125;);</div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">    [webServer startWithPort:<span class="number">8080</span> bonjourName:<span class="string">@"GCD Web Server"</span>];</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"服务启动成功，使用你的浏览器访问：%@"</span>,webServer.serverURL);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>上面代码启动服务后，我们访问 <a href="http://localhost:8080" target="_blank" rel="noopener">http://localhost:8080</a> 要等个 5 秒钟才回显示结果。</p>
+<h3 id="五、HTTP请求重定向"><a href="#五、HTTP请求重定向" class="headerlink" title="五、HTTP请求重定向"></a>五、HTTP请求重定向</h3><p>下面实现了一个从<code>“/”</code>到 <code>“/index.html”</code>的页面重定向样例（客户端跳转）。</p>
+<p>Swift 代码</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> UIKit</div><div class="line"><span class="keyword">import</span> GCDWebServer</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ViewController</span>: <span class="title">UIViewController</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.viewDidLoad()</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> webServer = <span class="type">GCDWebServer</span>()</div><div class="line">        </div><div class="line">        webServer.addDefaultHandler(forMethod: <span class="string">"GET"</span>, request: <span class="type">GCDWebServerRequest</span>.<span class="keyword">self</span>, processBlock: &#123; (request) -&gt; <span class="type">GCDWebServerResponse</span>? <span class="keyword">in</span></div><div class="line">            </div><div class="line">            <span class="keyword">let</span> html = <span class="string">"&lt;html&gt;&lt;body&gt;欢迎访问 &lt;b&gt;hangge.com&lt;/b&gt;&lt;/body&gt;&lt;/html&gt;"</span></div><div class="line">            <span class="keyword">return</span> <span class="type">GCDWebServerDataResponse</span>(html: html)</div><div class="line">        &#125;)</div><div class="line">        </div><div class="line">        webServer.addHandler(forMethod: <span class="string">"GET"</span>, path: <span class="string">"/"</span>, request: <span class="type">GCDWebServerRequest</span>.<span class="keyword">self</span>, processBlock: &#123; (request) -&gt; <span class="type">GCDWebServerResponse</span>? <span class="keyword">in</span></div><div class="line">            </div><div class="line">            <span class="keyword">let</span> url = <span class="type">URL</span>(string: <span class="string">"index.html"</span>, relativeTo: request.url)</div><div class="line">            </div><div class="line">            <span class="keyword">return</span> <span class="type">GCDWebServerResponse</span>(redirect: url!, permanent: <span class="literal">false</span>)</div><div class="line">        &#125;);</div><div class="line">        </div><div class="line">        webServer.start(withPort: <span class="number">8080</span>, bonjourName: <span class="string">"GCD Web Server"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"服务启动成功，使用你的浏览器访问：<span class="subst">\(webServer.serverURL!)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>OC 代码</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">"ViewController.h"</span></span></div><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebServer.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebServerDataResponse.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebServerURLEncodedFormRequest.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebUploader.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebDAVServer.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ViewController</span> ()</span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">ViewController</span></span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</div><div class="line">    [<span class="keyword">super</span> viewDidLoad];</div><div class="line">    </div><div class="line">    GCDWebServer *webServer = [[GCDWebServer alloc] init];</div><div class="line">    [webServer addDefaultHandlerForMethod:<span class="string">@"GET"</span> requestClass:[GCDWebServerRequest <span class="keyword">class</span>] processBlock:^GCDWebServerResponse * _Nullable(__kindof GCDWebServerRequest * _Nonnull request) &#123;</div><div class="line">        </div><div class="line">        <span class="built_in">NSString</span> *html = <span class="string">@"&lt;html&gt;&lt;body&gt;欢迎访问 &lt;b&gt;xiaovv.me&lt;/b&gt;&lt;/body&gt;&lt;/html&gt;"</span>;</div><div class="line">        <span class="keyword">return</span> [GCDWebServerDataResponse responseWithHTML:html];</div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">    [webServer addHandlerForMethod:<span class="string">@"GET"</span> path:<span class="string">@"/"</span> requestClass:[GCDWebServerRequest <span class="keyword">class</span>] processBlock:^GCDWebServerResponse * _Nullable(__kindof GCDWebServerRequest * _Nonnull request) &#123;</div><div class="line">        </div><div class="line">        <span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:<span class="string">@"index.html"</span> relativeToURL:request.URL];</div><div class="line">        </div><div class="line">        <span class="keyword">return</span> [GCDWebServerResponse responseWithRedirect:url permanent:<span class="literal">NO</span>];</div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">    [webServer startWithPort:<span class="number">8080</span> bonjourName:<span class="string">@"GCD Web Server"</span>];</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"服务启动成功，使用你的浏览器访问：%@"</span>,webServer.serverURL);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>上面代码启动服务后，我们访问 <a href="http://localhost:8080" target="_blank" rel="noopener">http://localhost:8080</a> 时，便自动重定向到 <a href="http://localhost:8080/index.html。" target="_blank" rel="noopener">http://localhost:8080/index.html。</a></p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse2.png" alt=""></p>
+<h3 id="六、实现Form表单功能"><a href="#六、实现Form表单功能" class="headerlink" title="六、实现Form表单功能"></a>六、实现Form表单功能</h3><p>下面实现一个 HTTP 表单，一共用到了两个 handlers：</p>
+<ul>
+<li>GET handler：产生一个包含一个简单的 HTML 表单响应。由于不需要 HTTP 请求中的 body 信息，因此直接采用 <code>GCDWebServerRequest</code> 类。</li>
+<li>POST handler：从用户提交的表单中获取值，并将处理结果返回。由于需要得到 HTTP 请求中经过 encode 后的 body 信息中的表单值，就要借助于 <code>GCDWebServerURLEncodedFormRequest</code> 类。</li>
+</ul>
+<p>Swift 代码</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> UIKit</div><div class="line"><span class="keyword">import</span> GCDWebServer</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ViewController</span>: <span class="title">UIViewController</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.viewDidLoad()</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> webServer = <span class="type">GCDWebServer</span>()</div><div class="line">        </div><div class="line">        webServer.addHandler(forMethod: <span class="string">"GET"</span>, path: <span class="string">"/"</span>, request: <span class="type">GCDWebServerRequest</span>.<span class="keyword">self</span>, processBlock: &#123; (request) -&gt; <span class="type">GCDWebServerResponse</span>? <span class="keyword">in</span></div><div class="line">            </div><div class="line">            <span class="keyword">let</span> html = <span class="string">"&lt;html&gt;&lt;body&gt;"</span> +</div><div class="line">                <span class="string">"&lt;form name=\"input\" action=\"/\" method=\"post\" "</span> +</div><div class="line">                <span class="string">"enctype=\"application/x-www-form-urlencoded\"&gt; "</span> +</div><div class="line">                <span class="string">"用户名: &lt;input type=\"text\" name=\"username\"&gt;"</span> +</div><div class="line">                <span class="string">"&lt;input type=\"submit\" value=\"提交\"&gt;"</span> +</div><div class="line">                <span class="string">"&lt;/form&gt;"</span> +</div><div class="line">                <span class="string">"&lt;/body&gt;&lt;/html&gt;"</span></div><div class="line">            </div><div class="line">            <span class="keyword">return</span> <span class="type">GCDWebServerDataResponse</span>(html: html)</div><div class="line">        &#125;);</div><div class="line">        </div><div class="line">        <span class="comment">//处理post请求：/（获取提交的表单数据，并返回结果）</span></div><div class="line">        webServer.addHandler(forMethod: <span class="string">"POST"</span>, path: <span class="string">"/"</span>, request: <span class="type">GCDWebServerURLEncodedFormRequest</span>.<span class="keyword">self</span>, processBlock: &#123; (request) -&gt; <span class="type">GCDWebServerResponse</span>? <span class="keyword">in</span></div><div class="line">            </div><div class="line">            <span class="keyword">let</span> formRequest = request <span class="keyword">as</span>! <span class="type">GCDWebServerURLEncodedFormRequest</span></div><div class="line">            <span class="keyword">let</span> value = formRequest.arguments[<span class="string">"username"</span>]</div><div class="line">            <span class="keyword">let</span> html = <span class="string">"&lt;html&gt;&lt;body&gt;<span class="subst">\(String(describing: value)</span>)&lt;/body&gt;&lt;/html&gt;"</span></div><div class="line">        </div><div class="line">            <span class="keyword">return</span> <span class="type">GCDWebServerDataResponse</span>(html: html)</div><div class="line">        &#125;);</div><div class="line">        </div><div class="line">        webServer.start(withPort: <span class="number">8080</span>, bonjourName: <span class="string">"GCD Web Server"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"服务启动成功，使用你的浏览器访问：<span class="subst">\(webServer.serverURL!)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>OC 代码</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">"ViewController.h"</span></span></div><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebServer.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebServerDataResponse.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebServerURLEncodedFormRequest.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebUploader.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebDAVServer.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ViewController</span> ()</span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">ViewController</span></span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</div><div class="line">    [<span class="keyword">super</span> viewDidLoad];</div><div class="line">    </div><div class="line">    GCDWebServer *webServer = [[GCDWebServer alloc] init];</div><div class="line">    </div><div class="line">    [webServer addHandlerForMethod:<span class="string">@"GET"</span> path:<span class="string">@"/"</span> requestClass:[GCDWebServerRequest <span class="keyword">class</span>] processBlock:^GCDWebServerResponse * _Nullable(__kindof GCDWebServerRequest * _Nonnull request) &#123;</div><div class="line">        </div><div class="line">        <span class="built_in">NSString</span> *html = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@%@%@%@%@%@%@"</span>,<span class="string">@"&lt;html&gt;&lt;body&gt;"</span>,<span class="string">@"&lt;form name=\"input\" action=\"/\" method=\"post\""</span>,<span class="string">@"enctype=\"application/x-www-form-urlencoded\"&gt;"</span>,<span class="string">@"用户名: &lt;input type=\"text\" name=\"username\"&gt;"</span>,<span class="string">@"&lt;input type=\"submit\" value=\"提交\"&gt;"</span>,<span class="string">@"&lt;/form&gt;"</span>,<span class="string">@"&lt;/body&gt;&lt;/html&gt;"</span>];</div><div class="line">        </div><div class="line">        <span class="keyword">return</span> [GCDWebServerDataResponse responseWithHTML:html];</div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">    [webServer addHandlerForMethod:<span class="string">@"POST"</span> path:<span class="string">@"/"</span> requestClass:[GCDWebServerURLEncodedFormRequest <span class="keyword">class</span>] processBlock:^GCDWebServerResponse * _Nullable(__kindof GCDWebServerRequest * _Nonnull request) &#123;</div><div class="line">        </div><div class="line">        GCDWebServerURLEncodedFormRequest *formRequest = (GCDWebServerURLEncodedFormRequest *)request;</div><div class="line">        </div><div class="line">        <span class="built_in">NSString</span> *value = [formRequest.arguments objectForKey:<span class="string">@"username"</span>];</div><div class="line">        <span class="built_in">NSString</span> *html = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"&lt;html&gt;&lt;body&gt;%@&lt;/body&gt;&lt;/html&gt;"</span>,value];</div><div class="line">        <span class="keyword">return</span> [GCDWebServerDataResponse responseWithHTML:html];</div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">    [webServer startWithPort:<span class="number">8080</span> bonjourName:<span class="string">@"GCD Web Server"</span>];</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"服务启动成功，使用你的浏览器访问：%@"</span>,webServer.serverURL);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>程序启动后，我们使用电脑浏览器访问<a href="http://localhost:8080" target="_blank" rel="noopener">http://localhost:8080</a> 会显示出一个 form 表单。</p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse3.png" alt=""></p>
+<p>填写内容并提交后，会返回显示刚才我们提交的值。</p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse4.png" alt=""></p>
+<h3 id="七、实现一个静态的文件目录网站（Static-Website）"><a href="#七、实现一个静态的文件目录网站（Static-Website）" class="headerlink" title="七、实现一个静态的文件目录网站（Static Website）"></a>七、实现一个静态的文件目录网站（Static Website）</h3><p>GCDWebServer 内置的处理程序可以递归服务端目录，从而实现一个静态的文件目录浏览功能（只读）。同时我们还可以自由设置 <code>“Cache - Control”</code>头。</p>
+<p>Swift 代码</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> UIKit</div><div class="line"><span class="keyword">import</span> GCDWebServer</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ViewController</span>: <span class="title">UIViewController</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.viewDidLoad()</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> webServer = <span class="type">GCDWebServer</span>()</div><div class="line">        </div><div class="line">        webServer.addGETHandler(forBasePath: <span class="string">"/"</span>, directoryPath: <span class="type">NSHomeDirectory</span>(), indexFilename: <span class="literal">nil</span>, cacheAge: <span class="number">3600</span>, allowRangeRequests: <span class="literal">true</span>)</div><div class="line">        </div><div class="line">        webServer.start(withPort: <span class="number">8080</span>, bonjourName: <span class="string">"GCD Web Server"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"服务启动成功，使用你的浏览器访问：<span class="subst">\(webServer.serverURL!)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>OC 代码</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">"ViewController.h"</span></span></div><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebServer.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebServerDataResponse.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebServerURLEncodedFormRequest.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebUploader.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebDAVServer.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ViewController</span> ()</span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">ViewController</span></span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</div><div class="line">    [<span class="keyword">super</span> viewDidLoad];</div><div class="line">    </div><div class="line">    GCDWebServer *webServer = [[GCDWebServer alloc] init];</div><div class="line">    </div><div class="line">    [webServer addGETHandlerForBasePath:<span class="string">@"/"</span> directoryPath:<span class="built_in">NSHomeDirectory</span>() indexFilename:<span class="literal">nil</span> cacheAge:<span class="number">3600</span> allowRangeRequests:<span class="literal">true</span>];</div><div class="line">    [webServer startWithPort:<span class="number">8080</span> bonjourName:<span class="string">@"GCD Web Server"</span>];</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"服务启动成功，使用你的浏览器访问：%@"</span>,webServer.serverURL);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>用模拟器运行程序，然后使用电脑浏览器访问 <a href="http://localhost:8080" target="_blank" rel="noopener">http://localhost:8080</a> 便会显示出 App 的沙盒目录。我们可以点击浏览里面各个文件和文件夹，或者对文件进行下载操作。</p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse5.png" alt=""></p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse6.png" alt=""></p>
+<h3 id="八、实现动态网站（Dynamic-Website）"><a href="#八、实现动态网站（Dynamic-Website）" class="headerlink" title="八、实现动态网站（Dynamic Website）"></a>八、实现动态网站（Dynamic Website）</h3><p>有时候简单的静态页面浏览并不能满足我们的需求，我们可能需要页面能够根据不同的条件动态显示内容，这时可以借助 <code>GCDWebServerDataResponse</code> 类来实现。</p>
+<p><code>GCDWebServerDataResponse</code> 继承自 GCDWebServerResponse 类，它为我们提供了一套基本的模板技术。即根据模板和一组变量（格式为 %variable%）来生成 HTML 内容并返回。下面通过一个样例作为演示。</p>
+<ol>
+<li>程序启动后，我们使用浏览器访问 <a href="http://localhost:8080" target="_blank" rel="noopener">http://localhost:8080</a> 即可显示网站首页内容。（程序会自动重定向到 index.html 页面上）</li>
+<li>点击网页左侧的图片列表，右侧 image 组件会显示响应的图片内容。这里注意的是：左侧的图片列表、以及标题并不是写死在 html 页面上的，而是通过程序里的变量填充到模版中生成的。</li>
+<li>也就是说整个网站的 js、css、图片是静态的。而网页是动态的。</li>
+</ol>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse7.png" alt=""></p>
+<p>网站相关代码如下：</p>
+<p>整个项目结构如下，其中 Website 文件夹（注意是文件夹，不是组）下放置的是网站中用到的所有页面和资源。</p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse8.png" alt=""></p>
+<p><code>default.css</code> 代码如下：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.left</span> &#123;</div><div class="line">    <span class="attribute">float</span>:left;</div><div class="line">    <span class="attribute">width</span>:<span class="number">150px</span>;</div><div class="line">    <span class="attribute">margin-right</span>: <span class="number">10px</span>;</div><div class="line">&#125;</div><div class="line"> </div><div class="line"><span class="selector-class">.title</span> &#123;</div><div class="line">    <span class="attribute">background-color</span>: <span class="number">#339718</span>;</div><div class="line">    <span class="attribute">color</span>: <span class="number">#FFFFFF</span>;</div><div class="line">    <span class="attribute">padding</span>: <span class="number">10px</span>;</div><div class="line">    <span class="attribute">text-align</span>: center;</div><div class="line">&#125;</div><div class="line"> </div><div class="line"><span class="selector-tag">li</span> &#123;</div><div class="line">    <span class="attribute">cursor</span>:pointer;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>index.html</code> 代码如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>hangge.com<span class="tag">&lt;/<span class="name">title</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"default.css"</span> <span class="attr">type</span>=<span class="string">"text/css"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"jquery.js"</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></div><div class="line">     $(document).ready(function()&#123;</div><div class="line">       $("li").click(function()&#123;</div><div class="line">         var data = $(this).attr("data");</div><div class="line">         $("#image1").attr("src","imgs/"+data);</div><div class="line">       &#125;);</div><div class="line">     &#125;);</div><div class="line">  <span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">   <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"left"</span>&gt;</span></div><div class="line">     <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"title"</span>&gt;</span></div><div class="line">       %var_title%</div><div class="line">     <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">     <span class="tag">&lt;<span class="name">ul</span>&gt;</span></div><div class="line">       %var_li%</div><div class="line">     <span class="tag">&lt;<span class="name">ul</span>&gt;</span></div><div class="line">   <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">   <span class="tag">&lt;<span class="name">img</span> <span class="attr">id</span>=<span class="string">"image1"</span> <span class="attr">src</span>=<span class="string">"imgs/1.png"</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>Website 内全部内容请参考 <a href="http://www.hangge.com/blog_uploads/201702/2017022020033713828.zip" target="_blank" rel="noopener">源码 hangge_1563.zip</a>，程序的具体代码：</p>
+<p>Swift 代码</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> UIKit</div><div class="line"><span class="keyword">import</span> GCDWebServer</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ViewController</span>: <span class="title">UIViewController</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.viewDidLoad()</div><div class="line">        </div><div class="line">        <span class="comment">//获取网站文件夹路径</span></div><div class="line">        <span class="keyword">let</span> websitePath = <span class="type">Bundle</span>.main.path(forResource: <span class="string">"Website"</span>, ofType: <span class="literal">nil</span>)</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> webServer = <span class="type">GCDWebServer</span>()</div><div class="line">        </div><div class="line">        <span class="comment">//先设置个默认的handler处理静态文件（比如css、js、图片等）</span></div><div class="line">        webServer.addGETHandler(forBasePath: <span class="string">"/"</span>, directoryPath: websitePath!, indexFilename: <span class="literal">nil</span>, cacheAge: <span class="number">3600</span>, allowRangeRequests: <span class="literal">true</span>)</div><div class="line">        </div><div class="line">        <span class="comment">//再覆盖个新的handler处理动态页面（html页面）</span></div><div class="line">        webServer.addHandler(forMethod: <span class="string">"GET"</span>, pathRegex: <span class="string">"^/.*\\.html$"</span>, request: <span class="type">GCDWebServerRequest</span>.<span class="keyword">self</span>, processBlock: &#123; (request) -&gt; <span class="type">GCDWebServerResponse</span>? <span class="keyword">in</span></div><div class="line">            </div><div class="line">            <span class="keyword">let</span> var_li = <span class="string">"&lt;li data='1.png'&gt;图片1&lt;/li&gt;"</span> +</div><div class="line">                <span class="string">"&lt;li data='2.png'&gt;图片2&lt;/li&gt;"</span> +</div><div class="line">                <span class="string">"&lt;li data='3.png'&gt;图片3&lt;/li&gt;"</span> +</div><div class="line">                <span class="string">"&lt;li data='4.png'&gt;图片4&lt;/li&gt;"</span></div><div class="line">            <span class="keyword">let</span> variables = [</div><div class="line">                <span class="string">"var_title"</span>: <span class="string">"点击切换图片"</span>,</div><div class="line">                <span class="string">"var_li"</span>: var_li,</div><div class="line">                ]</div><div class="line">            </div><div class="line">            <span class="keyword">let</span> htmlTemplate = websitePath?.appending(request.path)</div><div class="line">            </div><div class="line">            <span class="keyword">return</span> <span class="type">GCDWebServerDataResponse</span>(htmlTemplate: htmlTemplate!, variables: variables)</div><div class="line">            </div><div class="line">        &#125;)</div><div class="line">        </div><div class="line">        webServer.addHandler(forMethod: <span class="string">"GET"</span>, path: <span class="string">"/"</span>, request: <span class="type">GCDWebServerRequest</span>.<span class="keyword">self</span>, processBlock: &#123; (request) -&gt; <span class="type">GCDWebServerResponse</span>? <span class="keyword">in</span></div><div class="line">            </div><div class="line">            <span class="keyword">let</span> url = <span class="type">URL</span>(string: <span class="string">"index.html"</span>, relativeTo: request.url)</div><div class="line">            </div><div class="line">            <span class="keyword">return</span> <span class="type">GCDWebServerDataResponse</span>(redirect: url!, permanent: <span class="literal">false</span>)</div><div class="line">        &#125;);</div><div class="line">        </div><div class="line">        <span class="comment">//服务器启动</span></div><div class="line">        webServer.start(withPort: <span class="number">8080</span>, bonjourName: <span class="string">"GCD Web Server"</span>)</div><div class="line">        <span class="built_in">print</span>(<span class="string">"服务启动成功，使用你的浏览器访问：<span class="subst">\(webServer.serverURL!)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>OC 代码</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">"ViewController.h"</span></span></div><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebServer.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebServerDataResponse.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebServerURLEncodedFormRequest.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebUploader.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebDAVServer.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ViewController</span> ()</span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">ViewController</span></span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</div><div class="line">    [<span class="keyword">super</span> viewDidLoad];</div><div class="line">    </div><div class="line">    <span class="built_in">NSString</span> *websitePath = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@"Website"</span> ofType:<span class="literal">nil</span>];</div><div class="line">    GCDWebServer *webServer = [[GCDWebServer alloc] init];</div><div class="line">    </div><div class="line">    <span class="comment">//先设置个默认的handler处理静态文件（比如css、js、图片等）</span></div><div class="line">    [webServer addGETHandlerForBasePath:<span class="string">@"/"</span> directoryPath:websitePath indexFilename:<span class="literal">nil</span> cacheAge:<span class="number">3600</span> allowRangeRequests:<span class="literal">YES</span>];</div><div class="line">    </div><div class="line">    <span class="comment">//再覆盖个新的handler处理动态页面（html页面）</span></div><div class="line">    [webServer addHandlerForMethod:<span class="string">@"GET"</span> pathRegex:<span class="string">@"^/.*\\.html$"</span> requestClass:[GCDWebServerRequest <span class="keyword">class</span>] processBlock:^GCDWebServerResponse * _Nullable(__kindof GCDWebServerRequest * _Nonnull request) &#123;</div><div class="line">       </div><div class="line">        <span class="built_in">NSString</span> *var_li = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@%@%@%@"</span>,<span class="string">@"&lt;li data='1.png'&gt;图片1&lt;/li&gt;"</span>,<span class="string">@"&lt;li data='2.png'&gt;图片2&lt;/li&gt;"</span>,<span class="string">@"&lt;li data='3.png'&gt;图片3&lt;/li&gt;"</span>,<span class="string">@"&lt;li data='4.png'&gt;图片4&lt;/li&gt;"</span>];</div><div class="line">        </div><div class="line">        <span class="built_in">NSDictionary</span> *variables = @&#123;<span class="string">@"var_title"</span>: <span class="string">@"点击切换图片"</span>,</div><div class="line">                                    <span class="string">@"var_li"</span>: var_li&#125;;</div><div class="line">        <span class="built_in">NSString</span> *htmlTemplate = [websitePath stringByAppendingString:request.path];</div><div class="line">        </div><div class="line">        <span class="keyword">return</span> [GCDWebServerDataResponse responseWithHTMLTemplate:htmlTemplate variables:variables];</div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">    <span class="comment">//HTTP请求重定向（/从定向到/index.html）</span></div><div class="line">    [webServer addHandlerForMethod:<span class="string">@"GET"</span> path:<span class="string">@"/"</span> requestClass:[GCDWebServerRequest <span class="keyword">class</span>] processBlock:^GCDWebServerResponse * _Nullable(__kindof GCDWebServerRequest * _Nonnull request) &#123;</div><div class="line">        </div><div class="line">        <span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:<span class="string">@"index.html"</span> relativeToURL:request.URL];</div><div class="line">        </div><div class="line">        <span class="keyword">return</span> [GCDWebServerResponse responseWithRedirect:url permanent:<span class="literal">NO</span>];</div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">    [webServer startWithPort:<span class="number">8080</span> bonjourName:<span class="string">@"GCD Web Server"</span>];</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"服务启动成功，使用你的浏览器访问：%@"</span>,webServer.serverURL);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<h3 id="九、实现文件的上传下载服务"><a href="#九、实现文件的上传下载服务" class="headerlink" title="九、实现文件的上传下载服务"></a>九、实现文件的上传下载服务</h3><p><code>GCDWebUploader</code> 是 <code>GCDWebServer</code> 的子类，它提供了一个现成的 HTML5 形式的文件上传下载器。<code>GCDWebUploader</code> 自带 UI 界面，让用户可以在浏览器里上传，下载，删除文件，以及在 iOS 应用的沙盒中创建目录文件夹。</p>
+<p>在我们程序启动的时候会自动运行个 HTTP 服务，端口 8080。用户访问这个地址时，会显示一个进行文件管理的页面。</p>
+<p>Swift 代码</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> UIKit</div><div class="line"><span class="keyword">import</span> GCDWebServer</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ViewController</span>: <span class="title">UIViewController</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.viewDidLoad()</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> documentsPath = <span class="type">NSHomeDirectory</span>() + <span class="string">"/Documents"</span></div><div class="line">        <span class="keyword">let</span> webUploader = <span class="type">GCDWebUploader</span>(uploadDirectory: documentsPath)</div><div class="line">        </div><div class="line">        webUploader.start(withPort: <span class="number">8080</span>, bonjourName: <span class="string">"Web Based Uploads"</span>)</div><div class="line">        </div><div class="line">        <span class="built_in">print</span>(<span class="string">"服务启动成功，使用你的浏览器访问：<span class="subst">\(webUploader.serverURL!)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>OC 代码</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">"ViewController.h"</span></span></div><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebServer.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebServerDataResponse.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebServerURLEncodedFormRequest.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebUploader.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebDAVServer.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ViewController</span> ()</span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">ViewController</span></span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</div><div class="line">    [<span class="keyword">super</span> viewDidLoad];</div><div class="line">    </div><div class="line">    <span class="built_in">NSString</span> *documentsPath = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@%@"</span>,<span class="built_in">NSHomeDirectory</span>(),<span class="string">@"/Documents"</span>];</div><div class="line">    GCDWebUploader *webuploader = [[GCDWebUploader alloc] initWithUploadDirectory:documentsPath];</div><div class="line">    [webuploader startWithPort:<span class="number">8080</span> bonjourName:<span class="string">@"Web Based Uploads"</span>];</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"服务启动成功，使用你的浏览器访问：%@"</span>,webuploader.serverURL);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>我这里使用模拟器运行程序，然后使用电脑浏览器访问 <a href="http://localhost:8080" target="_blank" rel="noopener">http://localhost:8080</a> 就可以看到效果了。在这里我们可以进行文件的上传、下载、重命名、删除，以及文件夹的创建、删除、重命名等操作。</p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse9.png" alt=""></p>
+<h3 id="十、实现一个WebDAV服务器"><a href="#十、实现一个WebDAV服务器" class="headerlink" title="十、实现一个WebDAV服务器"></a>十、实现一个WebDAV服务器</h3><p>前面我们通过 <code>GCDWebUploader</code> 来实现一个基于 HTTP 的文件服务器，用户通过浏览器可以进行文件的上传下载等操作。</p>
+<p>这次我们通过 <code>GCDWebServer</code> 来实现一个 WebDAV 服务器，让用户可以使用任意的 WebDAV 客户端，比如： Transmit (Mac)，ForkLift (Mac) 或者 CyberDuck (Mac / Windows)，来访问我们 App 的沙盒目录文件。</p>
+<p>当我们程序启动的时候会自动运行个 WebDAV 服务，端口 8080。</p>
+<p>Swift 代码</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> UIKit</div><div class="line"><span class="keyword">import</span> GCDWebServer</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ViewController</span>: <span class="title">UIViewController</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.viewDidLoad()</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> documentsPath = <span class="type">NSHomeDirectory</span>() + <span class="string">"/Documents"</span></div><div class="line">        <span class="keyword">let</span> wedDAVServer = <span class="type">GCDWebDAVServer</span>(uploadDirectory: documentsPath)</div><div class="line">        </div><div class="line">        wedDAVServer.start(withPort: <span class="number">8080</span>, bonjourName: <span class="string">"WebDAV Server"</span>)</div><div class="line">        </div><div class="line">        <span class="built_in">print</span>(<span class="string">"服务启动成功，使用你的浏览器访问：<span class="subst">\(wedDAVServer.serverURL!)</span>"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>OC 代码</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">"ViewController.h"</span></span></div><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebServer.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebServerDataResponse.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebServerURLEncodedFormRequest.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebUploader.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;GCDWebDAVServer.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ViewController</span> ()</span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">ViewController</span></span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</div><div class="line">    [<span class="keyword">super</span> viewDidLoad];</div><div class="line">    </div><div class="line">    <span class="built_in">NSString</span> *documentsPath = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@%@"</span>,<span class="built_in">NSHomeDirectory</span>(),<span class="string">@"/Documents"</span>];</div><div class="line">    GCDWebDAVServer *webDavServer = [[GCDWebDAVServer alloc] initWithUploadDirectory:documentsPath];</div><div class="line">    </div><div class="line">    [webDavServer startWithPort:<span class="number">8080</span> bonjourName:<span class="string">@"WebDAV Server"</span>];</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"服务启动成功，使用你的浏览器访问：%@"</span>,webDavServer.serverURL);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>我这里使用模拟器运行程序，然后使用 WebDAV 客户端 Transmit 进行连接。</p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse10.png" alt=""></p>
+<p>连接成功后，可以看到这个 App 的 Documents 目录下的所有文件，并可以进行相关操作。</p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse11.png" alt=""></p>
+<p>如果是 Windows 系统，可以使用 Cyberduck 这个客户端工具进行连接操作。</p>
+<p><img src="https://blog-images-1256154150.cos.ap-guangzhou.myqcloud.com/GCDWebServeruse12.png" alt=""></p>
+<p>以上就是GCDWebServer 的基本使用。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/04/Advanced-Debugging-with-Xcode-and-LLDB/" rel="next" title="WWDC 2018：效率提升爆表的 Xcode 和 LLDB 调试技巧">
+                <i class="fa fa-chevron-left"></i> WWDC 2018：效率提升爆表的 Xcode 和 LLDB 调试技巧
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zNDUzMy8xMTA3MQ=="></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Hsiaovv" />
+          <p class="site-author-name" itemprop="name">Hsiaovv</p>
+           
+              <p class="site-description motion-element" itemprop="description">以绝大多数人的努力程度之低，根本轮不到去拼天赋</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">45</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、GCDWebServer介绍"><span class="nav-number">1.</span> <span class="nav-text">一、GCDWebServer介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1，特点"><span class="nav-number">1.1.</span> <span class="nav-text">1，特点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2，支持的功能"><span class="nav-number">1.2.</span> <span class="nav-text">2，支持的功能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3，不支持的功能"><span class="nav-number">1.3.</span> <span class="nav-text">3，不支持的功能</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、安装配置"><span class="nav-number">2.</span> <span class="nav-text">二、安装配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、实现一个简单的HTTP服务器"><span class="nav-number">3.</span> <span class="nav-text">三、实现一个简单的HTTP服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、异步响应HTTP请求"><span class="nav-number">4.</span> <span class="nav-text">四、异步响应HTTP请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#五、HTTP请求重定向"><span class="nav-number">5.</span> <span class="nav-text">五、HTTP请求重定向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#六、实现Form表单功能"><span class="nav-number">6.</span> <span class="nav-text">六、实现Form表单功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#七、实现一个静态的文件目录网站（Static-Website）"><span class="nav-number">7.</span> <span class="nav-text">七、实现一个静态的文件目录网站（Static Website）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#八、实现动态网站（Dynamic-Website）"><span class="nav-number">8.</span> <span class="nav-text">八、实现动态网站（Dynamic Website）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#九、实现文件的上传下载服务"><span class="nav-number">9.</span> <span class="nav-text">九、实现文件的上传下载服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#十、实现一个WebDAV服务器"><span class="nav-number">10.</span> <span class="nav-text">十、实现一个WebDAV服务器</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Hsiaovv</span>
+</div>
+
+
+<div class="powered-by">
+
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+  <div class="powered-by">  
+  </div>
+  <span>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></span>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("03EiT54MHYWVD5oet8EvooxX-gzGzoHsz", "pEuU3RFhQtvFv7b7w4xYXtE2");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
